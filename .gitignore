@@ -1,0 +1,59 @@
+# Claude Code
+.claude/
+
+# ---------------------------------------------------------------------------
+# DADES PERSONALS D'ALUMNAT — NO PUBLICAR MAI EN UN REPOSITORI PÚBLIC
+# Entregues de la pràctica final, notes i rúbriques amb nom i cognoms.
+# ---------------------------------------------------------------------------
+Entregas_RL/
+Entregas/
+_RESUMEN_NOTAS.md
+
+# Datasets descarregables (torchvision i gymnasium els baixen sols)
+data/
+*.idx3-ubyte
+*.idx1-ubyte
+*-ubyte
+*-ubyte.gz
+
+# Artefactes d'execució dels notebooks
+checkpoint.pt
+best_model.pt
+model_weights.pt
+runs/
+logs/
+tensorboard/
+videos/
+*.mp4
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+nul
+
+# Notes de treball del mòdul de Digitalització, que ja té el seu repositori
+Prompt.md
+prompt.txt

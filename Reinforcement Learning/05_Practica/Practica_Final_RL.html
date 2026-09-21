@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica Final - Reinforcement Learning</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header .subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 2.5rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.25rem;
+            font-size: 1.4rem;
+        }
+
+        h3 {
+            color: var(--gray-800);
+            margin: 1.5rem 0 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--gray-600);
+        }
+
+        .objetivo-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 4px solid var(--primary);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .objetivo-box p {
+            color: var(--gray-800);
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .info-card {
+            background: var(--gray-100);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .info-card .label {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-card .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-top: 0.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        th {
+            background: var(--gray-100);
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        tr:hover {
+            background: var(--gray-50);
+        }
+
+        .steps {
+            counter-reset: step;
+        }
+
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        code {
+            background: var(--gray-100);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+        }
+
+        pre {
+            background: var(--gray-800);
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            margin: 1rem 0;
+        }
+
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .option-card {
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: border-color 0.2s;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary);
+        }
+
+        .option-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--gray-800);
+        }
+
+        /* Rúbrica */
+        .rubrica-section {
+            background: #fefce8;
+            border: 2px solid #fde047;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .rubrica-table th {
+            background: #fef9c3;
+        }
+
+        .rubrica-table .criterio {
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .rubrica-table .peso {
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nivel {
+            display: inline-block;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.25rem;
+        }
+
+        .nivel.excelente { background: #d1fae5; color: #065f46; }
+        .nivel.bueno { background: #dbeafe; color: #1e40af; }
+        .nivel.suficiente { background: #fef3c7; color: #92400e; }
+        .nivel.insuficiente { background: #fee2e2; color: #991b1b; }
+
+        .puntos-total {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .puntos-total .numero {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .tips-box {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tips-box h4 {
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+        }
+
+        .tips-box ul {
+            margin-left: 1.25rem;
+            color: var(--gray-600);
+        }
+
+        .tips-box li {
+            margin-bottom: 0.25rem;
+        }
+
+        .bonus-section {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .bonus-section h3 {
+            color: #166534;
+            margin-top: 0;
+        }
+
+        footer {
+            background: var(--gray-100);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        ul.lista-principal {
+            margin-left: 1.5rem;
+            color: var(--gray-600);
+        }
+
+        ul.lista-principal li {
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            header { padding: 1.5rem; }
+            main { padding: 1rem; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Práctica Final</h1>
+            <p class="subtitle">Reinforcement Learning - Deep Learning</p>
+            <span class="badge">Agente DQN</span>
+        </header>
+
+        <main>
+            <!-- Información General -->
+            <section>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="label">Asignatura</div>
+                        <div class="value">OPT-ML</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="label">Formato</div>
+                        <div class="value">Jupyter Notebook</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="label">Modalidad</div>
+                        <div class="value">Individual / Grupal</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Objetivo -->
+            <section>
+                <h2>Objetivo</h2>
+                <div class="objetivo-box">
+                    <p><strong>Diseñar, implementar y entrenar un agente DQN (Deep Q-Network)</strong> que aprenda a resolver una tarea en un entorno de vuestra elección, aplicando los conocimientos adquiridos en Deep Learning y Reinforcement Learning durante el curso.</p>
+                </div>
+
+                <h3>Objetivos de aprendizaje</h3>
+                <ul class="lista-principal">
+                    <li>Comprender el ciclo agente-entorno y el framework MDP</li>
+                    <li>Implementar el algoritmo DQN con PyTorch</li>
+                    <li>Diseñar experimentos y analizar curvas de aprendizaje</li>
+                    <li>Aplicar técnicas de Deep Learning a problemas de control</li>
+                    <li>Documentar y comunicar resultados de forma clara</li>
+                </ul>
+            </section>
+
+            <!-- Descripción -->
+            <section>
+                <h2>Descripción de la Tarea</h2>
+                <p>El alumno/grupo debe entregar un <strong>Jupyter Notebook (.ipynb)</strong> completamente funcional donde:</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-content">
+                            <h4>Seleccionar o crear un entorno</h4>
+                            <p>Podéis elegir entre tres opciones: <strong>crear vuestro propio juego con Pygame</strong>, utilizar un juego/entorno encontrado en internet, o usar alguno de los <strong>juegos de Atari</strong> disponibles en <a href="https://gymnasium.farama.org/" target="_blank">gymnasium.farama.org</a>. El entorno debe justificar el uso de DQN (estados de alta dimensionalidad o continuos).</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-content">
+                            <h4>Analizar el entorno</h4>
+                            <p>Documentar el espacio de estados, espacio de acciones, estructura de recompensas y condiciones de terminación. Incluir ejemplos de observaciones y episodios.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-content">
+                            <h4>Implementar el agente DQN</h4>
+                            <p>Desarrollar un agente DQN con PyTorch incluyendo: red neuronal para aproximar Q(s,a), Experience Replay Buffer y Target Network. Justificar la arquitectura y los hiperparámetros elegidos.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-content">
+                            <h4>Entrenar y monitorizar</h4>
+                            <p>Ejecutar el entrenamiento registrando métricas: recompensa por episodio, pérdida, epsilon. Mostrar curvas de aprendizaje con media móvil.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-content">
+                            <h4>Evaluar y analizar</h4>
+                            <p>Evaluar el agente entrenado (sin exploración) durante varios episodios. Analizar si el agente ha aprendido, comparar con baseline aleatorio, y discutir posibles mejoras.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Elección del Entorno -->
+            <section>
+                <h2>Elección del Entorno</h2>
+                <p>Tenéis libertad para elegir el entorno donde entrenar vuestro agente DQN. Las opciones son:</p>
+
+                <div class="option-card">
+                    <h4>Opción 1: Crear vuestro propio juego con Pygame</h4>
+                    <p>Diseñar e implementar un juego desde cero usando Pygame. Esto os dará control total sobre el espacio de estados, acciones y recompensas. Ejemplos: Snake, juego de naves, laberinto, etc.</p>
+                </div>
+
+                <div class="option-card">
+                    <h4>Opción 2: Usar un juego/entorno de internet</h4>
+                    <p>Buscar un entorno ya implementado en repositorios de GitHub o en otras fuentes. Aseguraos de citar la fuente y adaptarlo si es necesario para que funcione con DQN.</p>
+                </div>
+
+                <div class="option-card">
+                    <h4>Opción 3: Juegos de Atari (Gymnasium)</h4>
+                    <p>Usar los entornos clásicos de Atari disponibles en <a href="https://gymnasium.farama.org/" target="_blank">gymnasium.farama.org</a>. Estos entornos son estándar en la investigación de RL y ofrecen un buen desafío.</p>
+                    <pre><code>pip install gymnasium[atari,accept-rom-license]</code></pre>
+                </div>
+            </section>
+
+            <!-- Componentes DQN -->
+            <section>
+                <h2>Componentes del Agente DQN</h2>
+                <p>El agente DQN debe incluir los siguientes componentes fundamentales:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Componente</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Red Q (Q-Network)</strong></td>
+                            <td>Red neuronal en PyTorch que aproxima Q(s, a). Recibe el estado y devuelve el Q-valor de cada acción.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Target Network</strong></td>
+                            <td>Copia de la red Q que se actualiza periódicamente. Proporciona estabilidad al calcular los targets.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Experience Replay</strong></td>
+                            <td>Buffer circular que almacena transiciones (s, a, r, s', done). Se muestrea aleatoriamente para entrenar.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Política ε-greedy</strong></td>
+                            <td>Selección de acciones con exploración (random) y explotación (mejor Q). Epsilon debe decaer durante el entrenamiento.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Estructura del Notebook -->
+            <section>
+                <h2>Estructura del Entregable</h2>
+                <p>El notebook debe seguir esta estructura mínima. <strong>Podéis incluir archivos <code>.py</code> auxiliares</strong> que encapsulen lógica (agente, entorno, utilidades) y se importen desde el notebook.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sección</th>
+                            <th>Contenido</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. Introducción</strong></td>
+                            <td>Nombre/s, fecha, entorno elegido, objetivo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Análisis del Entorno</strong></td>
+                            <td>Espacios de estados/acciones, recompensas, episodio de ejemplo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Diseño del Agente DQN</strong></td>
+                            <td>Arquitectura de la red, hiperparámetros justificados</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Entrenamiento</strong></td>
+                            <td>Código de entrenamiento con logging de métricas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Resultados</strong></td>
+                            <td>Curvas de aprendizaje, métricas finales</td>
+                        </tr>
+                        <tr>
+                            <td><strong>6. Evaluación</strong></td>
+                            <td>Test del agente entrenado, comparación con baseline</td>
+                        </tr>
+                        <tr>
+                            <td><strong>7. Conclusiones</strong></td>
+                            <td>Análisis, dificultades encontradas, posibles mejoras</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Archivos a entregar</h3>
+                <ul class="lista-principal">
+                    <li><code>Apellido_Nombre_RL_Practica.ipynb</code> — Notebook principal (ejecutable)</li>
+                    <li><code>*.py</code> — Archivos auxiliares opcionales (agente, entorno, utils...)</li>
+                    <li><code>*.pth</code> — Modelo entrenado (opcional pero recomendado)</li>
+                </ul>
+            </section>
+
+            <!-- Rúbrica de Evaluación -->
+            <section>
+                <h2>Rúbrica de Evaluación</h2>
+
+                <div class="rubrica-section">
+                    <table class="rubrica-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%">Criterio</th>
+                                <th style="width: 10%">Peso</th>
+                                <th>Descripción de niveles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="criterio">Código Funcional</td>
+                                <td class="peso">30%</td>
+                                <td>
+                                    <span class="nivel excelente">Excelente (30)</span> Código limpio, bien estructurado, ejecuta sin errores, DQN implementado correctamente<br>
+                                    <span class="nivel bueno">Bueno (22)</span> Funciona con errores menores, código organizado<br>
+                                    <span class="nivel suficiente">Suficiente (15)</span> Funciona parcialmente, requiere correcciones<br>
+                                    <span class="nivel insuficiente">Insuficiente (0-10)</span> No ejecuta o errores graves en DQN
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="criterio">Curvas de Aprendizaje</td>
+                                <td class="peso">20%</td>
+                                <td>
+                                    <span class="nivel excelente">Excelente (20)</span> Gráficas claras con media móvil, múltiples métricas (reward, loss, epsilon), análisis de tendencias<br>
+                                    <span class="nivel bueno">Bueno (15)</span> Gráfica de recompensa vs episodio correcta<br>
+                                    <span class="nivel suficiente">Suficiente (10)</span> Gráfica básica sin procesamiento<br>
+                                    <span class="nivel insuficiente">Insuficiente (0-5)</span> Sin visualización o incorrecta
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="criterio">Evaluación del Agente</td>
+                                <td class="peso">20%</td>
+                                <td>
+                                    <span class="nivel excelente">Excelente (20)</span> Evaluación rigurosa (N episodios), comparación con baseline aleatorio, métricas estadísticas (media, std)<br>
+                                    <span class="nivel bueno">Bueno (15)</span> Evaluación correcta con resultados claros<br>
+                                    <span class="nivel suficiente">Suficiente (10)</span> Evaluación básica sin comparativa<br>
+                                    <span class="nivel insuficiente">Insuficiente (0-5)</span> Sin evaluación o incorrecta
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="criterio">Documentación</td>
+                                <td class="peso">20%</td>
+                                <td>
+                                    <span class="nivel excelente">Excelente (20)</span> Explicaciones claras, hiperparámetros justificados, análisis profundo de resultados y decisiones de diseño<br>
+                                    <span class="nivel bueno">Bueno (15)</span> Buena documentación, justificaciones presentes<br>
+                                    <span class="nivel suficiente">Suficiente (10)</span> Documentación mínima<br>
+                                    <span class="nivel insuficiente">Insuficiente (0-5)</span> Sin documentación o incomprensible
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="criterio">Creatividad y Calidad</td>
+                                <td class="peso">10%</td>
+                                <td>
+                                    <span class="nivel excelente">Excelente (10)</span> Entorno original/interesante, análisis de hiperparámetros, experimentación adicional, código bien modularizado<br>
+                                    <span class="nivel bueno">Bueno (7)</span> Algún elemento extra o análisis adicional<br>
+                                    <span class="nivel suficiente">Suficiente (4)</span> Trabajo estándar sin extras<br>
+                                    <span class="nivel insuficiente">Insuficiente (0-2)</span> Trabajo mínimo
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="puntos-total">
+                        <div class="numero">100 puntos</div>
+                        <div>Total máximo (sin bonificaciones)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips -->
+            <section>
+                <h2>Consejos y Recursos</h2>
+
+                <div class="tips-box">
+                    <h4>Tips para el éxito</h4>
+                    <ul>
+                        <li><strong>Empieza simple:</strong> Probad primero con un entorno sencillo para verificar que DQN funciona</li>
+                        <li><strong>Usa semillas:</strong> <code>env.reset(seed=42)</code> y <code>torch.manual_seed(42)</code> para reproducibilidad</li>
+                        <li><strong>Loggea métricas:</strong> Guardad recompensas, pérdidas y epsilon por episodio</li>
+                        <li><strong>Entrena sin render:</strong> Desactivad la visualización durante el entrenamiento (mucho más rápido)</li>
+                        <li><strong>Paciencia:</strong> El RL es lento, los agentes pueden tardar miles de episodios en aprender</li>
+                        <li><strong>Experimenta con hiperparámetros:</strong> Probad diferentes learning rates (0.001, 0.0003, 0.0001)</li>
+                        <li><strong>Buffer grande:</strong> Usad un replay buffer de al menos 10,000 experiencias</li>
+                        <li><strong>Decaimiento de epsilon:</strong> Aseguraos de que epsilon llegue a valores bajos (~0.01) al final</li>
+                    </ul>
+                </div>
+
+                <h3>Recursos útiles</h3>
+                <ul class="lista-principal">
+                    <li><strong>Documentación Gymnasium:</strong> <a href="https://gymnasium.farama.org/" target="_blank">gymnasium.farama.org</a></li>
+                    <li><strong>Documentación PyTorch:</strong> <a href="https://pytorch.org/docs/" target="_blank">pytorch.org/docs</a></li>
+                    <li><strong>Hugging Face Deep RL Course:</strong> <a href="https://huggingface.co/learn/deep-rl-course" target="_blank">huggingface.co/learn/deep-rl-course</a></li>
+                    <li><strong>Documentación Pygame:</strong> <a href="https://www.pygame.org/docs/" target="_blank">pygame.org/docs</a></li>
+                    <li><strong>Notebooks del curso:</strong> <code>01_teoria/RL_02_dqn.ipynb</code></li>
+                    <li><strong>Ejemplos del curso:</strong> <code>02_fundamentos/ejemplos/ejemplo_cartpole_dqn.py</code></li>
+                    <li><strong>Paper original DQN:</strong> <a href="https://www.nature.com/articles/nature14236" target="_blank">Human-level control through deep reinforcement learning (2015)</a></li>
+                </ul>
+            </section>
+
+            <!-- Bonificaciones -->
+            <section>
+                <h2>Bonificaciones</h2>
+                <div class="bonus-section">
+                    <h3>Puntos extra (hasta +20%)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bonus</th>
+                                <th>Puntos</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Entorno propio con Pygame</strong></td>
+                                <td>+10%</td>
+                                <td>Crear un juego/entorno original desde cero con Pygame</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mejoras a DQN</strong></td>
+                                <td>+5%</td>
+                                <td>Implementar Double DQN, Dueling DQN o Prioritized Experience Replay</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Análisis de hiperparámetros</strong></td>
+                                <td>+5%</td>
+                                <td>Comparativa sistemática variando learning rate, arquitectura, buffer size, etc.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Visualización del agente</strong></td>
+                                <td>+5%</td>
+                                <td>Vídeo o GIF del agente entrenado jugando, o visualización de Q-valores</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 1rem; color: var(--gray-600);"><em>Las bonificaciones son acumulables hasta un máximo de +20% sobre la nota base.</em></p>
+                </div>
+            </section>
+
+            <!-- Entrega -->
+            <section>
+                <h2>Formato de Entrega</h2>
+                <table>
+                    <tr>
+                        <td><strong>Archivo principal</strong></td>
+                        <td><code>Apellido_Nombre_RL_Practica.ipynb</code> (o <code>Grupo_X_RL_Practica.ipynb</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Archivos auxiliares</strong></td>
+                        <td>Archivos <code>.py</code> con código modularizado (agente, entorno, utils...)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Modelo</strong></td>
+                        <td>Archivo <code>.pth</code> con los pesos del modelo entrenado (opcional)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Requisito</strong></td>
+                        <td>El notebook debe ejecutarse de principio a fin sin errores (<em>Kernel → Restart & Run All</em>)</td>
+                    </tr>
+                </table>
+            </section>
+
+        </main>
+
+        <footer>
+            <p>OPT-ML | Deep Learning & Reinforcement Learning</p>
+            <p>Materiales en: <a href="../01_teoria/RL_02_dqn.ipynb">RL_02_dqn.ipynb</a> | <a href="../02_fundamentos/ejemplos/">Ejemplos</a></p>
+        </footer>
+    </div>
+</body>
+</html>
