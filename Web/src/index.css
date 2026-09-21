@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .prose-custom {
+    @apply prose prose-lg max-w-none;
+  }
+
+  .prose-custom h1 {
+    @apply text-3xl font-bold text-gray-900 mb-6;
+  }
+
+  .prose-custom h2 {
+    @apply text-2xl font-semibold text-gray-800 mt-8 mb-4;
+  }
+
+  .prose-custom h3 {
+    @apply text-xl font-semibold text-gray-700 mt-6 mb-3;
+  }
+
+  .prose-custom p {
+    @apply text-gray-600 mb-4 leading-relaxed;
+  }
+
+  .prose-custom ul {
+    @apply list-disc list-inside mb-4 space-y-2;
+  }
+
+  .prose-custom table {
+    @apply w-full border-collapse mb-6;
+  }
+
+  .prose-custom th {
+    @apply bg-gray-100 border border-gray-300 px-4 py-2 text-left font-semibold;
+  }
+
+  .prose-custom td {
+    @apply border border-gray-300 px-4 py-2;
+  }
+
+  .prose-custom code {
+    @apply bg-gray-100 px-1 py-0.5 rounded text-sm font-mono;
+  }
+
+  .prose-custom pre {
+    @apply bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4;
+  }
+
+  .prose-custom pre code {
+    @apply bg-transparent text-gray-100;
+  }
+}
+
+/* Mermaid diagrams */
+.mermaid {
+  @apply my-6 flex justify-center;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Navigation active state */
+.nav-active {
+  @apply bg-primary-100 text-primary-700 border-l-4 border-primary-600;
+}

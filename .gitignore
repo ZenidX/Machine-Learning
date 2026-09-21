@@ -61,3 +61,7 @@ prompt.txt
 # Material baixat del Moodle del curs passat: el va preparar un altre
 # docent, així que es guarda com a referència local i NO es publica.
 _moodle-25-26/
+
+# Web: dependències i build
+Web/node_modules/
+Web/dist/
