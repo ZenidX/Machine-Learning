@@ -2,6 +2,8 @@
 
 Document de treball per muntar el curs sencer. Fins ara la part final de Reinforcement Learning era l'única que impartia en Xavi; aquest curs també li toca la introducció, així que cal construir tot el recorregut que hi ha abans.
 
+> **Avís del 21-set-2026.** Aquest pla es va fer amb la fitxa oficial del mòdul. En obrir la presentació que la Núria Pujol va passar a l'alumnat el curs 25-26 apareixen dues contradiccions que el poden tombar sencer: allà el mòdul són **99 h i 4 h setmanals** (no 66 h i 2 h) i l'avaluació és **60 % proves escrites en paper i 40 % projectes** (no 10/10/80). Cal confirmar quina versió val abans de donar el pla per bo. Si són 99 h, hi cap Deep Learning en condicions i IA generativa, que és el que ella anunciava. Detall a `sessio-01-presentacio.md`.
+
 ## 1. Marc oficial
 
 De la fitxa d'inici del mòdul (`Fitxa inici_ICB0_ICC0_MPOML`):
