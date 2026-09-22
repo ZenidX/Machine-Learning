@@ -145,9 +145,16 @@ Aquí ja hi ha material fet al repositori: els quaderns de `Deep Learning/01_teo
 - El bloc 1 sencer: els materials i els lliuraments de Python del Moodle del curs passat.
 - La prova pràctica del projecte de dades i la de l'agent DQN.
 
+**Base retrobada per al bloc 3 (22-set-2026).** El bloc d'aprenentatge supervisat ja no parteix de zero: hi ha dos quaderns del CE d'IA i Big Data, a `ProjectsITIC\CEIABD-IA\VowelsClassificationMachineLearning\`, que cobreixen gairebé tot el bloc amb scikit-learn.
+
+- `intro ML - Iris Dataset.ipynb` (31 cel·les) — carregar i entendre el dataset, visualitzar les sis combinacions de característiques, separar X/Y i fer el split d'entrenament i test al 70/30, i després **regressió logística** amb matriu de confusió, **arbre de decisió** amb `plot_tree`, **bosc aleatori**, **SVM** i **k-NN**. Té una pregunta que lliga l'arbre dibuixat amb els gràfics del principi, que és exactament la idea de fer entrar els arbres primer.
+- `wine dataset.ipynb` (23 cel·les) — repeteix el procés amb un dataset de 178 mostres i 3 classes, i hi afegeix **selecció de característiques** amb `SelectKBest` per veure si entrenar amb menys columnes empitjora el model. Bona pont cap al bloc 4.
+
+Dues coses a ajustar abans de fer-los servir: **són en anglès** i el curs es fa en català, i **el nivell és de cicle d'especialització**, per sobre d'una optativa de 2n de DAM i DAW, així que caldrà alleugerir-los. El de Wine, a més, té les cel·les de codi buides amb comentaris del tipus «use a random forest classifier»: està pensat perquè l'alumnat l'ompli, cosa que el fa directament aprofitable com a exercici.
+
 **Per construir:**
 
-- El bloc 3 sencer. És la feina grossa: el curs passat es va cobrir amb exercicis de DataCamp i convé tenir material propi, amb els arbres de decisió com a fil conductor.
+- El bloc 3, però ara partint dels dos quaderns de dalt en lloc de zero: traduir-los, ajustar el nivell i decidir quines cel·les es donen fetes i quines es deixen buides.
 - El bloc 4, que es pot partir del material de tècniques d'optimització de la programació anterior si encara és accessible.
 - La sessió de comparació amb R.
 - Les proves escrites 3, 4 i 5.
