@@ -123,7 +123,7 @@ export default function MachineLearning() {
         <div className="flex items-center gap-3 mb-4">
           <Target className="w-6 h-6 text-sky-600" />
           <h2 className="text-xl font-semibold text-gray-900">2. Aprenentatge supervisat</h2>
-          <span className="text-xs font-medium bg-sky-100 text-sky-700 px-2 py-1 rounded-full">9 sessions · el cor del curs</span>
+          <span className="text-xs font-medium bg-sky-100 text-sky-700 px-2 py-1 rounded-full">10 sessions · el cor del curs</span>
         </div>
 
         <div className="space-y-4 text-gray-700">

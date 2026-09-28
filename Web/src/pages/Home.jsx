@@ -185,7 +185,7 @@ export default function Home() {
             Els pesos de l'avaluació encara no estan confirmats
           </h2>
           <p className="text-amber-900 text-sm leading-relaxed">
-            Els instruments sí que estan decidits: tres proves pràctiques (S12, S21 i S25), les
+            Els instruments sí que estan decidits: tres proves pràctiques (S11, S21 i S25), les
             activitats dels quaderns com a feina de casa, i el projecte final de Reinforcement
             Learning, que és l'agent del concurs. El que falta és el pes de cada cosa a la nota, i
             s'anunciarà quan estigui confirmat. Fins llavors aquesta web no en dona cap percentatge.
@@ -204,8 +204,8 @@ export default function Home() {
       <div className="bg-gray-900 rounded-xl p-8 text-center">
         <h2 className="text-2xl font-bold text-white mb-4">On som ara</h2>
         <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-          Al bloc de fonaments de dades: NumPy i Pandas, i la primera sessió d'àlgebra lineal. És
-          l'eina que falta per poder tocar els models que ja s'han explicat.
+          Al bloc de fonaments de dades: objectes de Python, NumPy i Pandas. És l'eina que falta per
+          poder tocar els models que ja s'han explicat.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link

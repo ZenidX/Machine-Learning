@@ -18,9 +18,19 @@ const COLAB_BASE =
 
 const quaderns = [
   {
+    fitxer: "FO_00_objectes_i_autocompletar.ipynb",
+    titol: "Objectes de Python i autocompletat",
+    sessions: "S04 · 29 de setembre",
+    mida: "exploració de dades guiada de punta a punta",
+    descripcio:
+      "Com es pregunta a un objecte de Python què té a dins: type(), dir(), objecte.metode? i l'autocompletat amb la tecla TAB. La diferència entre un atribut i un mètode, que és per què df.shape va sense parèntesis i df.head() amb. I els objectes que et trobaràs a tot el curs: el Bunch que tornen els load_*, l'ndarray, el DataFrame, la Series, i un model de scikit-learn abans i després d'entrenar-lo. Acaba amb una exploració de dades guiada de principi a fi.",
+    destacat:
+      "Els atributs que acaben en guió baix, com .coef_ o .feature_importances_, volen dir «això ho he après de les dades». No existeixen abans de cridar .fit(), i buscar-los abans és el primer error que fa tothom.",
+  },
+  {
     fitxer: "FO_01_numpy.ipynb",
     titol: "NumPy",
-    sessions: "S06 i S07 · 29 de setembre i 5 d'octubre",
+    sessions: "S05 i S06 · 5 i 6 d'octubre",
     mida: "30 cel·les de codi",
     descripcio:
       "Per què no n'hi ha prou amb les llistes de Python, amb la comparació de temps executada. L'array, shape i dtype, indexació i llesques, i el parany de la llesca contra la còpia. Operacions vectoritzades, màscares booleanes, i les agregacions amb el concepte d'eix. Acaba ensenyant que la distància euclidiana i la precisió d'un model són una línia de NumPy cadascuna.",
@@ -28,7 +38,7 @@ const quaderns = [
   {
     fitxer: "FO_02_pandas.ipynb",
     titol: "Pandas",
-    sessions: "S09 i S10 · 13 i 19 d'octubre",
+    sessions: "S07 i S08 · 13 i 19 d'octubre",
     mida: "41 cel·les de codi",
     descripcio:
       "Què afegeix Pandas sobre NumPy: noms de columna i tipus barrejats. Series i DataFrame, i carregar melb_data.csv, que són 13.580 habitatges venuts a Melbourne, amb nuls i columnes de text de veritat. Seleccionar amb loc i iloc, filtrar, l'inventari de valors que falten, groupby i agg, i finalment com es passa d'un DataFrame a les X i y de scikit-learn.",
@@ -44,7 +54,7 @@ export default function Fonaments() {
           <h1 className="text-3xl font-bold text-gray-900">Fonaments de dades</h1>
         </div>
         <p className="mt-2 text-lg text-gray-600">
-          Dos quaderns: NumPy i Pandas.
+          Tres quaderns: objectes de Python, NumPy i Pandas.
         </p>
       </div>
 
@@ -54,21 +64,23 @@ export default function Fonaments() {
           <h2 className="text-xl font-semibold text-gray-900">Per què ara</h2>
         </div>
         <p className="text-gray-700">
-          Aquests dos quaderns són <strong>l'eina que falta</strong> per poder fer els models que ja
+          Aquests tres quaderns són <strong>l'eina que falta</strong> per poder fer els models que ja
           s'han vist explicats a classe. Sense saber manejar una taula de dades, la resta del curs
           es queda en teoria: es pot entendre què fa un arbre de decisió i no poder-lo entrenar
           contra res.
         </p>
         <p className="text-gray-700 mt-3">
-          Ocupen les sessions S06, S07, S09 i S10 del{" "}
+          Ocupen les sessions S04 a S08 del{" "}
           <Link to="/programa" className="text-emerald-700 font-medium hover:text-emerald-900">
             bloc 1
           </Link>
-          . NumPy va primer perquè Pandas està construït a sobre, i perquè la primera sessió de{" "}
+          . L'ordre no és casual: primer saber interrogar un objecte per no anar a cegues, després
+          NumPy, i Pandas al final perquè està construït a sobre de NumPy. Amb NumPy fet, la primera
+          sessió de{" "}
           <Link to="/matematiques" className="text-emerald-700 font-medium hover:text-emerald-900">
             matemàtiques
           </Link>{" "}
-          ja només necessita NumPy.
+          ja no necessita res més.
         </p>
       </section>
 
@@ -96,7 +108,7 @@ export default function Fonaments() {
           <li className="flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" />
             <span>
-              Els dos quaderns funcionen a <strong>Google Colab</strong> sense instal·lar res.
+              Els tres quaderns funcionen a <strong>Google Colab</strong> sense instal·lar res.
             </span>
           </li>
         </ul>
@@ -105,7 +117,7 @@ export default function Fonaments() {
       <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <div className="flex items-center gap-3 mb-4">
           <ListChecks className="w-6 h-6 text-emerald-600" />
-          <h2 className="text-xl font-semibold text-gray-900">Els dos quaderns</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Els tres quaderns</h2>
         </div>
         <div className="space-y-4">
           {quaderns.map((q, i) => (
@@ -120,6 +132,11 @@ export default function Fonaments() {
                 <h3 className="font-medium text-gray-900 mb-1">{q.titol}</h3>
                 <p className="text-sm text-gray-500 mb-2">{q.mida}</p>
                 <p className="text-sm text-gray-600">{q.descripcio}</p>
+                {q.destacat && (
+                  <p className="mt-3 text-sm text-emerald-900 bg-emerald-50 border-l-4 border-emerald-400 rounded-r-lg p-3">
+                    {q.destacat}
+                  </p>
+                )}
               </div>
               <div className="flex-shrink-0 flex flex-col gap-2">
                 <a

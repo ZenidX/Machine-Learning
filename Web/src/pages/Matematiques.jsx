@@ -19,42 +19,42 @@ const quaderns = [
   {
     fitxer: "MA_01_algebra_lineal.ipynb",
     titol: "Àlgebra lineal",
-    sessio: "S08 · 6 d'octubre",
+    sessio: "S09 · 20 d'octubre",
     descripcio:
       "Norma, producte escalar, projecció, i la matriu entesa com una transformació. Acaba traient el coef_ d'un model ja entrenat i fent la predicció a mà amb X @ w + b per a les 150 flors d'Iris: el mateix número que dona scikit-learn.",
   },
   {
     fitxer: "MA_02_descens_gradient.ipynb",
     titol: "Descens de gradient",
-    sessio: "S19 · 17 de novembre",
+    sessio: "S18 i S19 · 23 i 24 de novembre",
     descripcio:
       "Què és una derivada, des de zero. La derivada de la log-loss, verificada contra el gradient numèric per diferències finites. I la regressió logística entrenada amb un bucle propi, sense scikit-learn.",
   },
   {
     fitxer: "MA_03_probabilitat_versemblanca.ipynb",
     titol: "Probabilitat i versemblança",
-    sessio: "S20 · 23 de novembre",
+    sessio: "S20 · 30 de novembre",
     descripcio:
       "Bayes, i per què una prova amb un 99 % d'encert pot dir ben poca cosa. D'on surt la log-loss: és la versemblança amb un logaritme i un signe menys. Naive Bayes implementat de zero.",
   },
   {
     fitxer: "MA_04_entropia_informacio.ipynb",
     titol: "Entropia i informació",
-    sessio: "S16 · 9 de novembre",
+    sessio: "S15 · 10 de novembre",
     descripcio:
       "L'entropia mesurada en bits, i per què Gini i entropia donen arbres iguals. El guany d'informació, i la trampa de la columna d'identificadors. Que la log-loss i l'entropia creuada són el mateix número.",
   },
   {
     fitxer: "MA_05_marge_optimitzacio.ipynb",
     titol: "Marge i optimització",
-    sessio: "S22 · 30 de novembre",
+    sessio: "S22 · 7 de desembre",
     descripcio:
       "Multiplicadors de Lagrange amb un exemple que es pot tocar. Per què l'SVM només depèn d'uns pocs punts, que és una conseqüència matemàtica i no una optimització del programa. El truc del kernel, demostrat.",
   },
   {
     fitxer: "MA_06_pca_vectors_propis.ipynb",
     titol: "PCA i vectors propis",
-    sessio: "S24 · 7 de desembre",
+    sessio: "S24 · 15 de desembre",
     descripcio:
       "La maledicció de la dimensionalitat, mesurada. La direcció de màxima variància trobada per força bruta, i el descobriment que allò que surt és un vector propi. PCA implementat en cinc passos.",
   },
@@ -89,7 +89,7 @@ export default function Matematiques() {
           Els sis quaderns no són un bloc a part del curs. Ocupen sessions dins dels blocs 1, 2 i 3,
           just quan toca la teoria del model corresponent:{" "}
           <Link to="/programa" className="text-violet-700 font-medium hover:text-violet-900">
-            S08, S16, S19, S20, S22 i S24
+            S09, S15, S18, S19, S20 i S22
           </Link>
           .
         </p>

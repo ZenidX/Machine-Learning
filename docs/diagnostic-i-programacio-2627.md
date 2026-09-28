@@ -36,18 +36,34 @@ A `_moodle-25-26/ENLLACOS.md` hi ha, a més, les adreces de **les seves presenta
 
 ## 1.3 On són els alumnes ara (29 de setembre)
 
-S'han consumit **5 de les 33 sessions**:
+**Les classes van començar el dilluns 21 de setembre**, no el 14. S'han fet **3 sessions de les 33** i avui es fa la quarta:
 
 | | Data | Què s'hi va fer |
 |---|---|---|
-| S01-S02 | 14 i 15 set | Presentació i Python bàsic |
-| S03 | 21 set | Python fins als condicionals |
-| S04 | 22 set | **Els models de ML supervisat, explicats conceptualment**, amb els exemples d'Iris |
-| S05 | 28 set | Primera pràctica contra conjunts de dades |
+| S01 | dl 21 set | Presentació del mòdul i bases de Python, amb una mica de pràctica i els primers enunciats d'exercicis |
+| S02 | dt 22 set | **Les dues hores senceres explorant els models de machine learning**, perquè es quedessin amb les formes del comportament de cadascun. El quadern d'Iris ho ensenya molt bé |
+| S03 | dl 28 set | Pràctica de Python amb una mica de teoria dels models, i llançar-los contra els exercicis |
+| **S04** | **dt 29 set** | **Avui.** Objectes de Python i primera anàlisi de dades |
 
-**El diagnòstic, en una frase:** tenen la intuïció dels models i tenen Python bàsic, però **els falta la peça del mig**. Saben què fa un arbre de decisió i saben escriure un `if`, però no saben manejar una taula de dades. Sense NumPy i Pandas no poden fer els exercicis que ja estan preparats, i tot el que vingui després se'ls farà a cegues.
+### Què va passar el 28, que és el que ordena la sessió d'avui
 
-**Per això el curs continua per NumPy i Pandas**, i no per més models.
+Es van llançar contra els exercicis i **van quedar encallats**, per dues raons que convé tenir separades:
+
+1. **Els faltava el manual per gestionar dades.** No sabien que `dades.data` existeix, ni que `df.shape` va sense parèntesis, ni que un model entrenat guarda el que ha après en atributs acabats en guió baix. I sobretot **no sabien com esbrinar-ho**: que a un objecte de Python se li pot preguntar què té a dins.
+2. **Van pensar que les solucions eren dins del mateix enunciat.** I tenien raó: hi eren. Les línies de «com saps que ho has fet bé» donaven el resultat que havien de descobrir. Això ja està arreglat, i el criteri és a la secció «Com es dissenya un exercici» de [`didactica-matematica-ml.md`](didactica-matematica-ml.md).
+
+**El diagnòstic, en una frase:** tenen la intuïció dels models i tenen Python bàsic, però **els falta la peça del mig**. Saben què fa un arbre de decisió i saben escriure un `if`, i no saben manejar una taula de dades.
+
+**Per això el curs continua per aquí**, i no per més models. I per això la sessió d'avui comença pels objectes: sense saber interrogar-los, cada exercici és una endevinalla.
+
+### La correcció de criteri que surt d'això
+
+Als enunciats s'havia decidit a posta **no dir quines funcions encadenar**, perquè compondre-les era la feina. Amb el que va passar el 28, això queda corregit, i en paraules d'en Xavi: *«no hay que adivinar las funciones a usar; hay que ejecutarlas y ver cómo se llega a resultados usando lo que toca cuando toque»*.
+
+| | Qui ho dona |
+|---|---|
+| **Quina eina fer servir** | **L'enunciat.** El nom del mètode hi va escrit. Endevinar l'API no ensenya res, només frustra |
+| **Quin resultat surt** | **L'alumne.** Això és l'anàlisi, i és la seva feina |
 
 ## 1.4 El grup: el que canvia la planificació sencera
 
@@ -81,18 +97,20 @@ La conseqüència pràctica és un **bloc de matemàtiques de sis quaderns** (`M
 
 ## 2.1 Calendari real
 
-33 sessions, del **14 de setembre de 2026** al **26 de gener de 2027**. Ja descomptats els festius que cauen en dilluns o dimarts (12 d'octubre i 8 de desembre) i les vacances de Nadal (del 22 de desembre al 7 de gener).
+**33 sessions de 2 h, del dilluns 21 de setembre de 2026 al dimarts 2 de febrer de 2027.** Ja descomptats els festius que cauen en dia de classe (12 d'octubre i 8 de desembre) i les vacances de Nadal, del 22 de desembre al 7 de gener.
+
+> **Avís sobre la data de final, que cal confirmar.** Si el mòdul són 66 h de veritat, amb 4 h setmanals des del 21 de setembre **el curs arriba al 2 de febrer**. Si en canvi ha d'acabar el gener, hi caben **31 sessions, o sigui 62 h**, i falten 4 h: llavors el concurs es fa el 26 de gener i se'n perden dues sessions pel camí. Val la pena saber-ho abans de prometre res a l'alumnat.
 
 | Bloc | Sessions | Hores | Del | Al |
 |---|---|---|---|---|
-| 0 · Arrencada i Python | S01-S05 | 10 | 14 set | 28 set |
-| **1 · Fonaments de dades i àlgebra** | **S06-S12** | **14** | **29 set** | **26 oct** |
-| 2 · Supervisat i la matemàtica que hi ha a sota | S13-S21 | 18 | 27 oct | 24 nov |
-| 3 · Optimització, dades reals i no supervisat | S22-S25 | 8 | 30 nov | 14 des |
-| 4 · Xarxes neuronals | S26-S28 | 6 | 15 des | 11 gen |
-| 5 · Reinforcement Learning i concurs | S29-S33 | 10 | 12 gen | 26 gen |
+| 0 · Arrencada i Python | S01-S03 | 6 | 21 set | 28 set |
+| **1 · Fonaments de dades** | **S04-S11** | **16** | **29 set** | **27 oct** |
+| 2 · Supervisat i la matemàtica que hi ha a sota | S12-S21 | 20 | 2 nov | 1 des |
+| 3 · Optimització, dades reals i no supervisat | S22-S25 | 8 | 7 des | 21 des |
+| 4 · Xarxes neuronals | S26-S28 | 6 | 11 gen | 18 gen |
+| 5 · Reinforcement Learning i concurs | S29-S33 | 10 | 19 gen | 2 feb |
 
-Els sis quaderns de matemàtiques **no són sessions afegides**: ocupen les sessions S08, S16, S19, S20, S22 i S24, que són la teoria del model corresponent portada fins al fons.
+Els sis quaderns de matemàtiques **no són sessions afegides**: ocupen les sessions S09, S15, S18, S19, S20 i S22, que són la teoria del model corresponent portada fins al fons.
 
 ## 2.2 Sessió a sessió
 
@@ -100,52 +118,52 @@ Els sis quaderns de matemàtiques **no són sessions afegides**: ocupen les sess
 
 | | Data | Contingut |
 |---|---|---|
-| S01 | dl 14 set | Presentació del mòdul |
-| S02 | dt 15 set | Python: tipus, variables, cadenes |
-| S03 | dl 21 set | Python: condicionals |
-| S04 | dt 22 set | **Els models de ML supervisat, conceptualment, amb Iris** |
-| S05 | dl 28 set | Primer contacte amb conjunts de dades |
+| S01 | dl 21 set | Presentació del mòdul i bases de Python |
+| S02 | dt 22 set | **Els models de ML, explorats les dues hores**, amb el quadern d'Iris |
+| S03 | dl 28 set | Pràctica de Python i primer contacte amb els exercicis |
 
-### Bloc 1 — Fonaments de dades i àlgebra *(és on som)*
+### Bloc 1 — Fonaments de dades *(és on som)*
 
 | | Data | Contingut | Material |
 |---|---|---|---|
-| S06 | dt 29 set | **NumPy 1**: per què no llistes, l'array, indexació i llesques | `01_fonaments/FO_01_numpy.ipynb` |
-| S07 | dl 5 oct | **NumPy 2**: operacions, màscares booleanes, agregacions i eixos | el mateix |
-| S08 | dt 6 oct | **Àlgebra lineal**: norma, producte escalar, projecció, i que un model entrenat és un vector i una multiplicació | `03_matematiques/MA_01_algebra_lineal.ipynb` |
-| S09 | dt 13 oct | **Pandas 1**: Series i DataFrame, carregar CSV, seleccionar amb `loc` i `iloc` | `01_fonaments/FO_02_pandas.ipynb` |
-| S10 | dl 19 oct | **Pandas 2**: nuls, `groupby`, gràfics ràpids, del DataFrame a `X` i `y` | el mateix |
-| S11 | dt 20 oct | Diccionaris, funcions i comprensions, amb els quaderns de la Núria | `material-complet/Diccionaris.ipynb`, `Definicions.ipynb` |
-| S12 | dl 26 oct | **Prova pràctica 1** i tancament del bloc | |
+| **S04** | **dt 29 set** | **Objectes de Python i primera anàlisi de dades**: interrogar un objecte, atribut contra mètode, i una exploració guiada de principi a fi | `01_fonaments/FO_00_objectes_i_autocompletar.ipynb` |
+| S05 | dl 5 oct | **NumPy 1**: per què no llistes, l'array, indexació i llesques | `FO_01_numpy.ipynb` |
+| S06 | dt 6 oct | **NumPy 2**: operacions, màscares booleanes, agregacions i eixos | el mateix |
+| S07 | dt 13 oct | **Pandas 1**: DataFrame i Series, carregar un CSV, `.loc` i `.iloc` | `FO_02_pandas.ipynb` |
+| S08 | dl 19 oct | **Pandas 2**: nuls, `.groupby()`, gràfics, del DataFrame a `X` i `y` | el mateix |
+| S09 | dt 20 oct | **Àlgebra lineal**: norma, producte escalar, projecció, i que un model entrenat és un vector i una multiplicació | `03_matematiques/MA_01_algebra_lineal.ipynb` |
+| S10 | dl 26 oct | Diccionaris, funcions i comprensions, amb els quaderns de la Núria | `material-complet/Diccionaris.ipynb`, `Definicions.ipynb` |
+| S11 | dt 27 oct | **Prova pràctica 1** i tancament del bloc | |
 
 > El 12 d'octubre és festiu: aquella setmana només hi ha la sessió del dimarts.
 
-El guió detallat d'aquestes sessions és a [`guions-bloc-1-fonaments.md`](guions-bloc-1-fonaments.md).
+El guió detallat és a [`guions-bloc-1-fonaments.md`](guions-bloc-1-fonaments.md).
 
 ### Bloc 2 — Supervisat i la matemàtica que hi ha a sota
 
 | | Data | Contingut | Material |
 |---|---|---|---|
-| S13 | dt 27 oct | Entrenament i test, i per què se separen. Primer model complet | `00_demo/ML_00_demo_iris.ipynb` |
-| S14 | dl 2 nov | **k veïns** i la distància. El parany de les escales | `ML_01_knn.ipynb` · a casa: `EX_01_wine` |
-| S15 | dt 3 nov | **Arbres de decisió**: la impuresa i la tria del tall | `ML_02_arbres.ipynb` + PDF de la Núria |
-| S16 | dl 9 nov | **Entropia i informació**: per què Gini, el guany, i que la log-loss i l'entropia creuada són el mateix número | `MA_04_entropia_informacio.ipynb` |
-| S17 | dt 10 nov | **Boscos aleatoris** i **mètriques**: la precisió no serveix tota sola | `ML_03_boscos.ipynb` · a casa: `EX_02_cancer` |
-| S18 | dl 16 nov | **Regressió logística**: la frontera, la sigmoide, i els pesos per força bruta | `ML_04_regressio_logistica.ipynb` |
-| S19 | dt 17 nov | **Descens de gradient**: què és una derivada, la derivada de la log-loss, i entrenar la logística amb un bucle propi | `MA_02_descens_gradient.ipynb` |
-| S20 | dl 23 nov | **Probabilitat i versemblança**: Bayes, d'on surt la log-loss, i Naive Bayes implementat | `MA_03_probabilitat_versemblanca.ipynb` |
-| S21 | dt 24 nov | **SVM**: el marge i el kernel. **Prova pràctica 2** | `ML_05_svm.ipynb` · a casa: `EX_04_fronteres` |
+| S12 | dl 2 nov | Entrenament i test, i per què se separen. Primer model complet | `00_demo/ML_00_demo_iris.ipynb` |
+| S13 | dt 3 nov | **k veïns** i la distància. El parany de les escales | `ML_01_knn.ipynb` · a casa: `EX_01_wine` |
+| S14 | dl 9 nov | **Arbres de decisió**: la impuresa i la tria del tall | `ML_02_arbres.ipynb` + PDF de la Núria |
+| S15 | dt 10 nov | **Entropia i informació**: per què Gini, el guany, i que la log-loss i l'entropia creuada són el mateix número | `MA_04_entropia_informacio.ipynb` |
+| S16 | dl 16 nov | **Boscos aleatoris** i **mètriques**: la precisió no serveix tota sola | `ML_03_boscos.ipynb` · a casa: `EX_02_cancer` |
+| S17 | dt 17 nov | **Regressió logística**: la frontera, la sigmoide, i els pesos per força bruta | `ML_04_regressio_logistica.ipynb` |
+| S18 | dl 23 nov | **Descens de gradient 1**: què és una derivada, des de zero, i la derivada de la log-loss | `MA_02_descens_gradient.ipynb` |
+| S19 | dt 24 nov | **Descens de gradient 2**: la comprovació del gradient, l'entrenament amb bucle propi i la comparació amb scikit-learn | el mateix |
+| S20 | dl 30 nov | **Probabilitat i versemblança**: Bayes, d'on surt la log-loss, i Naive Bayes implementat | `MA_03_probabilitat_versemblanca.ipynb` |
+| S21 | dt 1 des | **SVM**: el marge i el kernel. **Prova pràctica 2** | `ML_05_svm.ipynb` · a casa: `EX_04_fronteres` |
 
-**La sessió clau del bloc és la S19.** És on es desfà la trampa de la força bruta de la S18 i on entenen, de veritat, com aprèn un model. Val la pena avisar-los a la S18 que allò que estan fent és provisional.
+**El descens de gradient té dues sessions**, i és deliberat: és el quadern més dur del curs i el que sosté tot el bloc de xarxes. Si es fa en una, es perd.
 
 ### Bloc 3 — Optimització, dades reals i no supervisat
 
 | | Data | Contingut | Material |
 |---|---|---|---|
-| S22 | dl 30 nov | **Optimització amb restriccions**: Lagrange, per què l'SVM depèn de pocs punts, i el kernel demostrat | `MA_05_marge_optimitzacio.ipynb` |
-| S23 | dt 1 des | **Dades brutes i pipelines**: nuls, categòriques, i la fuita d'informació | `EX_05_dades_brutes.ipynb` + `Pipeline.ipynb` de la Núria |
-| S24 | dl 7 des | **PCA i vectors propis**: la maledicció de la dimensionalitat, i reduir dimensions sense inventar-se res | `MA_06_pca_vectors_propis.ipynb` |
-| S25 | dl 14 des | **k-means** i **imatges com a taula**. **Prova pràctica 3** | `EX_03_digits.ipynb` · a casa: R, enllaços de la Núria |
+| S22 | dl 7 des | **Optimització amb restriccions**: Lagrange, per què l'SVM depèn de pocs punts, i el kernel demostrat | `MA_05_marge_optimitzacio.ipynb` |
+| S23 | dl 14 des | **Dades brutes i pipelines**: nuls, categòriques, i la fuita d'informació | `EX_05_dades_brutes.ipynb` + `Pipeline.ipynb` de la Núria |
+| S24 | dt 15 des | **PCA i vectors propis**: la maledicció de la dimensionalitat, i reduir dimensions sense inventar-se res | `MA_06_pca_vectors_propis.ipynb` |
+| S25 | dl 21 des | **k-means** i **imatges com a taula**. **Prova pràctica 3** | `EX_03_digits.ipynb` · a casa: R, enllaços de la Núria |
 
 > El 8 de desembre és festiu: aquella setmana només hi ha la sessió del dilluns.
 
@@ -153,27 +171,25 @@ El guió detallat d'aquestes sessions és a [`guions-bloc-1-fonaments.md`](guion
 
 | | Data | Contingut | Material |
 |---|---|---|---|
-| S26 | dt 15 des | Què és una xarxa neuronal, i **que ja en saben el mecanisme**: és el descens de gradient de la S19 | `Deep Learning/01_teoria/DL_01`, `DL_02` |
-| S27 | dl 21 des | PyTorch: tensors, arquitectures i entrenament | `DL_02`, `DL_03`, `DL_04` |
-| S28 | dl 11 gen | **De la xarxa a l'agent**: el pont cap a RL | `DL_05_redes_para_RL` |
-
-Aquest bloc va comprimit a posta. El pot anar de pressa perquè **la part difícil ja està feta**: qui ha entès la S19 ja té la retropropagació a mig camí.
+| S26 | dl 11 gen | Què és una xarxa neuronal, i **que ja en saben el mecanisme**: és el descens de gradient de les S18 i S19 | `Deep Learning/01_teoria/DL_01`, `DL_02` |
+| S27 | dt 12 gen | PyTorch: tensors, `autograd`, arquitectures i entrenament | `DL_02`, `DL_03`, `DL_04` |
+| S28 | dl 18 gen | **De la xarxa a l'agent**: el pont cap a RL | `DL_05_redes_para_RL` |
 
 ### Bloc 5 — Reinforcement Learning i concurs
 
 | | Data | Contingut | Material |
 |---|---|---|---|
-| S29 | dt 12 gen | Fonaments de RL: l'agent, l'entorn, la recompensa | `RL_01_fundamentos` |
-| S30 | dl 18 gen | **DQN** i Gymnasium | `RL_02_dqn` |
-| S31 | dt 19 gen | **Entrenament lliure**: cadascú entrena el seu agent | plantilla del concurs |
-| S32 | dl 25 gen | Entrenament lliure i ajust. Lliurament dels agents | |
-| S33 | dt 26 gen | **EL CONCURS** | `Reinforcement Learning/06_concurs/` |
+| S29 | dt 19 gen | Fonaments de RL: l'agent, l'entorn, la recompensa | `RL_01_fundamentos` |
+| S30 | dl 25 gen | **DQN** i Gymnasium | `RL_02_dqn` |
+| S31 | dt 26 gen | **Entrenament lliure**: cadascú entrena el seu agent | plantilla del concurs |
+| S32 | dl 1 feb | Entrenament lliure i ajust. Lliurament dels agents | |
+| S33 | dt 2 feb | **EL CONCURS** | `Reinforcement Learning/06_concurs/` |
 
 ## 2.3 Com s'avalua
 
 Els instruments segueixen el que demana la fitxa, **a l'espera de confirmar els pesos**:
 
-- **Proves pràctiques**, amb ordinador i semblants als exercicis de classe: una per bloc (S12, S21, S25) més el **projecte final de RL**, que és l'agent del concurs.
+- **Proves pràctiques**, amb ordinador i semblants als exercicis de classe: una per bloc (S11, S21, S25) més el **projecte final de RL**, que és l'agent del concurs.
 - **Activitats**: els exercicis dels quaderns, amb les cel·les buides. **Amb aquesta programació passen a ser feina de casa i deixen de ser opcionals**, perquè el temps de classe se'l menja la matemàtica. Es lliuren i es qualifiquen 0 o 10.
 - **Proves escrites**: les que calguin segons quina versió de l'avaluació acabi valent.
 
@@ -185,17 +201,19 @@ Els instruments segueixen el que demana la fitxa, **a l'espera de confirmar els 
 
 | Per a quan | Què |
 |---|---|
-| **Feta** | Els manuals de NumPy i Pandas, i els sis quaderns de matemàtiques |
+| **Feta** | El manual d'objectes de Python, els de NumPy i Pandas, la caixa d'eines i els sis quaderns de matemàtiques |
 | Desembre | La sessió de k-means (S25), que encara no té material propi |
 | Gener | Tenir el concurs provat: script jutge i plantilla |
 | **Quan es pugui** | **Confirmar els pesos de l'avaluació** i demanar a la Núria còpia de les seves presentacions de Google |
 
 ## 2.5 Els punts on la programació es pot trencar
 
-Tres avisos, per ordre de probabilitat.
+Quatre avisos, per ordre de probabilitat.
 
-**La S19 pot demanar dues sessions.** És el quadern més dur del curs: derivades des de zero, gradient, i un bucle d'entrenament. Si es veu que no cabrà, el que se sacrifica és la S20 (probabilitat), que es pot deixar en lectura i exercicis de casa sense trencar res del que ve després.
+**La data de final no està confirmada.** Amb 66 h des del 21 de setembre, el curs acaba el **2 de febrer**. Si ha d'acabar el gener, hi caben 31 sessions i falten 4 h. En aquest cas el concurs es fa el **26 de gener** i el que se sacrifica són la S32 i la S33 d'entrenament lliure: es passa de dues sessions de taller a una, i el lliurament es tanca a la S30. **Això s'ha de saber abans d'anunciar el concurs a l'alumnat.**
 
-**Si a la Prova pràctica 1 (S12) es veu que no han fet els exercicis de casa**, el trueque d'aquesta programació no funciona i cal recuperar temps de classe per a la pràctica. La manera menys dolenta de fer-ho és fondre S23 i S25 en una sola sessió.
+**Si a la Prova pràctica 1 (S11) es veu que no han fet els exercicis de casa**, el trueque d'aquesta programació no funciona i cal recuperar temps de classe per a la pràctica. La manera menys dolenta de fer-ho és fondre S23 i S25 en una sola sessió.
 
-**Si l'1 de desembre encara s'està al Bloc 2**, s'ha de saltar directament al Bloc 4 i deixar `MA_05` i `MA_06` com a material de consulta. El concurs no es toca.
+**El descens de gradient ja té dues sessions (S18 i S19)**, que és el marge que abans no hi havia. Si tot i així no arriba, el que se sacrifica és la S20 (probabilitat), que es pot deixar en lectura i exercicis de casa sense trencar res del que ve després.
+
+**Si a l'1 de desembre encara s'està al Bloc 2**, s'ha de saltar directament al Bloc 4 i deixar `MA_05` i `MA_06` com a material de consulta. El concurs no es toca: és el que sosté la motivació del grup i l'única cosa del curs que no es pot recuperar més endavant.

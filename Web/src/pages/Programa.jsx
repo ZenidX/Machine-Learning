@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import MermaidDiagram from "../components/MermaidDiagram";
 
 const recorregutChart = `flowchart LR
-    B0["Bloc 0<br/>Arrencada i Python"] --> B1["Bloc 1<br/>Fonaments de dades<br/>i algebra"]
+    B0["Bloc 0<br/>Arrencada i Python"] --> B1["Bloc 1<br/>Fonaments de dades"]
     B1 --> B2["Bloc 2<br/>Supervisat i la<br/>matematica de sota"]
     B2 --> B3["Bloc 3<br/>Optimitzacio, dades<br/>reals i no supervisat"]
     B3 --> B4["Bloc 4<br/>Xarxes neuronals"]
@@ -31,59 +31,59 @@ const dadesFermes = [
   { etiqueta: "Per setmana", valor: "4 h" },
   { etiqueta: "Sessions", valor: "33 de 2 h" },
   { etiqueta: "Dies", valor: "dilluns i dimarts" },
-  { etiqueta: "Del", valor: "14 set 2026" },
-  { etiqueta: "Al", valor: "26 gen 2027" },
+  { etiqueta: "Del", valor: "21 set 2026" },
+  { etiqueta: "Al", valor: "2 feb 2027" },
 ];
 
 const blocs = [
   {
     num: "0",
     titol: "Arrencada i Python",
-    rang: "S01-S05",
-    hores: "10 h",
-    del: "14 set",
+    rang: "S01-S03",
+    hores: "6 h",
+    del: "21 set",
     al: "28 set",
   },
   {
     num: "1",
-    titol: "Fonaments de dades i àlgebra",
-    rang: "S06-S12",
-    hores: "14 h",
+    titol: "Fonaments de dades",
+    rang: "S04-S11",
+    hores: "16 h",
     del: "29 set",
-    al: "26 oct",
+    al: "27 oct",
     actual: true,
   },
   {
     num: "2",
     titol: "Supervisat i la matemàtica que hi ha a sota",
-    rang: "S13-S21",
-    hores: "18 h",
-    del: "27 oct",
-    al: "24 nov",
+    rang: "S12-S21",
+    hores: "20 h",
+    del: "2 nov",
+    al: "1 des",
   },
   {
     num: "3",
     titol: "Optimització, dades reals i no supervisat",
     rang: "S22-S25",
     hores: "8 h",
-    del: "30 nov",
-    al: "14 des",
+    del: "7 des",
+    al: "21 des",
   },
   {
     num: "4",
     titol: "Xarxes neuronals",
     rang: "S26-S28",
     hores: "6 h",
-    del: "15 des",
-    al: "11 gen",
+    del: "11 gen",
+    al: "18 gen",
   },
   {
     num: "5",
     titol: "Reinforcement Learning i concurs",
     rang: "S29-S33",
     hores: "10 h",
-    del: "12 gen",
-    al: "26 gen",
+    del: "19 gen",
+    al: "2 feb",
   },
 ];
 
@@ -93,61 +93,69 @@ const sessions = [
     id: "bloc-0",
     nota: "Ja fet.",
     llista: [
-      { s: "S01", dia: "dl 14 set", text: "Presentació del mòdul" },
-      { s: "S02", dia: "dt 15 set", text: "Python: tipus, variables, cadenes" },
-      { s: "S03", dia: "dl 21 set", text: "Python: condicionals" },
+      { s: "S01", dia: "dl 21 set", text: "Presentació del mòdul i bases de Python" },
       {
-        s: "S04",
+        s: "S02",
         dia: "dt 22 set",
-        text: "Els models de ML supervisat, conceptualment, amb Iris",
+        text: "Els models de ML, explorats les dues hores, amb el quadern d'Iris",
       },
-      { s: "S05", dia: "dl 28 set", text: "Primer contacte amb conjunts de dades" },
+      {
+        s: "S03",
+        dia: "dl 28 set",
+        text: "Pràctica de Python i primer contacte amb els exercicis",
+      },
     ],
   },
   {
-    bloc: "Bloc 1 · Fonaments de dades i àlgebra",
+    bloc: "Bloc 1 · Fonaments de dades",
     id: "bloc-1",
-    nota: "És on som. Sense NumPy i Pandas no es pot manejar una taula de dades, i tot el que ve després es fa a cegues.",
+    nota: "És on som. Sense saber manejar una taula de dades no es pot tocar cap dels models que ja s'han vist explicats.",
     llista: [
       {
-        s: "S06",
+        s: "S04",
         dia: "dt 29 set",
+        text: "Objectes de Python i primera anàlisi de dades: interrogar un objecte, atribut contra mètode, i una exploració guiada de principi a fi",
+        material: "FO_00_objectes_i_autocompletar.ipynb",
+      },
+      {
+        s: "S05",
+        dia: "dl 5 oct",
         text: "NumPy 1: per què no llistes, l'array, indexació i llesques",
         material: "FO_01_numpy.ipynb",
       },
       {
-        s: "S07",
-        dia: "dl 5 oct",
+        s: "S06",
+        dia: "dt 6 oct",
         text: "NumPy 2: operacions, màscares booleanes, agregacions i eixos",
         material: "FO_01_numpy.ipynb",
       },
       {
+        s: "S07",
+        dia: "dt 13 oct",
+        text: "Pandas 1: DataFrame i Series, carregar un CSV, loc i iloc",
+        material: "FO_02_pandas.ipynb",
+      },
+      {
         s: "S08",
-        dia: "dt 6 oct",
+        dia: "dl 19 oct",
+        text: "Pandas 2: nuls, groupby, gràfics, i del DataFrame a X i y",
+        material: "FO_02_pandas.ipynb",
+      },
+      {
+        s: "S09",
+        dia: "dt 20 oct",
         text: "Àlgebra lineal: norma, producte escalar, projecció, i que un model entrenat és un vector i una multiplicació",
         material: "MA_01_algebra_lineal.ipynb",
         mates: true,
       },
       {
-        s: "S09",
-        dia: "dt 13 oct",
-        text: "Pandas 1: Series i DataFrame, carregar un CSV, seleccionar amb loc i iloc",
-        material: "FO_02_pandas.ipynb",
-      },
-      {
         s: "S10",
-        dia: "dl 19 oct",
-        text: "Pandas 2: nuls, groupby, gràfics ràpids, i del DataFrame a X i y",
-        material: "FO_02_pandas.ipynb",
-      },
-      {
-        s: "S11",
-        dia: "dt 20 oct",
+        dia: "dl 26 oct",
         text: "Diccionaris, funcions i comprensions de llista",
       },
       {
-        s: "S12",
-        dia: "dl 26 oct",
+        s: "S11",
+        dia: "dt 27 oct",
         text: "Prova pràctica 1 i tancament del bloc",
         prova: true,
       },
@@ -159,61 +167,68 @@ const sessions = [
     nota: "Cada model s'explica, es fa córrer, i després es baixa fins a la fórmula que el fa funcionar.",
     llista: [
       {
-        s: "S13",
-        dia: "dt 27 oct",
+        s: "S12",
+        dia: "dl 2 nov",
         text: "Entrenament i test, i per què se separen. Primer model complet",
         material: "ML_00_demo_iris.ipynb",
       },
       {
-        s: "S14",
-        dia: "dl 2 nov",
+        s: "S13",
+        dia: "dt 3 nov",
         text: "k veïns i la distància. El parany de les escales",
         material: "ML_01_knn.ipynb",
         casa: "EX_01_wine.ipynb",
       },
       {
-        s: "S15",
-        dia: "dt 3 nov",
+        s: "S14",
+        dia: "dl 9 nov",
         text: "Arbres de decisió: la impuresa i la tria del tall",
         material: "ML_02_arbres.ipynb",
       },
       {
-        s: "S16",
-        dia: "dl 9 nov",
+        s: "S15",
+        dia: "dt 10 nov",
         text: "Entropia i informació: per què Gini, el guany d'informació, i que la log-loss i l'entropia creuada són el mateix número",
         material: "MA_04_entropia_informacio.ipynb",
         mates: true,
       },
       {
-        s: "S17",
-        dia: "dt 10 nov",
+        s: "S16",
+        dia: "dl 16 nov",
         text: "Boscos aleatoris i mètriques: la precisió no serveix tota sola",
         material: "ML_03_boscos.ipynb",
         casa: "EX_02_cancer.ipynb",
       },
       {
-        s: "S18",
-        dia: "dl 16 nov",
+        s: "S17",
+        dia: "dt 17 nov",
         text: "Regressió logística: la frontera, la sigmoide, i els pesos trobats per força bruta",
         material: "ML_04_regressio_logistica.ipynb",
       },
       {
+        s: "S18",
+        dia: "dl 23 nov",
+        text: "Descens de gradient 1: què és una derivada, des de zero, i la derivada de la log-loss",
+        material: "MA_02_descens_gradient.ipynb",
+        mates: true,
+      },
+      {
         s: "S19",
-        dia: "dt 17 nov",
-        text: "Descens de gradient: què és una derivada, la derivada de la log-loss, i entrenar la logística amb un bucle propi",
+        dia: "dt 24 nov",
+        text: "Descens de gradient 2: la comprovació del gradient, l'entrenament amb bucle propi i la comparació amb scikit-learn",
         material: "MA_02_descens_gradient.ipynb",
         mates: true,
       },
       {
         s: "S20",
-        dia: "dl 23 nov",
+        dia: "dl 30 nov",
         text: "Probabilitat i versemblança: Bayes, d'on surt la log-loss, i Naive Bayes implementat de zero",
         material: "MA_03_probabilitat_versemblanca.ipynb",
         mates: true,
       },
       {
         s: "S21",
-        dia: "dt 24 nov",
+        dia: "dt 1 des",
         text: "SVM: el marge i el kernel. Prova pràctica 2",
         material: "ML_05_svm.ipynb",
         casa: "EX_04_fronteres.ipynb",
@@ -228,27 +243,27 @@ const sessions = [
     llista: [
       {
         s: "S22",
-        dia: "dl 30 nov",
+        dia: "dl 7 des",
         text: "Optimització amb restriccions: Lagrange, per què l'SVM depèn de pocs punts, i el kernel demostrat",
         material: "MA_05_marge_optimitzacio.ipynb",
         mates: true,
       },
       {
         s: "S23",
-        dia: "dt 1 des",
+        dia: "dl 14 des",
         text: "Dades brutes i pipelines: nuls, categòriques, i la fuita d'informació",
         material: "EX_05_dades_brutes.ipynb",
       },
       {
         s: "S24",
-        dia: "dl 7 des",
+        dia: "dt 15 des",
         text: "PCA i vectors propis: la maledicció de la dimensionalitat, i reduir dimensions sense inventar-se res",
         material: "MA_06_pca_vectors_propis.ipynb",
         mates: true,
       },
       {
         s: "S25",
-        dia: "dl 14 des",
+        dia: "dl 21 des",
         text: "k-means i les imatges com a taula. Prova pràctica 3",
         material: "EX_03_digits.ipynb",
         prova: true,
@@ -258,15 +273,23 @@ const sessions = [
   {
     bloc: "Bloc 4 · Xarxes neuronals",
     id: "bloc-4",
-    nota: "Aquest bloc va comprimit a posta: qui hagi entès la S19 ja té feta la part difícil.",
+    nota: "Aquest bloc va comprimit a posta: qui hagi entès les sessions S18 i S19 ja té feta la part difícil.",
     llista: [
       {
         s: "S26",
-        dia: "dt 15 des",
-        text: "Què és una xarxa neuronal, i que ja en sabeu el mecanisme: és el descens de gradient de la S19",
+        dia: "dl 11 gen",
+        text: "Què és una xarxa neuronal, i que ja en sabeu el mecanisme: és el descens de gradient de les S18 i S19",
       },
-      { s: "S27", dia: "dl 21 des", text: "PyTorch: tensors, arquitectures i entrenament" },
-      { s: "S28", dia: "dl 11 gen", text: "De la xarxa a l'agent: el pont cap a Reinforcement Learning" },
+      {
+        s: "S27",
+        dia: "dt 12 gen",
+        text: "PyTorch: tensors, autograd, arquitectures i entrenament",
+      },
+      {
+        s: "S28",
+        dia: "dl 18 gen",
+        text: "De la xarxa a l'agent: el pont cap a Reinforcement Learning",
+      },
     ],
   },
   {
@@ -274,17 +297,17 @@ const sessions = [
     id: "bloc-5",
     nota: null,
     llista: [
-      { s: "S29", dia: "dt 12 gen", text: "Fonaments de RL: l'agent, l'entorn, la recompensa" },
-      { s: "S30", dia: "dl 18 gen", text: "DQN i Gymnasium" },
-      { s: "S31", dia: "dt 19 gen", text: "Entrenament lliure: cadascú entrena el seu agent" },
-      { s: "S32", dia: "dl 25 gen", text: "Entrenament lliure i ajust. Lliurament dels agents" },
-      { s: "S33", dia: "dt 26 gen", text: "El concurs", concurs: true },
+      { s: "S29", dia: "dt 19 gen", text: "Fonaments de RL: l'agent, l'entorn, la recompensa" },
+      { s: "S30", dia: "dl 25 gen", text: "DQN i Gymnasium" },
+      { s: "S31", dia: "dt 26 gen", text: "Entrenament lliure: cadascú entrena el seu agent" },
+      { s: "S32", dia: "dl 1 feb", text: "Entrenament lliure i ajust. Lliurament dels agents" },
+      { s: "S33", dia: "dt 2 feb", text: "El concurs", concurs: true },
     ],
   },
 ];
 
-const SESSIONS_FETES = ["S01", "S02", "S03", "S04", "S05"];
-const SESSIO_PROPERA = "S06";
+const SESSIONS_FETES = ["S01", "S02", "S03"];
+const SESSIO_PROPERA = "S04";
 
 const indexInterno = [
   { id: "recorregut", label: "El recorregut" },
@@ -340,6 +363,13 @@ export default function Programa() {
           Dues sessions de 2 h per setmana, dilluns i dimarts. Les 33 sessions ja tenen descomptats
           els festius que cauen en dia de classe i les vacances de Nadal.
         </p>
+        <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4">
+          <p className="text-sm text-amber-900">
+            <strong>La data de final es confirmarà.</strong> Les dates de gener i febrer que hi ha en
+            aquesta pàgina són les previstes, i el 2 de febrer és l'últim dia previst. Quan estigui
+            confirmat, s'actualitzarà aquí.
+          </p>
+        </div>
         <div className="flex flex-wrap gap-2 mt-4">
           {indexInterno.map((item) => (
             <button
@@ -412,20 +442,21 @@ export default function Programa() {
                 <td className="p-3 border border-gray-200 text-gray-900">Total</td>
                 <td className="p-3 border border-gray-200 text-gray-900">33 sessions</td>
                 <td className="p-3 border border-gray-200 text-gray-900">66 h</td>
-                <td className="p-3 border border-gray-200 text-gray-900">14 set</td>
-                <td className="p-3 border border-gray-200 text-gray-900">26 gen</td>
+                <td className="p-3 border border-gray-200 text-gray-900">21 set</td>
+                <td className="p-3 border border-gray-200 text-gray-900">2 feb</td>
               </tr>
             </tbody>
           </table>
         </div>
+
         <div className="mt-4 bg-emerald-50 border border-emerald-200 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
             <Table2 className="w-5 h-5 text-emerald-700" />
             <p className="font-semibold text-emerald-900">Els quaderns del bloc en curs</p>
           </div>
           <p className="text-sm text-emerald-900">
-            NumPy i Pandas, a les sessions S06, S07, S09 i S10. Es poden obrir a Colab o baixar des
-            de la pàgina de fonaments.
+            Objectes de Python, NumPy i Pandas, a les sessions S04 a S08. Es poden obrir a Colab o
+            baixar des de la pàgina de fonaments.
           </p>
           <Link
             to="/fonaments"
@@ -442,7 +473,7 @@ export default function Programa() {
             <p className="font-semibold text-violet-900">Les sessions de matemàtiques</p>
           </div>
           <p className="text-sm text-violet-900">
-            S08, S16, S19, S20, S22 i S24. Són la teoria del model corresponent portada fins al
+            S09, S15, S18, S19, S20 i S22. Són la teoria del model corresponent portada fins al
             fons: cada fórmula seguida de la línia de NumPy que la calcula, i cada implementació
             comparada amb scikit-learn.
           </p>
@@ -467,7 +498,7 @@ export default function Programa() {
             <CheckCircle2 className="w-3.5 h-3.5" /> Feta
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-primary-300 bg-primary-50 text-primary-700 font-medium">
-            <Clock className="w-3.5 h-3.5" /> Propera sessió
+            <Clock className="w-3.5 h-3.5" /> Sessió en curs
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-violet-200 bg-violet-50 text-violet-700 font-medium">
             <Sigma className="w-3.5 h-3.5" /> Sessió de matemàtiques
@@ -528,7 +559,7 @@ export default function Programa() {
                         )}
                         {estat === "propera" && (
                           <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary-700">
-                            <Clock className="w-3.5 h-3.5" /> propera sessió
+                            <Clock className="w-3.5 h-3.5" /> sessió en curs
                           </span>
                         )}
                         {ses.mates && (
@@ -578,19 +609,19 @@ export default function Programa() {
           <li className="flex gap-2">
             <span className="font-semibold text-amber-700 whitespace-nowrap">12 d'octubre</span>
             <span>
-              cau en dilluns de classe. Aquella setmana només hi ha la sessió del dimarts, la S09.
+              cau en dilluns de classe. Aquella setmana només hi ha la sessió del dimarts, la S07.
             </span>
           </li>
           <li className="flex gap-2">
             <span className="font-semibold text-amber-700 whitespace-nowrap">8 de desembre</span>
             <span>
-              cau en dimarts de classe. Aquella setmana només hi ha la sessió del dilluns, la S24.
+              cau en dimarts de classe. Aquella setmana només hi ha la sessió del dilluns, la S22.
             </span>
           </li>
           <li className="flex gap-2">
             <span className="font-semibold text-amber-700 whitespace-nowrap">Nadal</span>
             <span>
-              del 22 de desembre al 7 de gener no hi ha classe. El curs es reprèn amb la S28, l'11
+              del 22 de desembre al 7 de gener no hi ha classe. El curs es reprèn amb la S26, l'11
               de gener.
             </span>
           </li>
@@ -616,8 +647,8 @@ export default function Programa() {
             <h3 className="font-semibold text-gray-900 mb-1">Proves pràctiques</h3>
             <p className="text-sm text-gray-700">
               Amb ordinador, i semblants als exercicis de classe. Una per bloc:{" "}
-              <strong>S12</strong> (26 d'octubre), <strong>S21</strong> (24 de novembre) i{" "}
-              <strong>S25</strong> (14 de desembre).
+              <strong>S11</strong> (27 d'octubre), <strong>S21</strong> (1 de desembre) i{" "}
+              <strong>S25</strong> (21 de desembre).
             </p>
           </div>
 
@@ -656,9 +687,10 @@ export default function Programa() {
         </div>
         <div className="space-y-4 text-gray-700">
           <p>
-            L'últim dia del curs, el <strong>26 de gener</strong>, els agents que heu entrenat
-            competeixen en entorns virtuals. Les sessions S31 i S32 són d'entrenament lliure: cadascú
-            ajusta el seu agent i el lliura abans del concurs.
+            L'últim dia del curs, el <strong>dimarts 2 de febrer</strong>, els agents que heu
+            entrenat competeixen en entorns virtuals. Les sessions S31 i S32 són d'entrenament
+            lliure: cadascú ajusta el seu agent i el lliura abans del concurs. La data és la
+            prevista i es confirmarà.
           </p>
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
             <p className="text-sm text-amber-900">

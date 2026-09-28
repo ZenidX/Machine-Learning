@@ -103,6 +103,11 @@ export default function Practica() {
               mínim sobre una taula de joguina de sis files, i el parany de cadascuna.
             </p>
             <p className="text-gray-700">
+              No has d'endevinar quina funció toca: <strong>l'enunciat et diu quina eina fer
+              servir</strong>. El que no et diu és quin resultat surt. La feina és executar-les, i
+              veure com s'hi arriba.
+            </p>
+            <p className="text-gray-700">
               És una referència per consultar, no un exercici.{" "}
               <strong>Aquí no hi ha cel·les buides i totes funcionen</strong>, o sigui que aquest sí
               que el pots executar sencer: l'avís de no clicar «Executa-ho tot» val per als altres
@@ -282,11 +287,10 @@ export default function Practica() {
         <div className="space-y-3 text-gray-700 text-sm">
           <p>Existeixen, i les reparteix el professor quan toca.</p>
           <p>
-            Per comprovar-te <strong>no et fa falta la solució</strong>. Cada exercici porta una
-            comprovació que et diu si el procediment és correcte, i la caixa d'eines t'explica
-            cada eina que necessites per compondre'l. Amb aquestes dues coses pots saber si vas bé
-            sense que ningú t'ensenyi el resultat abans d'hora, que és el que et deixaria sense
-            l'exercici.
+            Per comprovar-te <strong>no et fa falta la solució</strong>. L'enunciat et diu quines
+            eines fer servir, la caixa d'eines t'explica cadascuna, i la comprovació et diu si el
+            procediment és correcte. Amb això pots saber si vas bé sense que ningú t'ensenyi el
+            resultat abans d'hora, que és el que et deixaria sense l'exercici.
           </p>
           <button
             type="button"
