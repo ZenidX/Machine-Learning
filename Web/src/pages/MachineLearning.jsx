@@ -128,8 +128,12 @@ export default function MachineLearning() {
 
         <div className="space-y-4 text-gray-700">
           <p>
-            És el bloc que cal construir de nou: el curs passat es va cobrir amb exercicis de
-            DataCamp i aquest curs es fa amb material propi, tot amb <strong>scikit-learn</strong>.
+            El curs passat es va cobrir amb exercicis de DataCamp. Aquest curs es fa amb
+            material propi, tot amb <strong>scikit-learn</strong>: una bateria de cinc
+            quaderns d'exercicis que es fan a Colab, disponible a{" "}
+            <Link to="/practica" className="text-sky-700 font-medium hover:text-sky-900">
+              la pàgina de pràctica
+            </Link>.
           </p>
 
           <div>
