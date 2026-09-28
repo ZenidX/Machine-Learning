@@ -9,8 +9,18 @@ Entregas_RL/
 Entregas/
 _RESUMEN_NOTAS.md
 
+# Concurs de RL: lliuraments dels alumnes i marcadors amb noms.
+# Son dades personals i no es publiquen mai.
+lliuraments/
+marcador*.csv
+# Nomes els lliuraments: els models de demostracio de modelos/ SI son al repositori.
+Reinforcement Learning/06_concurs/**/agent.pth
+
 # Datasets descarregables (torchvision i gymnasium els baixen sols)
 data/
+# Copia que deixa el quadern de Pandas si s'executa des de l'arrel del repositori:
+# la bona es a Machine Learning/01_fonaments/dades/
+/dades/
 *.idx3-ubyte
 *.idx1-ubyte
 *-ubyte
@@ -65,3 +75,6 @@ _moodle-25-26/
 # Web: dependències i build
 Web/node_modules/
 Web/dist/
+
+# Scratch de sessions de treball
+Temp/
