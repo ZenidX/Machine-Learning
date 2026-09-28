@@ -134,7 +134,7 @@ s'oblida; un diccionari que configura un model, no.
 |---|---|
 | 60 min | **Prova pràctica 1**, amb ordinador. Format: dues o tres cel·les buides sobre un CSV que no hagin vist, del mateix estil que els exercicis. Carregar, netejar una mica, respondre dues preguntes amb `groupby` i fer un gràfic. Una quarta cel·la, curta: calcular una distància o una norma a mà amb NumPy. |
 | 30 min | Correcció en comú dels errors més repetits. |
-| 30 min | **Presentació del bloc següent**: tornen els models, però ara els faran ells i n'obriran les tripes. Ensenya'ls la pàgina de pràctica de la web i digues que **els exercicis dels quaderns van a casa**, perquè el temps de classe se'l menjarà la matemàtica. |
+| 30 min | **Presentació del bloc següent**: tornen els models, però ara els faran ells i n'obriran les tripes. Ensenya'ls la pàgina de pràctica de la web, i sobretot **`EX_00_caixa_eines.ipynb`**: és la referència de totes les eines que necessitaran, amb un exemple mínim i el parany de cada una, i l'han de tenir oberta al costat. Digues que **els exercicis van a casa**, perquè el temps de classe se'l menjarà la matemàtica, i digues també com es comprovaran: **cada exercici et diu si el procediment és correcte, no quin número t'ha de sortir**. |
 
 **Avís important d'aquesta sessió:** és on es comprova si el trueque de la programació funciona.
 Si es veu que no faran els exercicis pel seu compte, hi ha el pla B a

@@ -3,8 +3,15 @@
 Nou sessions, del 27 d'octubre al 24 de novembre. Un guió per sessió, per obrir i tirar.
 
 Material a `Machine Learning/00_demo/`, `01_teoria/` i `03_matematiques/`. Els exercicis de
-`02_practica/` **van a casa**: el temps de classe se'l menja la matemàtica, i aquest és el
-trueque que fa possible la programació. Convé recordar-ho cada sessió.
+`02_practica/` **van a casa**, amb `EX_00_caixa_eines.ipynb` com a referència al costat.
+
+> **Regla d'aquest bloc, i val per a tot el curs:** els números que un exercici vol que
+> descobreixin **no es diuen a classe**. El que sí que se'ls dona és la manera de comprovar-se:
+> si el procediment és correcte, no quin resultat els ha de sortir. Hi ha el raonament a
+> [`didactica-matematica-ml.md`](didactica-matematica-ml.md), secció «Com es dissenya un exercici».
+
+Que vagin a casa és el trueque que fa possible la programació: el temps de classe se'l menja la
+matemàtica. Convé recordar-ho cada sessió.
 
 ## L'estructura del bloc, en una frase
 
@@ -54,9 +61,13 @@ sortir tot el curs, però es guanya o es perd avui.
 | 15 min | Per què k importa, amb la corba de precisió segons k. |
 | 15 min | **El parany de les escales.** Canvia les unitats d'una columna i mira caure la precisió. |
 
-**Feina de casa, explicada aquí i no per correu:** `EX_01_wine`. Digues el número que han de
-trobar: amb Wine, escalar puja el k-NN del 72,2 % al 94,4 %. Si no els surt això, alguna cosa
-falla, i ja tenen el criteri per saber-ho sols.
+**Feina de casa, explicada aquí i no per correu:** `EX_01_wine`, i abans la caixa d'eines
+`EX_00_caixa_eines`, que és la referència que han de tenir oberta al costat.
+
+**No els diguis quant puja la precisió en escalar.** És la troballa de l'exercici i han de
+descobrir-la ells. El que sí que els has de dir és **com es comproven**: si el conjunt escalat
+no té mitjana ≈ 0 i desviació ≈ 1 a cada columna, l'escalat no s'ha aplicat i la comparació no
+val res. Amb això tenen criteri per saber si ho han fet bé sense saber el resultat.
 
 ---
 
@@ -110,7 +121,7 @@ ampliació ni és per a qui va bé. És la resposta a «i d'on surt aquesta fór
 | 20 min | Com es fan diferents: bootstrap i atzar a les columnes. |
 | 20 min | Construir un bosc a mà, amb uns pocs arbres. |
 | 15 min | **El cas incòmode d'Iris**, on el bosc perd contra l'arbre sol. Ensenya els dos casos junts, amb el segon exemple de `make_classification` on el bosc guanya clarament. **No amaguis el resultat que no convé.** |
-| 30 min | **Mètriques**: matriu de confusió, precisió i exhaustivitat. El cas del càncer: un model encerta el 94,2 % i deixa passar 3 tumors malignes; un model que digui sempre «benigne» encerta el 63,2 % i els deixa passar tots. |
+| 30 min | **Mètriques**: matriu de confusió, precisió i exhaustivitat, **sobre un exemple petit de deu mostres que es puguin comptar a mà** (el de la caixa d'eines serveix). Ensenya com es llegeix la matriu, què és un fals negatiu i per què en un diagnòstic mèdic és l'error que no et pots permetre. **Aquí ensenyes la maquinària, no el resultat del càncer**: el cop de descobrir què hi ha darrere d'una precisió alta és l'exercici d'aquesta nit, i si el destapes avui te'l quedes sense. |
 | 10 min | Lligam amb la S16: el desequilibri de classes es pot mesurar amb l'entropia de l'etiqueta. |
 
 ---

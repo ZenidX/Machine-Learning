@@ -9,6 +9,15 @@ Entregas_RL/
 Entregas/
 _RESUMEN_NOTAS.md
 
+# ---------------------------------------------------------------------------
+# SOLUCIONARIS — NO PUBLICAR
+# El repositori es public i la web hi enllaca: un solucionari aqui es un
+# solucionari a un clic de l'alumnat, i l'exercici deixa de tenir sentit.
+# Es queden en local, i el professor els reparteix quan toca.
+# ---------------------------------------------------------------------------
+Machine Learning/02_practica/solucions/
+*_solucions.ipynb
+
 # Concurs de RL: lliuraments dels alumnes i marcadors amb noms.
 # Son dades personals i no es publiquen mai.
 lliuraments/

@@ -146,6 +146,87 @@ descens de gradient porta a les xarxes neuronals, que ja són al bloc 4 del curs
 propis porten al PCA i a tot el no supervisat; i la versemblança porta als models
 probabilístics. Els enllaços de divulgació són a `_moodle-25-26/ENLLACOS.md`.
 
+## Com es dissenya un exercici, i l'error que s'hi va cometre
+
+Aquesta secció existeix per una correcció del 29 de setembre. El material de pràctica tenia
+**dos defectes que es tapaven l'un amb l'altre**, i val la pena deixar-los escrits perquè és
+fàcil tornar-hi a caure.
+
+### Primer defecte: els enunciats regalaven la troballa
+
+Cada exercici acaba amb una línia de «com saps que ho has fet bé». La intenció era bona: que
+l'alumne es pugui comprovar sol, sense esperar el professor. El problema és **què s'hi posava**:
+
+> Com saps que ho has fet bé: sense escalar la precisió ronda el 72 %; escalant puja al 94,4 %.
+
+> Com saps que ho has fet bé: la matriu surt `[[60, 3], [7, 101]]`: 3 malignes sense detectar.
+
+La segona és la pitjor de totes. **Tot el sentit d'aquell exercici és el cop de descobrir que
+darrere d'un 94 % de precisió hi ha tres tumors que passen**, i estava dit a l'enunciat, abans
+de començar. Amb això, l'exercici es fa en cinc minuts, sembla trivial i no ensenya res. Les
+paraules d'en Xavi: *«si añades la solución los alumnos lo ven estúpidamente simple»*.
+
+### Segon defecte: se'ls demanaven eines que no s'expliquen enlloc
+
+Comparant el codi que els exercicis demanen amb tot el que apareix als quaderns previs:
+
+| Exercici | Eines que demanava i que no sortien a cap quadern |
+|---|---|
+| `EX_02_cancer` | `confusion_matrix`, `classification_report`, `precision_score`, `recall_score` |
+| `EX_03_digits` | `confusion_matrix` |
+| `EX_05_dades_brutes` | `ColumnTransformer`, `OneHotEncoder`, `SimpleImputer`, `drop_duplicates` |
+
+A `EX_02` la troballa **no es podia descobrir sense la matriu de confusió**, i la matriu no
+s'havia explicat mai. O sigui que l'enunciat regalava el resultat perquè, sense regalar-lo,
+l'exercici era impossible. **Els dos defectes se sostenien mútuament**, i per això calia
+arreglar-los junts.
+
+### La regla, en dues categories
+
+No tot número és una filtració. La distinció que decideix cada cas:
+
+| | Què és | Què s'hi fa |
+|---|---|---|
+| **A · càlcul amb una sola resposta** | Una forma d'array, un recompte de files, una distància, una entropia, que la teva implementació coincideixi amb la de scikit-learn | **Dona el número.** No hi ha res a descobrir, només a calcular bé, i tenir la diana és el que els deixa trobar el seu propi error. És una prova unitària |
+| **B · una troballa que és el sentit de l'exercici** | Quin model guanya, quant puja una cosa en fer-ne una altra, quina conclusió surt de l'experiment | **No el donis mai.** Es substitueix per una comprovació de propietat |
+
+Una **comprovació de propietat** verifica el *mecanisme* sense dir el *resultat*:
+
+> Com saps que ho has fet bé: comprova que el teu conjunt escalat té mitjana ≈ 0 i desviació ≈ 1
+> a cada columna. Si això no es compleix, l'escalat no s'ha aplicat com et penses i la comparació
+> que facis després no val res. Un cop comprovat, compara les dues precisions i respon tu quina
+> guanya i per quant.
+
+Altres formes que funcionen: comparar contra un `DummyClassifier` («el que no guanyi el model
+tonto, no compta»), comprovar que les caselles d'una matriu de confusió sumen les mostres del
+test, comprovar que després d'imputar no queda cap nul, o comprovar la coherència entre la
+precisió d'entrenament i la d'examen.
+
+**La frase que resumeix el criteri, i que va a la web:** la comprovació et diu si el procediment
+és correcte, no quin número t'ha de sortir. El número és la teva feina.
+
+### La caixa d'eines
+
+El segon defecte es tapa amb `02_practica/EX_00_caixa_eines.ipynb`: una referència consultable
+amb, per a cada eina, què fa, què li dones i què et torna, un exemple mínim i el parany. Dues
+decisions de disseny que la fan útil i no una drecera:
+
+- **Els exemples van sobre taules de joguina de sis files inventades**, mai sobre els conjunts
+  de dades dels exercicis. Així es veu què fa cada peça amb dades que es compten amb el dit, i no
+  es regala cap resultat.
+- **Ensenya les peces, no com s'encadenen.** Compondre-les és la feina. Per això cada exercici
+  porta una llista de les eines que necessita i **no** l'ordre en què van.
+
+### Els solucionaris no van al repositori
+
+Hi eren, i el repositori és públic i està enllaçat des de la web. Pitjor: la pàgina de pràctica
+deia el nom exacte de la carpeta. Ara són al `.gitignore` i es queden en local.
+
+**Avís per si algun dia importa:** treure'ls del control de versions no els treu de l'historial
+de git. Qui sàpiga mirar els commits anteriors els pot recuperar. Per a un grup de 2n de cicle
+és una barrera suficient; si mai deixa de ser-ho, l'única solució de veritat és reescriure
+l'historial o refer els exercicis.
+
 ## Sobre l'avaluació
 
 Segons la fitxa del mòdul, el gruix de la nota són **proves pràctiques amb ordinador,

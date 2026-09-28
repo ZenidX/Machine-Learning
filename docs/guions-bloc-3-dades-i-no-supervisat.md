@@ -51,7 +51,7 @@ així, i **si no es diu, se'n van del curs creient que carregar dades és una l�
 | 25 min | **Valors que falten**: esborrar files, esborrar columnes, imputar. Cada estratègia té un cost, i es mesura sobre el mateix model. No hi ha una resposta bona a priori. |
 | 25 min | **Columnes de text**: `OneHotEncoder`, i per què no es codifiquen com a números ordenats. Que provin de fer-ho mal i vegin què passa. |
 | 30 min | **La fuita d'informació, i per què l'ordre de les operacions importa.** Escalar abans de partir el conjunt fa que el test hagi influït en l'entrenament. El número puja i és mentida. **Aquesta és la idea que s'han d'endur.** Lliga-ho amb la columna d'identificadors de la S16: és la mateixa trampa per una altra porta. |
-| 20 min | `ColumnTransformer` i `Pipeline` com la manera d'evitar-ho estructuralment, no per disciplina. Amb el material de la Núria, que ja ho tenia plantejat. |
+| 20 min | `ColumnTransformer` i `Pipeline` com la manera d'evitar-ho estructuralment, no per disciplina. Amb el material de la Núria, que ja ho tenia plantejat. **Totes les eines d'aquesta sessió són a `EX_00_caixa_eines.ipynb`**, i convé obrir-la a classe: `EX_05` les demana totes i fins ara no s'explicaven enlloc. |
 
 **Si has de retallar aquesta sessió**, el que es salva és la fuita d'informació. La imputació
 s'aprèn sola; la fuita, no, i és l'error que els farà publicar un model que no funciona.
