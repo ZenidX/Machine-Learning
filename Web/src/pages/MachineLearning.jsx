@@ -365,9 +365,9 @@ pred <- predict(model, test)`}</pre>
           <div className="flex items-start gap-2 bg-rose-50 border border-rose-100 rounded-lg p-4">
             <Sparkles className="w-5 h-5 text-rose-700 shrink-0 mt-0.5" />
             <p className="text-rose-900">
-              El cas més clar surt al quadern de diagnòstic de càncer de mama: un model que
-              encerta el 94,2 % i deixa passar tres tumors malignes. Mirar-se només l'exactitud
-              amaga exactament l'error que importa.
+              El cas més clar és el quadern de diagnòstic de càncer de mama: hi ha dos errors
+              possibles i no costen el mateix, i una exactitud alta pot amagar exactament l'error
+              que importa. Quin és, i quant amaga, ho has de mesurar tu.
             </p>
           </div>
         </div>

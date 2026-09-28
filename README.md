@@ -24,8 +24,8 @@ Machine Learning/
   01_teoria/            Els cinc models supervisats: k-NN, arbres, boscos,
                         regressió logística i SVM. Cada un implementat a mà
                         i comparat amb scikit-learn
-  02_practica/          Cinc quaderns d'exercicis amb datasets diferents,
-                        amb les cel·les buides. Amb solucionari a solucions/
+  02_practica/          La caixa d'eines (EX_00) i cinc quaderns d'exercicis amb
+                        datasets diferents, amb les cel·les buides
   03_matematiques/      La matemàtica que hi ha a sota, aterrada al codi:
                         àlgebra lineal, descens de gradient, versemblança,
                         entropia, optimització amb restriccions i PCA

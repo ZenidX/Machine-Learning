@@ -145,9 +145,8 @@ export default function DeepRL() {
 
         <p className="text-gray-700">
           El pas cap a RL es tanca amb la pràctica de{' '}
-          <code className="text-sm bg-gray-100 px-1 rounded">04_practica/DL_practica_pytorch_a_DQN.ipynb</code>,
-          amb les solucions resoltes a{' '}
-          <code className="text-sm bg-gray-100 px-1 rounded">02_fundamentos/DL_practica_pytorch_a_DQN_soluciones.ipynb</code>.
+          <code className="text-sm bg-gray-100 px-1 rounded">04_practica/DL_practica_pytorch_a_DQN.ipynb</code>.
+          La solució existeix i la reparteix el professor quan toca.
           Els datasets (MNIST, CIFAR-10) es descarreguen sols la primera vegada que s’executa el
           quadern: no hi són al repositori.
         </p>

@@ -55,7 +55,8 @@ mateix número fins a l'últim decimal.
                  ML_04_regressio_logistica    De la recta a la probabilitat
                  ML_05_svm                    El marge, i què fer quan cap recta serveix
 
-02_practica/     EX_01..EX_05                 Cinc datasets, cel·les buides (+ solucions/)
+02_practica/     EX_00_caixa_eines            Referencia de les eines: que fa cada una i el seu parany
+                 EX_01..EX_05                 Cinc datasets, amb les cel·les buides
 
 03_matematiques/ MA_01_algebra_lineal         Un model entrenat és un vector i una multiplicació
                  MA_02_descens_gradient       Com aprenen els models, de veritat
