@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom'
 import {
-  CalendarRange, Code2, Brain, Gamepad2, Wrench,
-  ArrowRight, Target, Users, AlertTriangle, Sparkles,
+  CalendarRange, Code2, Brain, Sigma, Gamepad2, Wrench,
+  ArrowRight, Target, Users, Clock, AlertTriangle, Sparkles,
 } from 'lucide-react'
 import MermaidDiagram from '../components/MermaidDiagram'
 
 const seccions = [
   {
     name: 'Programa',
-    description: "Com s'organitza el curs, els blocs i què queda per decidir",
+    description: 'Els sis blocs i les 33 sessions, amb dates',
     href: '/programa',
     icon: CalendarRange,
     color: 'bg-blue-600',
@@ -28,6 +28,13 @@ const seccions = [
     color: 'bg-violet-600',
   },
   {
+    name: 'Matemàtiques',
+    description: 'Sis quaderns amb la matemàtica que hi ha sota els models',
+    href: '/matematiques',
+    icon: Sigma,
+    color: 'bg-indigo-600',
+  },
+  {
     name: 'Xarxes i RL',
     description: 'Xarxes neuronals amb PyTorch i agents que aprenen jugant',
     href: '/deep-rl',
@@ -45,19 +52,19 @@ const seccions = [
 
 const recorregut = `
 flowchart LR
-    P["Python<br/>la sintaxi mínima"] --> D["Dades<br/>Pandas i gràfics"]
+    P["Python<br/>la sintaxi minima"] --> D["Dades<br/>NumPy i Pandas"]
     D --> ML["Machine Learning<br/>models que prediuen"]
     ML --> XN["Xarxes neuronals<br/>PyTorch"]
     XN --> RL["Reinforcement Learning<br/>agents que juguen"]
 
-    E["Ètica i biaix"] -.travessa tot el curs.-> ML
+    MA["Matematiques<br/>sis quaderns"] -.cada formula, la seva linia de codi.-> ML
 
     style P fill:#d1fae5
     style D fill:#dbeafe
     style ML fill:#ede9fe
     style XN fill:#fce7f3
     style RL fill:#ffe4e6
-    style E fill:#fef3c7
+    style MA fill:#ede9fe,stroke:#7c3aed,stroke-width:2px
 `
 
 export default function Home() {
@@ -81,6 +88,10 @@ export default function Home() {
           <div className="flex items-center space-x-2 bg-white/10 rounded-lg px-4 py-2">
             <Users className="w-5 h-5" />
             <span>DAM i DAW · 2n curs</span>
+          </div>
+          <div className="flex items-center space-x-2 bg-white/10 rounded-lg px-4 py-2">
+            <Clock className="w-5 h-5" />
+            <span>66 h · 4 h setmanals, dilluns i dimarts</span>
           </div>
         </div>
       </div>
@@ -108,7 +119,9 @@ export default function Home() {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">El recorregut</h2>
         <p className="text-gray-600 mb-6">
           Cada bloc necessita l'anterior. No es pot entrenar un model sense saber carregar dades,
-          i no es pot entendre un agent sense haver vist abans una xarxa neuronal.
+          i no es pot entendre un agent sense haver vist abans una xarxa neuronal. La matemàtica no
+          va a part: cada model es baixa fins a la fórmula que el fa funcionar, i la fórmula es
+          programa.
         </p>
         <MermaidDiagram chart={recorregut} />
       </div>
@@ -148,16 +161,17 @@ export default function Home() {
             </p>
           </div>
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="font-semibold text-blue-900 mb-1">Exercicis curts i sovint</h3>
+            <h3 className="font-semibold text-blue-900 mb-1">Els exercicis són feina de casa</h3>
             <p className="text-sm text-gray-700">
-              Un lliurament petit per sessió. Són curts a posta: el que compta és fer-los tots,
-              no que cap sigui espectacular.
+              Les cel·les buides dels quaderns es fan fora de classe i no són opcionals: el temps
+              de classe se'l menja la matemàtica. Es lliuren.
             </p>
           </div>
           <div className="p-4 bg-violet-50 border border-violet-200 rounded-lg">
-            <h3 className="font-semibold text-violet-900 mb-1">Codi en viu</h3>
+            <h3 className="font-semibold text-violet-900 mb-1">Cap fórmula sense codi</h3>
             <p className="text-sm text-gray-700">
-              La teoria és curta i de seguida es programa a classe, amb els errors inclosos.
+              Cada fórmula va seguida de la línia de NumPy que la calcula, i cada implementació
+              es compara amb scikit-learn.
             </p>
           </div>
         </div>
@@ -168,18 +182,19 @@ export default function Home() {
         <AlertTriangle className="w-7 h-7 text-amber-600 flex-shrink-0 mt-0.5" />
         <div>
           <h2 className="font-bold text-amber-900 text-lg mb-2">
-            L'avaluació encara no és definitiva
+            Els pesos de l'avaluació encara no estan confirmats
           </h2>
           <p className="text-amber-900 text-sm leading-relaxed">
-            Hi ha dues versions que no coincideixen entre la fitxa oficial del mòdul i el que es va
-            explicar al grup del curs passat, tant en hores com en pesos de les notes. Fins que no
-            estigui confirmada, la pàgina del programa mostra totes dues i cap com a bona.
+            Els instruments sí que estan decidits: tres proves pràctiques (S12, S21 i S25), les
+            activitats dels quaderns com a feina de casa, i el projecte final de Reinforcement
+            Learning, que és l'agent del concurs. El que falta és el pes de cada cosa a la nota, i
+            s'anunciarà quan estigui confirmat. Fins llavors aquesta web no en dona cap percentatge.
           </p>
           <Link
             to="/programa"
             className="inline-flex items-center text-amber-900 font-medium text-sm mt-3 underline"
           >
-            Veure les dues versions
+            Veure com s'avalua
             <ArrowRight className="w-4 h-4 ml-1" />
           </Link>
         </div>
@@ -187,10 +202,10 @@ export default function Home() {
 
       {/* CTA */}
       <div className="bg-gray-900 rounded-xl p-8 text-center">
-        <h2 className="text-2xl font-bold text-white mb-4">Per on comencem</h2>
+        <h2 className="text-2xl font-bold text-white mb-4">On som ara</h2>
         <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-          Pel principi: repassar Python fins que la sintaxi deixi de fer nosa. Tot el que ve
-          després es recolza en això.
+          Al bloc de fonaments de dades: NumPy i Pandas, i la primera sessió d'àlgebra lineal. És
+          l'eina que falta per poder tocar els models que ja s'han explicat.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link

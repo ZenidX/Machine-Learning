@@ -123,7 +123,7 @@ export default function MachineLearning() {
         <div className="flex items-center gap-3 mb-4">
           <Target className="w-6 h-6 text-sky-600" />
           <h2 className="text-xl font-semibold text-gray-900">2. Aprenentatge supervisat</h2>
-          <span className="text-xs font-medium bg-sky-100 text-sky-700 px-2 py-1 rounded-full">8 sessions · el cor del curs</span>
+          <span className="text-xs font-medium bg-sky-100 text-sky-700 px-2 py-1 rounded-full">9 sessions · el cor del curs</span>
         </div>
 
         <div className="space-y-4 text-gray-700">
@@ -135,6 +135,19 @@ export default function MachineLearning() {
               la pàgina de pràctica
             </Link>.
           </p>
+
+          <div className="bg-violet-50 border border-violet-200 rounded-lg p-4">
+            <p className="font-medium text-violet-900 mb-1">Cada model es baixa fins a la fórmula</p>
+            <p className="text-violet-900 text-sm">
+              Aquest bloc no acaba a la crida de scikit-learn. Els arbres continuen a l'entropia,
+              la regressió logística al descens de gradient, i l'SVM al marge i al kernel: són
+              sessions del{" "}
+              <Link to="/matematiques" className="font-medium underline hover:text-violet-700">
+                bloc de matemàtiques
+              </Link>
+              , amb cada fórmula seguida de la línia de NumPy que la calcula.
+            </p>
+          </div>
 
           <div>
             <h3 className="font-medium text-gray-900 mb-2">Entrenament i test</h3>
@@ -226,7 +239,7 @@ export default function MachineLearning() {
         <div className="flex items-center gap-3 mb-4">
           <Layers className="w-6 h-6 text-emerald-600" />
           <h2 className="text-xl font-semibold text-gray-900">3. Aprenentatge no supervisat i dades reals</h2>
-          <span className="text-xs font-medium bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">5 sessions</span>
+          <span className="text-xs font-medium bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">4 sessions</span>
         </div>
 
         <div className="space-y-4 text-gray-700">
@@ -256,11 +269,16 @@ export default function MachineLearning() {
           </div>
 
           <div className="border border-gray-200 rounded-lg p-4">
-            <h4 className="font-medium text-gray-900 mb-1">Reducció de dimensionalitat (idea)</h4>
+            <h4 className="font-medium text-gray-900 mb-1">Reducció de dimensionalitat amb PCA</h4>
             <p className="text-sm text-gray-600">
               Quan hi ha moltes variables, es poden resumir en unes poques que conserven la
-              informació més rellevant; útil, per exemple, per poder visualitzar dades
-              d'alta dimensió en un gràfic de 2D.
+              informació més rellevant. Aquí no es queda en la idea: la direcció de màxima
+              variància es busca per força bruta i es veu que allò que surt és un vector propi, al
+              quadern de{" "}
+              <Link to="/matematiques" className="text-violet-700 font-medium hover:text-violet-900">
+                PCA i vectors propis
+              </Link>
+              .
             </p>
           </div>
         </div>
@@ -270,8 +288,8 @@ export default function MachineLearning() {
       <section id="r-python" className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <div className="flex items-center gap-3 mb-4">
           <Code2 className="w-6 h-6 text-orange-600" />
-          <h2 className="text-xl font-semibold text-gray-900">4. R al costat de Python</h2>
-          <span className="text-xs font-medium bg-orange-100 text-orange-700 px-2 py-1 rounded-full">1-2 sessions</span>
+          <h2 className="text-xl font-semibold text-gray-900">4. R, com a lectura recomanada</h2>
+          <span className="text-xs font-medium bg-orange-100 text-orange-700 px-2 py-1 rounded-full">fora de les sessions</span>
         </div>
 
         <div className="space-y-4 text-gray-700">
@@ -282,10 +300,11 @@ export default function MachineLearning() {
           </p>
 
           <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 text-sm text-orange-900">
-            Aquest bloc <strong>no és sis setmanes</strong> com al curs anterior. És una
-            comparació breu: la mateixa regressió lineal del bloc de supervisat, feta en R i en
-            Python, línia a línia, per entendre per què R existeix i on encaixa. El curs es fa
-            en Python.
+            <strong>R queda fora del calendari d'aquest curs.</strong> És a la llista d'eines de la
+            fitxa del mòdul, però amb 66 h, el bloc de matemàtiques i el concurs al final no hi cap
+            com a sessions de classe. Es resol amb material de lectura recomanada, i queda dit. Qui
+            hi vulgui entrar té aquí la comparació mínima: la mateixa regressió lineal, en Python i
+            en R.
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -346,10 +365,9 @@ pred <- predict(model, test)`}</pre>
           <div className="flex items-start gap-2 bg-rose-50 border border-rose-100 rounded-lg p-4">
             <Sparkles className="w-5 h-5 text-rose-700 shrink-0 mt-0.5" />
             <p className="text-rose-900">
-              Ja a la primera sessió del curs, amb Teachable Machine, es veu en directe: un
-              classificador d'imatges entrenat amb exemples esbiaixats a propòsit, per notar
-              de seguida com de fràgil pot ser un model si les dades d'entrada no estan ben
-              triades.
+              El cas més clar surt al quadern de diagnòstic de càncer de mama: un model que
+              encerta el 94,2 % i deixa passar tres tumors malignes. Mirar-se només l'exactitud
+              amaga exactament l'error que importa.
             </p>
           </div>
         </div>
@@ -360,6 +378,7 @@ pred <- predict(model, test)`}</pre>
         <h2 className="text-lg font-semibold text-gray-900 mb-3">Continua per aquí</h2>
         <div className="flex flex-wrap gap-3">
           <Link to="/python" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">Python per a dades →</Link>
+          <Link to="/matematiques" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">Matemàtiques →</Link>
           <Link to="/deep-rl" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">Xarxes neuronals i Reinforcement Learning →</Link>
           <Link to="/programa" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">Programa del curs →</Link>
           <Link to="/recursos" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">Recursos →</Link>
