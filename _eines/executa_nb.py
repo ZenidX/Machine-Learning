@@ -4,6 +4,11 @@
 No desa les sortides al fitxer: serveix per comprovar que tot corre abans de
 portar-ho a classe, i per veure els numeros reals que sortiran a pantalla.
 
+Compte amb un parany del backend Agg: matplotlib no dibuixa res fins que algu
+li ho demana, aixi que una etiqueta amb LaTeX mal escrit (mathtext) NO peta en
+executar la cel.la; petaria a classe, en mostrar la figura. Per aixo, despres de
+cada cel.la, aquest script força el dibuix de les figures obertes.
+
     CEIABD-IA/.venv/Scripts/python.exe _eines/executa_nb.py "ruta/al/quadern.ipynb"
 
 Surt amb codi 1 si alguna cel.la peta.
@@ -17,7 +22,22 @@ import traceback
 import matplotlib
 matplotlib.use("Agg")  # res de finestres
 
+import matplotlib.pyplot as plt
+
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+
+def dibuixa_figures():
+    """Força el render de les figures obertes i les tanca. Retorna quantes eren.
+
+    Es el que fa esclatar un `$\alpha$` mal tancat o una ordre de LaTeX que
+    mathtext no coneix: sense aixo, el quadern passa i la figura peta a classe.
+    """
+    nums = plt.get_fignums()
+    for n in nums:
+        plt.figure(n).canvas.draw()
+    plt.close("all")
+    return len(nums)
 
 
 def executa(ruta, max_sortida=500):
@@ -50,6 +70,18 @@ def executa(ruta, max_sortida=500):
             errors += 1
             print("[ERROR]")
             traceback.print_exc(limit=4)
+
+        # Amb Agg les figures no es dibuixen soles: un mathtext trencat a una
+        # etiqueta nomes peta aqui, i a classe petaria en projectar-la.
+        try:
+            n_fig = dibuixa_figures()
+            if n_fig:
+                print(f"[{n_fig} figura(es) dibuixada(es)]")
+        except Exception:
+            errors += 1
+            print("[ERROR EN DIBUIXAR LA FIGURA]")
+            traceback.print_exc(limit=4)
+            plt.close("all")
 
     print(f"\n=========== {n_codi} cel.les de codi, {errors} errors ===========")
     return errors
