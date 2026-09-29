@@ -10,6 +10,7 @@ import {
   ExternalLink,
   CircleSlash,
   DownloadCloud,
+  ChevronRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -26,6 +27,44 @@ const quaderns = [
       "Com es pregunta a un objecte de Python què té a dins: type(), dir(), objecte.metode? i l'autocompletat amb la tecla TAB. La diferència entre un atribut i un mètode, que és per què df.shape va sense parèntesis i df.head() amb. I els objectes que et trobaràs a tot el curs: el Bunch que tornen els load_*, l'ndarray, el DataFrame, la Series, i un model de scikit-learn abans i després d'entrenar-lo. Acaba amb una exploració de dades guiada de principi a fi.",
     destacat:
       "Els atributs que acaben en guió baix, com .coef_ o .feature_importances_, volen dir «això ho he après de les dades». No existeixen abans de cridar .fit(), i buscar-los abans és el primer error que fa tothom.",
+    funcions: {
+      titol: "Les funcions que fas servir avui, per ordre d'importància",
+      intro:
+        "No són les que més surten als tutorials, són les que el seu resultat et fa prendre una decisió. La resta és decoració.",
+      llista: [
+        {
+          nom: ".shape",
+          text: "La més tonta i la que més errors caça. La primera sempre, i un altre cop després de cada filtre o partició: si el nombre de files no és el que esperaves, atura't aquí.",
+        },
+        {
+          nom: ".info()",
+          text: "Millor primera mirada que .describe(): files, columnes, tipus i quants valors no són nuls, tot en una pantalla.",
+        },
+        {
+          nom: ".value_counts()",
+          text: "Sobre l'etiqueta és la més important de totes en un problema de classificació. A Wine surt 59/71/48, que està equilibrat. Si sortís 95/5, l'exactitud deixaria de voler dir res.",
+        },
+        {
+          nom: ".groupby().mean()",
+          text: "L'única que fa anàlisi de veritat. Les altres descriuen; aquesta compara, i és amb la que trobes quina columna separa les classes.",
+        },
+        {
+          nom: ".isna().sum()",
+          text: "L'inventari del que falta. És barata i decideix tota la preparació de dades que ve després.",
+        },
+        {
+          nom: "df[df.columna > x]",
+          text: "Les màscares booleanes no són una funció, són el mecanisme: el que et deixa preguntar qualsevol cosa, i no només les que algú va preveure.",
+        },
+        {
+          nom: ".sort_values() i .head()",
+          text: "Els extrems. Allà hi ha els errors de dades i els casos interessants.",
+        },
+      ],
+      describe:
+        "I .describe()? És la que més s'ensenya i la que menys es llegeix: a Wine et dona 8 estadístics per 13 columnes, 104 números. Té un ús real i només un: veure d'un cop d'ull que les columnes van en escales incompatibles (proline per centenars, hue per sota de 2). Això és el que decideix si cal escalar, i és l'entrebanc del k-NN del bloc següent.",
+      tancament: ".describe() descriu. .groupby() compara. Analitzar és comparar.",
+    },
   },
   {
     fitxer: "FO_01_numpy.ipynb",
@@ -136,6 +175,38 @@ export default function Fonaments() {
                   <p className="mt-3 text-sm text-emerald-900 bg-emerald-50 border-l-4 border-emerald-400 rounded-r-lg p-3">
                     {q.destacat}
                   </p>
+                )}
+                {q.funcions && (
+                  <details className="mt-3 group rounded-lg border border-gray-200 bg-gray-50">
+                    <summary className="flex cursor-pointer list-none items-center gap-2 p-3 text-sm font-medium text-gray-800 hover:bg-gray-100 rounded-lg">
+                      <ChevronRight className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-90" />
+                      {q.funcions.titol}
+                    </summary>
+                    <div className="border-t border-gray-200 p-4 space-y-3">
+                      <p className="text-sm text-gray-600">{q.funcions.intro}</p>
+                      <ol className="space-y-2">
+                        {q.funcions.llista.map((f, n) => (
+                          <li key={f.nom} className="flex gap-3 text-sm">
+                            <span className="flex-shrink-0 font-medium text-gray-400 tabular-nums">
+                              {n + 1}.
+                            </span>
+                            <span>
+                              <code className="bg-white border border-gray-200 px-1.5 py-0.5 rounded text-xs text-gray-900">
+                                {f.nom}
+                              </code>
+                              <span className="ml-2 text-gray-700">{f.text}</span>
+                            </span>
+                          </li>
+                        ))}
+                      </ol>
+                      <p className="text-sm text-gray-600 border-t border-gray-200 pt-3">
+                        {q.funcions.describe}
+                      </p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {q.funcions.tancament}
+                      </p>
+                    </div>
+                  </details>
                 )}
               </div>
               <div className="flex-shrink-0 flex flex-col gap-2">
