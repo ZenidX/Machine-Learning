@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
-"""Genera el quadern FO_00: els objectes de Python dels exercicis i com interrogar-los.
+"""Genera el quadern FO_00: les cinc preguntes que es fan a unes dades noves.
 
     CEIABD-IA/.venv/Scripts/python.exe _eines/gen_FO_00_objectes.py
 
-Es el quadern que obre la sessio de practica: els alumnes no sabien que `digits`
-te `.data` a dins ni que un DataFrame te `.shape`, i sobretot no sabien com
-esbrinar-ho sols. Aqui aprenen a preguntar-li a l'objecte (type, dir, help, TAB)
-i despres tenen la taula d'atributs i metodes de cada objecte que es trobaran.
+Estructura en tres actes. L'ordre es a posta i es el punt del quadern: cada eina
+apareix quan l'analisi es queda encallada sense ella, no abans.
+
+  Acte 1  Wine, de zero. `load_wine()` i prou, sense explicar que es un Bunch.
+          type, dir, .keys, .shape (i alli l'error dels parentesis), as_frame,
+          DataFrame, Series, nuls, groupby. El gruix del quadern.
+  Acte 2  Digits, amb les cinc preguntes i res mes. Hi apareix `.images`, que a
+          Wine no hi era: el metode els ensenya una cosa que ningu els ha dit.
+  Acte 3  El model tambe es un objecte: les mateixes preguntes abans i despres
+          de `.fit()`.
+  Xuleta  Les taules de referencia, `que_te()` i les cinc preguntes recollides.
+          Van al final perque alli cada metode que hi surt ja l'han fet servir.
 
 Els numeros que apareixen al text son els de l'execucio real amb llavor 42; si es
 canvia el codi, cal tornar a executar el quadern i actualitzar-los.
@@ -14,6 +22,12 @@ canvia el codi, cal tornar a executar el quadern i actualitzar-los.
 Els errors que s'ensenyen a posta (TypeError dels parentesis, AttributeError i
 NotFittedError) van dins d'un try/except: si no, `executa_nb.py` els comptaria com
 a errors de debo, i a classe el quadern es trencaria a mitges.
+
+`max_iter=20000` a la regressio logistica no es capritxos: amb les columnes de Wine
+sense escalar en calen 5476, i amb menys surt un ConvergenceWarning a pantalla.
+
+Despres de generar-lo cal tornar a marcar les cel.les d'exercici:
+    python _eines/marca_exercicis.py "<quadern>" --llista
 """
 import sys
 
@@ -26,7 +40,7 @@ A = cells.append
 
 # ============================================================ portada
 A(md(r"""
-# Objectes de Python i autocompletar: com esbrinar què pots fer amb el que tens a les mans
+# Les cinc preguntes: com esbrinar què tens a les mans
 
 **Optativa d'Aprenentatge automàtic - DAM/DAW 2n**
 
@@ -35,20 +49,38 @@ perquè no sàpigues programar: perquè tenies al davant una variable anomenada 
 tenies cap manera de saber què hi havia a dins. Vas provar `print(digits)`, et va sortir
 una paret de números, i d'allà no es passa.
 
-Aquest quadern resol exactament això. La idea central és aquesta, i val la pena que te la
-quedis:
+Avui no farem un manual d'objectes de Python. Farem **una anàlisi de dades de principi a
+fi**, i les eines aniran sortint pel camí, cada una en el moment en què l'anàlisi es quedi
+encallada sense ella. Perquè la idea central és aquesta:
 
 > **No cal recordar els noms. Cal saber preguntar-los-hi.**
 
 Ningú es recorda de memòria que un DataFrame té `.dtypes`, ni que un model entrenat té
 `.coef_`. El que sí que sap tothom que treballa amb això és **com demanar-li a l'objecte
-que t'ensenyi el que té**. Són quatre eines, i les tindràs totes en deu minuts.
+que t'ensenyi el que té**.
 
-La segona part del quadern és el catàleg: els cinc objectes que et trobaràs a tots els
-exercicis del curs, amb els atributs i els mètodes que faràs servir de veritat. La tercera
-és una exploració de dades sencera, per veure-ho funcionant.
+## El que t'enduràs d'avui
 
-Tot el codi d'aquest quadern es pot executar. Executa'l, canvia'l, torna a executar-lo.
+No una llista de mètodes: **un mètode**. Cinc preguntes que es fan a qualsevol conjunt de
+dades, en aquest ordre, la primera vegada que se'l té al davant.
+
+| | Pregunta | Amb què es respon |
+|---|---|---|
+| **1** | **Què és això?** | `type()` |
+| **2** | **Què porta dins?** | `dir()` filtrat, `.keys()`, `.columns` |
+| **3** | **Quina mida té i de quins tipus?** | `.shape`, `.dtypes`, `.info()` |
+| **4** | **Hi falta res? Hi ha repetits?** | `.isna().sum()`, `.duplicated().sum()` |
+| **5** | **Com es reparteix el que vull predir?** | `.value_counts()`, `.groupby()` |
+
+Al final de la sessió sabràs fer-te aquestes cinc preguntes sol, davant d'unes dades que no
+has vist mai. Les faràs servir tot el curs.
+
+El quadern va en tres actes: primer les dades dels vins de dalt a baix, després unes dades
+noves per comprovar que el mètode funciona sense ajuda, i al final un model entrenat, que
+també és un objecte i també se li pot preguntar. La xuleta amb totes les taules és a l'últim
+tram.
+
+Tot el codi es pot executar. Executa'l, canvia'l, torna a executar-lo.
 """))
 
 A(code(r"""
@@ -62,659 +94,408 @@ print("numpy: ", np.__version__)
 print("pandas:", pd.__version__)
 """))
 
-# ============================================================ PART 1
+# ============================================================ ACTE 1
 A(md(r"""
 ---
 
-# Part 1 - Com interrogar un objecte qualsevol
+# Acte 1 - Què hi ha aquí dins?
 
-A Python, gairebé tot és un **objecte**. Un objecte és una cosa que porta dades a dins i
-sap fer coses. Les dades que porta són els seus **atributs**; les coses que sap fer són els
-seus **mètodes**. Tots dos s'accedeixen amb un punt: `objecte.alguna_cosa`.
-
-El problema pràctic és saber quines "algunes coses" hi ha. Per això hi ha quatre eines.
-"""))
-
-# ---------------------------------------------------------- type
-A(md(r"""
-## 1.1 `type(objecte)` - de quina classe és
-
-La primera pregunta sempre és la mateixa: **què és això?** Perquè el que pots fer-hi depèn
-de la resposta. Un DataFrame i un array de NumPy s'assemblen quan els imprimeixes, però no
-tenen els mateixos mètodes.
+Comencem com comença de debò: algú et dona una línia de codi i unes dades. Res més.
 """))
 
 A(code(r"""
-numero = 3.14
-text = "iris"
-llista = [1, 2, 3]
-diccionari = {"a": 1}
+from sklearn.datasets import load_wine
 
-print(type(numero))
-print(type(text))
-print(type(llista))
-print(type(diccionari))
+dades = load_wine()
 """))
 
 A(md(r"""
-`<class 'float'>` es llegeix: això és de la classe `float`. Si només vols el nom net, sense
-l'embolcall de `<class ...>`, demana-li `__name__` a la classe:
+Ja està. Tens **això** a les mans i no saps què és. Abans de poder analitzar res, has de
+poder preguntar-li.
+
+El primer impuls de tothom és imprimir-ho. Provem-ho, tallant la sortida, que si no ocupa
+mitja pantalla:
 """))
 
 A(code(r"""
-print(type(numero).__name__)
-print(type(llista).__name__)
+print(str(dades)[:300])
+print()
+print("... i segueix. En total:", len(str(dades)), "caràcters.")
+"""))
+
+A(md(r"""
+Aquesta és la paret de números. Hi ha coses que s'endevinen (`'data'`, `array`) però no s'hi
+pot treballar. Imprimir no és preguntar.
+
+## Pregunta 1 - Què és això?
+
+**La primera pregunta és sempre la mateixa, i és aquesta.** Perquè tot el que podràs fer amb
+una cosa depèn de què sigui aquella cosa: els mètodes d'una taula no són els d'un array, i
+els d'un array no són els d'una llista.
+"""))
+
+A(code(r"""
+print(type(dades))
+print(type(dades).__name__)
+"""))
+
+A(md(r"""
+`<class 'sklearn.utils._bunch.Bunch'>` es llegeix: això és de la classe `Bunch`. Amb
+`.__name__` et quedes només el nom net, sense l'embolcall de `<class ...>`.
+
+I ara tens una paraula, `Bunch`, que no et diu absolutament res. **Això no és un fracàs de la
+pregunta: és el resultat normal.** El que has guanyat és que ja no tens "una cosa", tens un
+`Bunch`, i als `Bunch` se'ls pot preguntar què porten.
+
+La pregunta funciona amb qualsevol cosa, sempre igual:
+"""))
+
+A(code(r"""
+print(type(3.14).__name__)
+print(type("wine").__name__)
+print(type([1, 2, 3]).__name__)
+print(type({"a": 1}).__name__)
 """))
 
 # ---------------------------------------------------------- dir
 A(md(r"""
-## 1.2 `dir(objecte)` - tot el que té a dins
+## Pregunta 2 - Què porta dins?
 
-`dir()` et torna una llista amb **tots** els noms que hi ha dins de l'objecte: atributs i
-mètodes, barrejats i ordenats alfabèticament. És la manera més directa de veure què tens.
-
-El problema és que la llista és llarga i ve plena de coses que no són per a tu.
+Sé que és un `Bunch`. Necessito saber què hi ha a dins per poder-hi arribar. L'eina és
+`dir()`, que et torna una llista amb **tots** els noms que hi ha dins de l'objecte: les dades
+que porta i les coses que sap fer, barrejades i ordenades alfabèticament.
 """))
 
 A(code(r"""
-tots = dir(llista)
-print("Una llista de Python té", len(tots), "noms a dins.")
+print(len(dir(dades)), "noms:")
+print(dir(dades))
+"""))
+
+A(md(r"""
+Sis noms, i ja hi ha informació de debò: `data`, `target`, `feature_names`, `target_names`,
+`DESCR`, `frame`.
+
+Amb un `Bunch` has tingut sort, i val la pena dir-ho perquè és una excepció: **scikit-learn
+ha programat els `Bunch` perquè `dir()` torni just les claus que porten**, sense res més.
+Amb la majoria d'objectes la llista és molt més llarga i molt més sorollosa, i ho veuràs en
+un moment.
+
+Un `Bunch` **també és un diccionari**, o sigui que té una segona manera, més curta, de mirar
+què porta: `.keys()`. Les dues respostes a la pregunta 2 diuen el mateix.
+"""))
+
+A(code(r"""
+print("dir(dades) :", dir(dades))
+print("dades.keys():", list(dades.keys()))
 print()
-print(tots)
+print("i s'hi arriba de les dues maneres:", dades.data is dades["data"])
+"""))
+
+A(md(r"""
+De les sis claus, cinc s'entenen pel nom. La sisena, `frame`, no: mirem-la.
+"""))
+
+A(code(r"""
+print("dades.frame ->", dades.frame)
+"""))
+
+A(md(r"""
+Buida. Existeix la clau però no hi ha res. **Apunta-t'ho**, que hi tornarem d'aquí a poc: és
+la pista de com s'ha de carregar això de debò.
+
+De moment, anem al que sí que té contingut: `dades.data`.
+"""))
+
+A(code(r"""
+numeros = dades.data
+
+print(str(numeros)[:200])
+"""))
+
+A(md(r"""
+Més números. **I aquí passa el que et volia ensenyar: la pregunta es repeteix amb el que hi
+ha a dins.** No has acabat amb la pregunta 1 quan saps que la capsa és un `Bunch`. Cada cosa
+que treus de la capsa és un objecte nou, i li tornes a preguntar el mateix.
+"""))
+
+A(code(r"""
+print(type(numeros).__name__)
+"""))
+
+A(md(r"""
+Un `ndarray`: l'array de NumPy, la graella de números amb què treballa tot el càlcul de
+Python. Segona pregunta, doncs: què porta dins un `ndarray`?
+
+**Aquí `dir()` ensenya la seva cara de veritat**, la que tindrà amb gairebé tots els objectes
+que et trobaràs:
+"""))
+
+A(code(r"""
+tots = dir(numeros)
+
+print("un ndarray té", len(tots), "noms a dins")
+print()
+print(tots[:24])
 """))
 
 A(md(r"""
 ### El guió baix davant
 
-Has vist que la majoria comencen per `__`: `__add__`, `__len__`, `__class__`...
+Cent seixanta-nou noms, i la majoria comencen per `__`: `__add__`, `__len__`, `__class__`...
+Això no es pot llegir.
 
 **Un nom que comença per guió baix és cosa interna de Python, no és per a tu.** Són els
 engranatges: `__add__` és el que s'executa de debò quan escrius `a + b`, i `__len__` és el
 que s'executa quan escrius `len(a)`. Existeixen, funcionen, i no els cridaràs mai
-directament. Escriure `llista.__len__()` funciona, però és escriure `len(llista)` amb
-lletjor i sense cap avantatge.
+directament.
 
 Així que la manera útil de fer servir `dir()` és **filtrant-los**:
 """))
 
 A(code(r"""
-publics = [n for n in dir(llista) if not n.startswith("_")]
-print(len(publics), "noms útils:")
+publics = [n for n in dir(numeros) if not n.startswith("_")]
+
+print(len(publics), "noms útils, de 169:")
 print(publics)
 """))
 
 A(md(r"""
-De 48 noms a 11. Aquests sí que són els que has de fer servir, i `append`, `sort` i `count`
-ja els coneixes.
+De 169 a 73. Aquesta línia la faràs servir tot el curs, així que val la pena llegir-la a poc
+a poc: recorre tots els noms de `dir(numeros)` i es queda **només** amb els que **no**
+comencen per guió baix.
 
-Aquesta línia la faràs servir tot el curs, així que val la pena llegir-la a poc a poc:
-recorre tots els noms de `dir(llista)` i es queda **només** amb els que **no** comencen per
-guió baix.
+I ara ja es llegeix. Hi ha `shape`, `dtype`, `mean`, `std`, `min`, `max`, `reshape`,
+`astype`... Encara no saps què fa cada un, però has passat de "no sé què tinc" a "tinc una
+llista de 73 coses, i unes quantes tenen un nom que promet".
 
-Provem-la amb un objecte que encara no has explorat:
-"""))
+## Pregunta 3 - Quina mida té?
 
-A(code(r"""
-print([n for n in dir(text) if not n.startswith("_")])
-"""))
+De la llista de 73, la que necessites ara es diu `shape`. Vols saber quantes files i quantes
+columnes hi ha, perquè sense això no pots ni començar.
 
-A(md(r"""
-Aquests són tots els mètodes d'un text. No te'ls has de mirar ara: el que importa és que
-**no els has hagut de buscar enlloc**. Els has preguntat.
-"""))
-
-# ---------------------------------------------------------- help i ?
-A(md(r"""
-## 1.3 `help()` i `objecte.metode?` - què fa i què li has de passar
-
-`dir()` et diu **que una cosa existeix**. No et diu què fa ni quins arguments vol. Per això
-hi ha `help()`, que t'ensenya la documentació.
-"""))
-
-A(code(r"""
-help(llista.count)
-"""))
-
-A(md(r"""
-Amb això ja el pots fer servir: t'ha dit com es crida (`count(value, /)`) i què fa (torna
-quantes vegades apareix el valor que li passis).
-
-### La versió curta: el signe d'interrogació
-
-A Colab i a Jupyter tens una manera més còmoda, que **només funciona al quadern**: posar un
-`?` darrere del nom.
-
-```python
-llista.count?
-```
-
-Escriu-ho tu ara mateix en una cel·la nova i executa-la: la documentació s'obre en un
-**panell a baix de la pantalla**, sense embrutar la sortida de la cel·la. Amb dos
-interrogants (`llista.count??`) veus fins i tot el codi font, quan està escrit en Python.
-
-Aquesta és la que faràs servir en la pràctica. Amb pandas i scikit-learn els textos d'ajuda
-són llarguíssims (el de `DataFrame.groupby` fa desenes de línies) i al panell es llegeixen
-molt millor que enmig del quadern.
-
-> Compte: `llista.count?` **només** funciona dins d'un quadern. En un fitxer `.py` és un
-> error de sintaxi. Allà has de fer servir `help(llista.count)`.
-"""))
-
-# ---------------------------------------------------------- TAB
-A(md(r"""
-## 1.4 La tecla TAB - l'autocompletat
-
-Aquesta és la més important de les quatre, i no es pot ensenyar amb una cel·la executada:
-l'has de fer tu.
-
-**Escriu el nom d'un objecte, un punt, i prem TAB.** Surt una llista amb tot el que pots
-posar després del punt, i mentre escrius lletres es va escurçant.
-
-Prova-ho ara. Crea una cel·la nova, escriu això **sense executar-ho**:
-
-```python
-llista.
-```
-
-i amb el cursor just darrere del punt, prem **TAB**. Apareixerà `append`, `clear`, `copy`,
-`count`... Ara escriu una `s` (`llista.s`) i torna a prémer TAB: només queda `sort`.
-
-Això és **la manera normal de treballar**. No és una drecera per a principiants ni una
-ajuda per quan no te'n recordes: és com ho fa tothom, tot el dia. Ningú es recorda de
-memòria els noms dels mètodes de pandas, i ningú els busca a Google un per un. Es prem TAB
-i es tria de la llista.
-
-De les quatre eines, l'ordre pràctic acaba sent aquest:
-
-| Quan | Eina |
-|---|---|
-| Estic escrivint i vull veure què hi ha | **TAB** |
-| Vull la llista completa, per llegir-la amb calma | `dir(objecte)` filtrat |
-| He trobat un mètode i no sé què li he de passar | `objecte.metode?` |
-| No sé ni de quin tipus és el que tinc | `type(objecte)` |
-"""))
-
-# ---------------------------------------------------------- atribut vs metode
-A(md(r"""
-## 1.5 Atribut o mètode: la diferència que et farà perdre una hora
-
-Després del punt hi pot haver dues coses molt diferents, i confondre-les és l'error que
-veuràs més vegades avui.
-
-- Un **atribut** és una **dada** que l'objecte porta guardada. Es llegeix i prou. **No
-  porta parèntesis.**
-- Un **mètode** és una **acció** que l'objecte sap fer. L'has de **cridar**, i cridar-lo
-  vol dir posar-li **parèntesis**.
-
-La regla curta: **si és una dada, no hi ha parèntesis; si és una feina, sí.**
-
-Fem-nos una taula petita per veure-ho. No et preocupis encara per què és un DataFrame: de
-moment, una taula.
-"""))
-
-A(code(r"""
-alumnes = pd.DataFrame({
-    "nom": ["Aina", "Bruno", "Clara", "Dídac"],
-    "nota": [7.5, 4.0, 9.25, 6.0],
-    "assistencia": [0.92, 0.55, 1.00, 0.80],
-})
-alumnes
-"""))
-
-A(code(r"""
-# .shape és un ATRIBUT: una dada guardada, sense parèntesis
-print("shape:  ", alumnes.shape)
-print("columns:", list(alumnes.columns))
-
-# .head() és un MÈTODE: una feina, amb parèntesis
-print()
-print(alumnes.head(2))
-"""))
-
-A(md(r"""
-### Què passa si els confons
-
-Val més que aquests dos errors els vegis aquí, tranquil, que no d'aquí a mitja hora enmig
-d'un exercici. Els dos els veuràs avui.
-
-**Cas 1: posar parèntesis a un atribut.** `alumnes.shape` ja és una tupla, `(4, 3)`.
-Escriure `alumnes.shape()` vol dir "crida la tupla `(4, 3)`", i una tupla no es pot cridar.
+I el més natural del món és escriure-ho així:
 """))
 
 A(code(r"""
 try:
-    alumnes.shape()
+    numeros.shape()
 except TypeError as e:
     print(type(e).__name__, "->", e)
 """))
 
 A(md(r"""
-`TypeError: 'tuple' object is not callable`. **"Object is not callable" vol dir sempre el
-mateix: has posat parèntesis a una cosa que no és una funció.** Treu-los.
+### Atribut o mètode: la diferència que et farà perdre una hora
 
-**Cas 2: oblidar els parèntesis d'un mètode.** Això no peta, i per això és més traïdor: et
-surt una cosa rara i no un error.
+Aquest error el veuràs avui, i val més que el vegis aquí, tranquil, que no d'aquí a mitja
+hora enmig d'un exercici. Després d'un punt hi pot haver dues coses molt diferents:
+
+- Un **atribut** és una **dada** que l'objecte porta guardada. Es llegeix i prou. **No porta
+  parèntesis.**
+- Un **mètode** és una **acció** que l'objecte sap fer. L'has de **cridar**, i cridar-lo vol
+  dir posar-li **parèntesis**.
+
+La regla curta: **si és una dada, no hi ha parèntesis; si és una feina, sí.**
+
+`shape` és una dada: la forma ja està calculada i guardada. `numeros.shape` **ja és** la
+tupla `(178, 13)`. Escriure `numeros.shape()` vol dir "crida la tupla `(178, 13)`", i una
+tupla no es pot cridar.
+
+> **`TypeError: 'tuple' object is not callable` vol dir sempre el mateix: has posat
+> parèntesis a una cosa que no és una funció.** Treu-los.
+
+Sense parèntesis, doncs:
 """))
 
 A(code(r"""
-print(alumnes.head)
+print("shape:", numeros.shape)
+print("dtype:", numeros.dtype)
+print("ndim: ", numeros.ndim)
+print("size: ", numeros.size, "=", numeros.shape[0], "x", numeros.shape[1])
 """))
 
 A(md(r"""
-`<bound method NDFrame.head of ...>`. Això no són les dades: és **el mètode en si**, sense
-executar. Python t'ensenya l'etiqueta de la feina en lloc de fer-la, perquè no li has
-demanat que la faci.
+**178 files i 13 columnes.** 178 vins, 13 mesures de cada un, tots números decimals
+(`float64`). Ja tens la mida i el tipus: la pregunta 3, resposta.
 
-**Quan veus `bound method` a la sortida, t'has deixat els parèntesis.** És literalment tot
-el diagnòstic que necessites.
+### L'altre cas, el que no peta
 
-I com saber de quin dels dos es tracta abans d'equivocar-te? Pregunta-ho:
+L'error dels parèntesis de més fa soroll i es veu de seguida. El contrari, deixar-se els
+parèntesis d'un mètode, és més traïdor: **no peta**. Et surt una cosa rara i no un error.
 """))
 
 A(code(r"""
-print("callable(alumnes.shape) ->", callable(alumnes.shape))   # False: és un atribut
-print("callable(alumnes.head)  ->", callable(alumnes.head))    # True: és un mètode
+print(numeros.mean)
 """))
 
-# ---------------------------------------------------------- que_te
 A(md(r"""
-## 1.6 `que_te()`: la funció que faràs servir tot el curs
+`<built-in method mean of numpy.ndarray object at ...>`. Això no és la mitjana: és **el
+mètode en si**, sense executar. Python t'ensenya l'etiqueta de la feina en lloc de fer-la,
+perquè no li has demanat que la faci. Amb objectes de pandas la sortida diu `bound method`,
+que és el mateix.
 
-Ajuntem-ho tot en una sola funció. Li passes un objecte qualsevol i t'imprimeix de quin
-tipus és, quins atributs públics té i quins mètodes públics té, **separats**, que és
-justament el que `dir()` no fa.
-
-Copia-la als teus quaderns. Com distingeix els atributs dels mètodes? Amb `callable()`,
-exactament com acabes de veure.
-"""))
-
-A(code(r'''
-def que_te(objecte, filtre=""):
-    """Imprimeix el tipus, els atributs públics i els mètodes públics d'un objecte.
-
-    Amb `filtre`, només mostra els noms que contenen aquell text:
-    que_te(df, "na") per trobar isna, dropna, fillna...
-    """
-    atributs = []
-    metodes = []
-    for nom in dir(objecte):
-        if nom.startswith("_") or filtre not in nom:
-            continue
-        try:
-            valor = getattr(objecte, nom)
-        except Exception:
-            continue          # n'hi ha que peten si encara no existeixen: les saltem
-        if callable(valor):
-            metodes.append(nom)
-        else:
-            atributs.append(nom)
-
-    print("TIPUS:", type(objecte).__name__)
-    print()
-    print(f"ATRIBUTS ({len(atributs)}) - sense parèntesis:")
-    print("  " + (", ".join(atributs) if atributs else "(cap)"))
-    print()
-    print(f"MÈTODES ({len(metodes)}) - amb parèntesis:")
-    print("  " + (", ".join(metodes) if metodes else "(cap)"))
-
-
-que_te(alumnes)
-'''))
-
-A(md(r"""
-18 atributs i 193 mètodes: un DataFrame té molta cosa. Dues observacions sobre aquesta
-sortida, perquè si no et despistaran:
-
-- Entre els atributs hi surten `nom`, `nota` i `assistencia`, que són **els noms de les
-  columnes**. pandas les exposa també com a atributs, o sigui que `alumnes.nota` funciona
-  igual que `alumnes["nota"]`. Amb els claudàtors sempre funciona; amb el punt, no (prova-ho
-  amb una columna que es digui `od280/od315_of_diluted_wines`).
-- `loc` i `iloc` han anat a la llista de mètodes, perquè `callable()` diu que sí. Són
-  l'excepció de tot plegat: es fan servir amb **claudàtors**, `alumnes.loc[0, "nota"]`. Hi
-  tornem a la secció 2.3.
-
-Com que la llista és tan llarga, `que_te()` accepta un filtre: quan busques alguna cosa
-concreta i no recordes com es diu, filtra per un tros del nom. Per exemple, saps que hi ha
-alguna cosa per als valors que falten i que en anglès es diu "NA":
+> **Quan a la sortida veus `method` en lloc de dades, t'has deixat els parèntesis.** És
+> literalment tot el diagnòstic que necessites.
 """))
 
 A(code(r"""
-que_te(alumnes, "na")
+print("numeros.mean   ->", numeros.mean)
+print("numeros.mean() ->", numeros.mean())
 """))
 
 A(md(r"""
-`isna`, `dropna`, `fillna`, `notna`: els que buscaves. També hi surten `rename` i
-`rename_axis`, perquè el filtre és una cerca de text ximple i "rename" conté "na". No hi
-passa res: sis noms es llegeixen en un segon, 193 no.
-
-El que importa és que no els has buscat enlloc. Els has trobat preguntant, i aquesta és tota
-la tècnica.
-"""))
-
-# ============================================================ PART 2
-A(md(r"""
----
-
-# Part 2 - Els cinc objectes que et trobaràs
-
-Amb les eines de la Part 1 pots explorar qualsevol cosa. Però anar a cegues cada vegada és
-lent, i aquests cinc objectes sortiran a tots els exercicis del curs. Aquí tens, per a cada
-un, la taula del que faràs servir **de veritat** (no la llista completa) i una cel·la que ho
-toca tot.
-
-Aquesta part és **material de consulta**: torna-hi quan estiguis encallat.
-"""))
-
-# ---------------------------------------------------------- Bunch
-A(md(r"""
-## 2.1 `Bunch` - el que et torna `load_iris()`
-
-Aquest és el que et va desconcertar. Quan escrius `digits = load_digits()`, `digits` **no
-són les dades**: és una capsa que porta les dades a dins, juntament amb les etiquetes, els
-noms de les columnes i la descripció del dataset. La classe es diu `Bunch`.
-
-| | Nom | Què és |
-|---|---|---|
-| atribut | `.data` | les dades: array 2D, files = mostres, columnes = característiques |
-| atribut | `.target` | la resposta correcta de cada fila: array 1D de números |
-| atribut | `.feature_names` | els noms de les columnes de `.data` |
-| atribut | `.target_names` | a què correspon cada número de `.target` |
-| atribut | `.DESCR` | la descripció del dataset, en text |
-| atribut | `.images` | **només a `load_digits`**: les mateixes dades en forma d'imatge 8x8 |
-| mètode | `.keys()` | què porta a dins (perquè un `Bunch` també és un diccionari) |
+I si dubtes de si una cosa és atribut o mètode abans d'equivocar-te, pregunta-ho:
 """))
 
 A(code(r"""
-from sklearn.datasets import load_iris, load_wine, load_digits
+print("callable(numeros.shape) ->", callable(numeros.shape))   # False: és un atribut
+print("callable(numeros.mean)  ->", callable(numeros.mean))    # True: és un mètode
+"""))
 
-iris = load_iris()
+# ---------------------------------------------------------- noms de columna
+A(md(r"""
+## Tenim números, i no en podem fer res
 
-print("type:", type(iris).__name__)
+Aquí l'anàlisi s'encalla de debò. Tens una graella de 178 x 13 números i **no saps què és cada
+columna**. La primera columna és el grau d'alcohol? És el pH? Sense els noms no hi ha res a
+dir.
+
+Tornem a la pregunta 2 i al que ens quedava per obrir del `Bunch`: `feature_names`, `target`
+i `target_names`.
+"""))
+
+A(code(r"""
+print("feature_names, els noms de les 13 columnes de data:")
+for i, nom in enumerate(dades.feature_names):
+    print(f"  columna {i:2}  {nom}")
+"""))
+
+A(code(r"""
+print("target:      ", type(dades.target).__name__, dades.target.shape, dades.target.dtype)
+print("els 20 primers:", dades.target[:20])
 print()
-print("dir() filtrat:", [n for n in dir(iris) if not n.startswith("_")])
+print("target_names:", dades.target_names)
 """))
 
 A(md(r"""
-Aquí passa una cosa que val la pena dir, perquè és una excepció: **en un `Bunch`, `dir()`
-et torna just les claus que porta**, no la llista de quaranta coses que esperaries.
-scikit-learn ho ha programat així expressament, per fer-te fàcil justament el que estàs
-fent.
+Ara sí que es llegeix el conjunt:
 
-I com que un `Bunch` **també és un diccionari**, té una segona manera de mirar-hi dins:
+- `data` són les **mesures**: 178 vins x 13 mesures químiques.
+- `target` és **la resposta correcta** de cada vi: 178 números, un per fila.
+- `target_names` diu que aquells números (0, 1, 2) són **tres varietats** de raïm.
+
+O sigui que la pregunta que acompanya aquestes dades és: **es pot endevinar la varietat d'un
+vi a partir de la seva química?**
+
+La primera fila, sencera i amb els noms al costat:
 """))
 
 A(code(r"""
-print(iris.keys())
+for nom, valor in zip(dades.feature_names, numeros[0]):
+    print(f"  {nom:32} {valor}")
 print()
-print("iris.data i iris['data'] són el mateix objecte:", iris.data is iris["data"])
-"""))
-
-A(code(r"""
-print("data.shape:   ", iris.data.shape)
-print("target.shape: ", iris.target.shape)
-print("feature_names:", iris.feature_names)
-print("target_names: ", iris.target_names)
-print()
-print("primera fila de data:", iris.data[0])
-print("el seu target:       ", iris.target[0], "->", iris.target_names[iris.target[0]])
+print("  varietat:", dades.target[0], "->", dades.target_names[dades.target[0]])
 """))
 
 A(md(r"""
-Llegit: `data` té 150 files i 4 columnes, `target` té 150 números (un per flor), i el
-`target` de la primera flor és `0`, que segons `target_names` vol dir `setosa`.
+Funciona, però mira la feina que ha calgut per veure **una** fila: un `zip` dels noms amb els
+números, i una consulta a `target_names` per traduir el 0. Per treballar així tota la sessió,
+no.
 
-`.DESCR` és un text llarg amb la fitxa del dataset: d'on surt, què vol dir cada columna,
-quantes mostres hi ha. No l'imprimeixis sencer, que fa mig metre; talla'l.
+### El `frame` buit era la pista
+
+Recorda la clau `frame`, que era `None`. Els carregadors de scikit-learn accepten un argument
+`as_frame=True`, i llavors l'omplen: et donen **les dades i els noms cosits en una sola
+taula**.
 """))
 
 A(code(r"""
-print(type(iris.DESCR).__name__, "de", len(iris.DESCR), "caràcters")
-print()
-print(iris.DESCR[:360])
+dades_df = load_wine(as_frame=True)
+
+print("type de .data: ", type(dades_df.data).__name__)
+print("type de .frame:", type(dades_df.frame).__name__)
+print("shape de .frame:", dades_df.frame.shape)
 """))
 
 A(md(r"""
-### El cas de `load_digits`: `.images`
+`DataFrame`: un tipus nou, i el que faràs servir per **mirar** les dades tot el curs. (L'array
+de NumPy el faràs servir per **entrenar** models; són dos formats de la mateixa cosa.)
 
-`load_digits` porta dígits escrits a mà, en imatges de 8x8 píxels. Té les mateixes dades
-guardades de dues maneres, i aquest és l'atribut que ningú endevina:
-
-- `.data` és `(1797, 64)`: cada imatge **aplanada** en una fila de 64 números. És la forma
-  que volen els models.
-- `.images` és `(1797, 8, 8)`: la mateixa cosa **en forma de quadrat**. És la forma que vols
-  per dibuixar-la.
+`.frame` fa **178 x 14**: les 13 mesures més una columna amb el target. Li canvio el nom a
+aquesta columna, perquè `target` no diu res, i treballo sobre una còpia meva per no tocar el
+que hi ha dins del `Bunch`.
 """))
 
 A(code(r"""
-digits = load_digits()
+vins = dades_df.frame.copy()
+vins["classe"] = vins["target"]
+vins = vins.drop(columns=["target"])
 
-print("keys:  ", list(digits.keys()))
-print("data:  ", digits.data.shape)
-print("images:", digits.images.shape)
-print("target:", digits.target.shape, " classes:", digits.target_names)
-print()
-print("La primera imatge, en forma de quadrat 8x8:")
-print(digits.images[0].astype(int))
-print()
-print("És un:", digits.target[0])
-"""))
-
-A(md(r"""
-Si mires el quadrat de números de reüll, ja s'hi endevina un zero: els valors alts (16, 15,
-13) dibuixen l'anell i al mig hi ha el forat de zeros. Dibuixem-lo de debò:
-"""))
-
-A(code(r"""
-fig, eixos = plt.subplots(1, 5, figsize=(9, 2))
-for i, eix in enumerate(eixos):
-    eix.imshow(digits.images[i], cmap="gray_r")
-    eix.set_title(f"target = {digits.target[i]}")
-    eix.axis("off")
-plt.tight_layout()
-plt.show()
-"""))
-
-A(md(r"""
-### `as_frame=True`: el mateix dataset com a DataFrame
-
-Els carregadors accepten `as_frame=True`. Llavors el `Bunch` porta dos atributs més que et
-faran la vida molt més fàcil: `.frame`, amb tot el dataset en un DataFrame (dades **i**
-target), i `.data` convertit també en DataFrame, amb els noms de columna ja posats.
-"""))
-
-A(code(r"""
-iris_df = load_iris(as_frame=True)
-
-print("keys:", list(iris_df.keys()))
-print()
-print("type de .data: ", type(iris_df.data).__name__)
-print("type de .frame:", type(iris_df.frame).__name__)
-print("shape de .frame:", iris_df.frame.shape, "(les 4 columnes + la del target)")
-print()
-print(iris_df.frame.head(3))
-"""))
-
-# ---------------------------------------------------------- ndarray
-A(md(r"""
-## 2.2 `ndarray` - l'array de NumPy
-
-És el que hi ha dins de `.data`. Files = mostres, columnes = característiques.
-
-| | Nom | Què és |
-|---|---|---|
-| atribut | `.shape` | la forma: `(files, columnes)` |
-| atribut | `.dtype` | el tipus de dada que guarda: `float64`, `int64`... |
-| atribut | `.ndim` | quantes dimensions té: 1 = fila, 2 = taula |
-| atribut | `.size` | quants números hi ha en total |
-| atribut | `.T` | el mateix array transposat (files per columnes) |
-| mètode | `.mean()` `.std()` | mitjana, desviació típica |
-| mètode | `.min()` `.max()` `.sum()` | mínim, màxim, suma |
-| mètode | `.argmin()` `.argmax()` | **la posició** del mínim i del màxim, no el valor |
-| mètode | `.reshape()` | canvia la forma sense canviar els números |
-| mètode | `.copy()` | una còpia independent |
-| mètode | `.astype()` | el mateix array amb un altre tipus de dada |
-| mètode | `.round()` | arrodonit a tants decimals |
-"""))
-
-A(code(r"""
-X = iris.data
-
-print("TIPUS:", type(X).__name__)
-print()
-print("shape:", X.shape)
-print("dtype:", X.dtype)
-print("ndim: ", X.ndim)
-print("size: ", X.size, "=", X.shape[0], "x", X.shape[1])
-print("T:    ", X.T.shape, "(files i columnes intercanviades)")
-"""))
-
-A(md(r"""
-### `axis`: el que costa més de tots
-
-Aquí és on tothom ensopega, així que aquesta cel·la la val la pena mirar-se dos cops.
-
-Els mètodes de resum (`.mean()`, `.sum()`, `.max()`...) es comporten de tres maneres segons
-què li posis a `axis`:
-
-- **`X.mean()`**, sense res: un **sol número**, la mitjana dels 600 valors alhora. Gairebé
-  mai és el que vols.
-- **`X.mean(axis=0)`**, "aixafa les files": **un número per columna**. La mitjana de cada
-  característica. **És el que voldràs el 90% de les vegades.**
-- **`X.mean(axis=1)`**, "aixafa les columnes": **un número per fila**. La mitjana de cada
-  flor, que aquí no vol dir gran cosa (barreja centímetres de sèpal amb centímetres de
-  pètal), però en altres datasets sí.
-
-El truc per recordar-ho: `axis` diu **quin eix desapareix**. `axis=0` és l'eix de les files,
-i el resultat ja no té files: en queda un valor per columna.
-"""))
-
-A(code(r"""
-print("X.shape            ->", X.shape)
-print()
-print("X.mean()           ->", X.mean().round(4), " (un sol número)")
-print("X.mean(axis=0)     ->", X.mean(axis=0).round(3), " shape", X.mean(axis=0).shape)
-print("X.mean(axis=1)[:5] ->", X.mean(axis=1)[:5].round(3), " shape", X.mean(axis=1).shape)
-"""))
-
-A(code(r"""
-# La resta de mètodes de resum funcionen igual
-print("mínim de cada columna:  ", X.min(axis=0))
-print("màxim de cada columna:  ", X.max(axis=0))
-print("desviació per columna:  ", X.std(axis=0).round(3))
-print("suma de cada columna:   ", X.sum(axis=0).round(1))
-print()
-# argmax NO dona el valor: dona la POSICIÓ
-columna_petal = X[:, 2]
-print("El pètal més llarg fa     ", columna_petal.max())
-print("i és el de la flor número ", columna_petal.argmax())
-print("comprovació:              ", columna_petal[columna_petal.argmax()])
-"""))
-
-A(code(r"""
-# reshape, astype i round
-petit = np.arange(6)
-print("petit:         ", petit, petit.shape)
-print("reshape(2, 3):")
-print(petit.reshape(2, 3))
-print()
-print("dtype original:", X.dtype)
-print("astype(int):   ", X[:2].astype(int).tolist(), "(talla els decimals, no arrodoneix)")
-print("round(0):      ", X[:2].round(0).tolist())
+print(vins.shape)
+print(list(vins.columns))
 """))
 
 # ---------------------------------------------------------- DataFrame
 A(md(r"""
-## 2.3 `DataFrame` - la taula de pandas
+## Pregunta 3, una altra vegada: i això, quina mida té i de quins tipus és?
 
-Un array de NumPy amb noms a les columnes i moltíssims mètodes d'anàlisi. És el que faràs
-servir per **mirar** les dades; l'array és el que faràs servir per **entrenar** els models.
-
-| | Nom | Què és |
-|---|---|---|
-| atribut | `.shape` | `(files, columnes)` |
-| atribut | `.columns` | els noms de les columnes |
-| atribut | `.index` | les etiquetes de les files |
-| atribut | `.dtypes` | el tipus de cada columna, una per una |
-| atribut | `.values` | les dades com a array de NumPy, sense els noms |
-| atribut | `.loc` | selecció **per etiqueta**: `df.loc[3, "nota"]` |
-| atribut | `.iloc` | selecció **per posició**: `df.iloc[0, 1]` |
-| mètode | `.head()` `.tail()` | les primeres / les últimes files |
-| mètode | `.info()` | resum: columnes, tipus, quants valors no nuls, memòria |
-| mètode | `.describe()` | estadístiques de cada columna numèrica |
-| mètode | `.isna()` | on falten valors (True/False a cada casella) |
-| mètode | `.dropna()` `.fillna()` | treure les files amb buits / omplir-los |
-| mètode | `.groupby()` | agrupar per una columna per calcular per grup |
-| mètode | `.sort_values()` | ordenar per una columna |
-| mètode | `.value_counts()` | comptar quantes vegades surt cada valor |
-| mètode | `.drop()` | treure columnes o files |
-| mètode | `.copy()` | una còpia independent |
-| mètode | `.duplicated()` `.drop_duplicates()` | trobar / treure files repetides |
-
-Nota sobre `.loc` i `.iloc`: són **atributs**, sense parèntesis, però es fan servir amb
-**claudàtors**: `df.loc[...]`. És l'única parella que es comporta així.
+Objecte nou, les mateixes preguntes. `.shape` ja el coneixes i funciona igual. La novetat és
+que un `DataFrame` es pot **mirar**, i el primer que es fa sempre és `.head()`: les primeres
+files.
 """))
 
 A(code(r"""
-vins = load_wine(as_frame=True).frame
-
-print("TIPUS:", type(vins).__name__)
-print()
 print("shape:", vins.shape)
-print("index:", vins.index)
 print()
-print("columns:")
-for nom in vins.columns:
-    print("  -", nom)
-"""))
-
-A(code(r"""
-print("dtypes:")
-print(vins.dtypes)
-print()
-print("values és un", type(vins.values).__name__, "de shape", vins.values.shape)
+print(vins.head(3).iloc[:, :5])
 """))
 
 A(md(r"""
-`.dtypes` diu que 13 columnes són `float64` i la del `target` és `int64`. Té sentit: les
-mesures són decimals i la classe és un número enter.
+He fet servir `.iloc[:, :5]` per no imprimir les 14 columnes de cop: vol dir "totes les files,
+les 5 primeres columnes".
 
-`.info()` ho ajunta tot en un sol cop d'ull i, sobretot, et diu **quants valors no nuls** hi
-ha a cada columna. Si en alguna surt un número més petit que el total de files, hi falten
-dades.
+Fixa't que `.head()` **porta parèntesis**: és una feina, no una dada guardada. Si te'ls
+deixes, ja saps què passa:
+"""))
+
+A(code(r"""
+print(str(vins.head)[:70], "...")
+"""))
+
+A(md(r"""
+`<bound method NDFrame.head of ...`. El mateix cas d'abans, amb un objecte de pandas.
+
+He tallat la sortida a 70 caràcters a posta. Si l'imprimeixes sencera, pandas enganxa **la
+taula de 178 files darrere de l'etiqueta**, i això encara confon més, perquè sembla que hagi
+funcionat. El senyal que has d'atrapar és el començament: **si la sortida comença per
+`<bound method`, t'has deixat els parèntesis.**
+
+Ara el tipus de cada columna. A l'array només hi havia un `dtype` per a tot; en un DataFrame
+cada columna pot ser d'un tipus diferent, i per això el plural: `.dtypes`.
+"""))
+
+A(code(r"""
+print(vins.dtypes)
+"""))
+
+A(md(r"""
+Tretze columnes `float64` i la `classe` en `int64`. Té sentit: les mesures són decimals i la
+varietat és un número enter. **Si aquí sortís `object` en una columna que esperes numèrica,
+voldria dir que hi ha text barrejat**, i ho hauries d'arreglar abans de continuar.
+
+Hi ha una manera de tenir la mida, els tipus i una cosa més en una sola línia: `.info()`.
 """))
 
 A(code(r"""
 vins.info()
 """))
 
-A(code(r"""
-# .head() i .tail(): sempre el primer que es mira
-print(vins.head(3).iloc[:, :5])
-print()
-print(vins.tail(3).iloc[:, :5])
-"""))
-
 A(md(r"""
-He fet servir `.iloc[:, :5]` per no imprimir les 14 columnes de cop: "totes les files, les 5
-primeres columnes". Compara-ho amb `X[:, :5]` de NumPy: la notació és la mateixa.
+178 entrades, 14 columnes, els tipus, la memòria que ocupa, i la columna del mig: **`178
+non-null`** a totes. Això és una resposta anticipada a la pregunta 4, i hi arribem de seguida.
 
-`.loc` i `.iloc` es diferencien en què fan servir per identificar les files i les columnes:
-"""))
-
-A(code(r"""
-print("iloc[0, 0]  (fila 0, columna 0, per POSICIÓ):", vins.iloc[0, 0])
-print("loc[0, 'alcohol']  (per ETIQUETA):           ", vins.loc[0, "alcohol"])
-print()
-print("iloc[:3, :2] (les 3 primeres files, 2 columnes):")
-print(vins.iloc[:3, :2])
-print()
-print("loc[:2, ['alcohol', 'target']] (per nom de columna):")
-print(vins.loc[:2, ["alcohol", "target"]])
-"""))
-
-A(md(r"""
-`.describe()` és la millor primera mirada a un dataset numèric: per a cada columna, quants
-valors hi ha, la mitjana, la desviació típica, el mínim, els tres quartils i el màxim.
+Abans, la millor primera mirada a unes dades numèriques: `.describe()`, que per a cada columna
+et dona quants valors hi ha, la mitjana, la desviació típica, el mínim, els tres quartils i el
+màxim.
 """))
 
 A(code(r"""
@@ -722,75 +503,30 @@ print(vins[["alcohol", "malic_acid", "proline"]].describe().round(2))
 """))
 
 A(md(r"""
-Fixa't en l'escala: `alcohol` va de 11.03 a 14.83 i `proline` va de 278 a 1680. Són números
-de mides completament diferents, i això tindrà conseqüències quan entrenis models basats en
-distàncies. Però això és una altra sessió.
+Fixa't en l'escala: `alcohol` va d'11.03 a 14.83 i `proline` va de 278 a 1680. Són números de
+mides completament diferents, i això tindrà conseqüències quan entrenis models basats en
+distàncies. Te'n tornaràs a trobar a l'Acte 3, d'una manera que no esperaries.
 
-### Valors que falten i files repetides
+## Una columna no és una taula
 
-El dataset dels vins està net, i és útil comprovar-ho en lloc de suposar-ho.
-"""))
-
-A(code(r"""
-print("isna() torna un", type(vins.isna()).__name__, "de la mateixa shape:", vins.isna().shape)
-print("valors que falten en total:", vins.isna().sum().sum())
-print("files repetides:           ", vins.duplicated().sum())
-print()
-print("valors que falten per columna (les 4 primeres):")
-print(vins.isna().sum().head(4))
-"""))
-
-A(md(r"""
-Cap valor que falti i cap fila repetida: 0 i 0. Quan no és així, `.dropna()` treu les files
-amb buits i `.fillna(valor)` els omple. Cap dels dos modifica el DataFrame original: **et
-tornen un de nou**.
-"""))
-
-A(code(r"""
-# Fem-nos una taula amb forats per veure-ho, que els vins no en tenen
-amb_forats = pd.DataFrame({
-    "a": [1.0, 2.0, np.nan, 4.0],
-    "b": [10.0, np.nan, 30.0, 40.0],
-})
-print("original:")
-print(amb_forats)
-print()
-print("dropna() ->", amb_forats.dropna().shape, "files que sobreviuen")
-print(amb_forats.dropna())
-print()
-print("fillna(0):")
-print(amb_forats.fillna(0))
-print()
-print("l'original NO ha canviat:", amb_forats.isna().sum().sum(), "forats encara")
-"""))
-
-# ---------------------------------------------------------- Series
-A(md(r"""
-## 2.4 `Series` - una columna
-
-Això es passa per alt i després confon molt: **una columna d'un DataFrame no és un
-DataFrame**. És una `Series`, que és una altra classe, amb els seus propis mètodes.
-
-Una `Series` és una columna de valors amb un índex. Té els atributs que ja coneixes
-(`.shape`, `.dtype`, `.values`, `.index`) i, a més, els seus:
-
-| | Nom | Què és |
-|---|---|---|
-| mètode | `.value_counts()` | quantes vegades surt cada valor, de més a menys |
-| mètode | `.unique()` | quins valors diferents hi ha |
-| mètode | `.nunique()` | quants valors diferents hi ha |
-| mètode | `.map()` | aplica una funció o un diccionari a cada valor |
-| mètode | `.astype()` | canvia el tipus de dada |
-| mètode | `.mean()` `.std()` `.min()` `.max()` `.sum()` | com a NumPy |
-| mètode | `.idxmax()` `.idxmin()` | l'**índex** de la fila del màxim i del mínim |
+Ara vull treballar amb una columna sola. L'agafo, i **abans de res li pregunto què és**, que
+per ara ja hauria de ser un reflex.
 """))
 
 A(code(r"""
 columna = vins["alcohol"]
 
+print("type de vins           :", type(vins).__name__)
 print("type de vins['alcohol']:", type(columna).__name__)
-print("type de vins:           ", type(vins).__name__)
-print()
+"""))
+
+A(md(r"""
+Un tipus nou: **`Series`**. Això es passa per alt i després confon molt: **una columna d'un
+DataFrame no és un DataFrame**. És una `Series`, una altra classe, amb els seus propis
+mètodes.
+"""))
+
+A(code(r"""
 print("shape:", columna.shape, "(una sola dimensió, no (178, 1))")
 print("dtype:", columna.dtype)
 print("name: ", columna.name)
@@ -799,9 +535,9 @@ print(columna.head(3))
 """))
 
 A(md(r"""
-Un parany petit: `vins["alcohol"]`, amb un nom, és una `Series`; però `vins[["alcohol"]]`,
-amb **doble claudàtor** (una llista d'una sola columna), és un DataFrame d'una columna. Es
-veuen gairebé igual a la pantalla i no tenen els mateixos mètodes.
+Un parany petit i molt habitual: `vins["alcohol"]`, amb un nom, és una `Series`; però
+`vins[["alcohol"]]`, amb **doble claudàtor** (una llista d'una sola columna), és un DataFrame
+d'una columna. Es veuen gairebé igual a la pantalla i no tenen els mateixos mètodes.
 """))
 
 A(code(r"""
@@ -809,321 +545,140 @@ print("vins['alcohol']   ->", type(vins["alcohol"]).__name__, vins["alcohol"].sh
 print("vins[['alcohol']] ->", type(vins[["alcohol"]]).__name__, vins[["alcohol"]].shape)
 """))
 
-A(code(r"""
-# value_counts, unique, nunique: sempre sobre la columna del target, per començar
-classes = vins["target"]
+A(md(r"""
+Com que és un tipus nou, té mètodes que el DataFrame no necessita. Els de resum els
+reconeixeràs, i n'hi ha un que val la pena mirar-se: `.idxmax()`.
+"""))
 
-print("value_counts():")
-print(classes.value_counts())
+A(code(r"""
+print("mitjana:  ", round(columna.mean(), 4))
+print("desviació:", round(columna.std(), 4))
+print("mínim:    ", columna.min())
+print("màxim:    ", columna.max())
 print()
-print("value_counts().sort_index():")
-print(classes.value_counts().sort_index())
-print()
-print("unique(): ", classes.unique())
-print("nunique():", classes.nunique())
+print("idxmax(): ", columna.idxmax(), "<- no és el valor, és ON és")
 """))
 
 A(md(r"""
-El dataset té **3 classes**, amb **59, 71 i 48** vins respectivament. Fixa't que
-`.value_counts()` ordena de més freqüent a menys (surt primer la classe 1, amb 71), no pel
-valor. Per veure-ho en ordre de classe, `.sort_index()`.
-
-`.map()` serveix per traduir valors. Aquí, els números del target als noms de les varietats:
+El vi més alcohòlic fa **14.83 graus** i és el de la fila **8**. I com que tens l'índex de la
+fila, pots anar a buscar-la sencera amb `.loc`:
 """))
 
 A(code(r"""
-noms = load_wine().target_names
-print("target_names:", noms)
-
-etiquetes = classes.map({0: noms[0], 1: noms[1], 2: noms[2]})
-print()
-print(etiquetes.head(3))
-print()
-print(etiquetes.value_counts())
-"""))
-
-A(code(r"""
-# idxmax: l'índex de la fila amb el valor més alt
-print("l'alcohol més alt és", columna.max())
-print("i és el de la fila  ", columna.idxmax())
-print()
-print("la fila sencera, fins a magnesium:")
 print(vins.loc[columna.idxmax(), :"magnesium"])
 """))
 
 A(md(r"""
-El vi més alcohòlic fa **14.83 graus** i és el de la fila **8**.
+Dues notes sobre coses que acaben de sortir i que despistaran:
 
-Compte amb la diferència entre `.idxmax()` de pandas i `.argmax()` de NumPy: `.idxmax()` et
-torna l'**etiqueta de l'índex** (que aquí coincideix amb la posició, perquè l'índex va de 0
-a 177, però no sempre passa) i `.argmax()` et torna la **posició**.
+- `.loc` i `.iloc` són **atributs** (sense parèntesis) però es fan servir amb **claudàtors**:
+  `vins.loc[8, "alcohol"]`. Són l'excepció de la regla dels parèntesis. `.loc` busca **per
+  etiqueta** i `.iloc` **per posició**.
+- A pandas, `.idxmax()` torna l'**etiqueta de l'índex**; a NumPy, `.argmax()` torna la
+  **posició**. Aquí coincideixen, perquè l'índex va de 0 a 177, però no sempre passa.
+
+I una tercera, de regal: les columnes també són accessibles amb un punt, `vins.alcohol`, com
+si fossin atributs. Amb els claudàtors sempre funciona; amb el punt, no sempre: prova-ho amb
+la columna que es diu `od280/od315_of_diluted_wines` i veuràs per què.
 """))
 
-# ---------------------------------------------------------- model
+# ---------------------------------------------------------- pregunta 4
 A(md(r"""
-## 2.5 Un model de scikit-learn, abans i després d'entrenar
+## Pregunta 4 - Hi falta res? Hi ha repetits?
 
-L'últim objecte, i el que té la propietat més curiosa: **canvia** quan l'entrenes. Té
-atributs que **no existeixen** fins que li has donat dades.
+Aquesta pregunta es fa **abans** de calcular res, i no és una formalitat. Un valor que falta
+enmig d'una columna fa que la mitjana surti d'un subconjunt sense avisar; una fila repetida
+compta dues vegades i desequilibra el que vingui després.
 
-| | Nom | Què és |
-|---|---|---|
-| mètode | `.fit(X, y)` | **entrena**: aprèn dels exemples |
-| mètode | `.predict(X)` | prediu la classe de mostres noves |
-| mètode | `.score(X, y)` | quina proporció encerta |
-| mètode | `.get_params()` | amb quins ajustos l'has creat |
-| atribut | `.coef_` | el que ha après: el pes de cada característica |
-| atribut | `.classes_` | quines classes ha vist |
-| atribut | `.n_features_in_` | quantes columnes esperava |
-| atribut | `.feature_importances_` | (als models d'arbre) quant compta cada columna |
-
-### La convenció del guió baix al final
-
-Ja saps què vol dir un guió baix **davant**: cosa interna, no és per a tu. Doncs n'hi ha una
-altra convenció, i és la que et desencallarà avui:
-
-> **Un guió baix al FINAL del nom vol dir "això ho he après de les dades".**
-
-`coef_`, `classes_`, `n_features_in_`, `feature_importances_`: tots acaben en `_` i tots
-**només existeixen després de cridar `.fit()`**. No és decoració. És l'avís que no els pots
-demanar abans.
-
-Comprovem-ho: creem un model, mirem què té, l'entrenem i tornem a mirar.
+Dues línies. `.isna()` marca amb `True` cada casella buida, i `.sum()` les compta.
 """))
 
 A(code(r"""
-from sklearn.linear_model import LogisticRegression
-
-model = LogisticRegression(max_iter=5000, random_state=42)
-
-print("TIPUS:", type(model).__name__)
+print("isna() torna un", type(vins.isna()).__name__, "de la mateixa mida:", vins.isna().shape)
 print()
-print("get_params(), els 6 primers:")
-for clau, valor in list(model.get_params().items())[:6]:
-    print(f"  {clau} = {valor}")
-"""))
-
-A(code(r"""
-# El que té ABANS d'entrenar: cap nom que acabi en guió baix
-abans = [n for n in dir(model) if not n.startswith("_")]
-apresos_abans = [n for n in abans if n.endswith("_")]
-
-print("noms públics abans de fit():", len(abans))
-print("dels quals acabats en '_': ", apresos_abans)
+print("valors que falten en total:", vins.isna().sum().sum())
+print("files repetides:           ", vins.duplicated().sum())
 """))
 
 A(md(r"""
-La llista és **buida**. El model no ha après res perquè encara no ha vist cap dada.
+**Zero i zero.** I això és una informació, no un anticlímax: vol dir que pots passar
+directament a analitzar, sense netejar res.
 
-I això és exactament el que passa si els demanes: **l'error que veuràs avui**.
+El que no vol dir és que això sigui normal. **Wine està net perquè és un dataset d'exemple,
+preparat per ensenyar.** Als fitxers de veritat hi falten dades gairebé sempre, i al quadern
+de pandas obriràs un fitxer real amb el **47 %** dels valors buits en una columna, i hauràs
+de decidir què hi fas. Per això la pregunta 4 es fa sempre: perquè el dia que la resposta no
+sigui zero, t'has d'assabentar **abans** de calcular la mitjana, no després.
+
+Per saber-ho reconèixer, mira com es veu quan sí que en falten:
 """))
 
 A(code(r"""
-try:
-    print(model.coef_)
-except AttributeError as e:
-    print(type(e).__name__, "->", e)
-"""))
-
-A(code(r"""
-from sklearn.exceptions import NotFittedError
-
-try:
-    model.predict(iris.data[:3])
-except NotFittedError as e:
-    print(type(e).__name__, "->")
-    print(str(e)[:190])
-"""))
-
-A(md(r"""
-Els dos errors diuen el mateix amb paraules diferents: **`AttributeError` si demanes un
-atribut après, `NotFittedError` si li demanes que treballi**. Tots dos volen dir "encara no
-has cridat `.fit()`". Quan te'n surti un, no busquis el problema al nom del mètode: busca la
-línia del `fit` que t'has deixat.
-
-Ara l'entrenem.
-"""))
-
-A(code(r"""
-model.fit(iris.data, iris.target)
-
-despres = [n for n in dir(model) if not n.startswith("_")]
-apresos_despres = [n for n in despres if n.endswith("_")]
-
-print("noms públics abans de fit():  ", len(abans))
-print("noms públics després de fit():", len(despres))
+amb_forats = pd.DataFrame({
+    "a": [1.0, 2.0, np.nan, 4.0],
+    "b": [10.0, np.nan, 30.0, 40.0],
+})
+print(amb_forats)
 print()
-print("acabats en '_' que han APAREGUT:")
-for n in apresos_despres:
-    print("  ", n)
-"""))
-
-A(md(r"""
-De 27 noms públics a 32: han aparegut **cinc atributs nous**, i tots acaben en guió baix.
-Abans no hi eren. El mateix objecte, la mateixa variable, i ara té dades a dins que no
-tenia. Això és el que fa `.fit()`: no torna res útil, **modifica el model**.
-
-Mirem què ha après:
-"""))
-
-A(code(r"""
-print("classes_:      ", model.classes_)
-print("n_features_in_:", model.n_features_in_)
+print("forats per columna:")
+print(amb_forats.isna().sum())
 print()
-print("coef_.shape:", model.coef_.shape, "-> una fila per classe, una columna per característica")
-print(model.coef_.round(2))
-"""))
-
-A(code(r"""
-print("score sobre les mateixes dades:", round(model.score(iris.data, iris.target), 4))
+print("dropna() -> sobreviuen", amb_forats.dropna().shape[0], "files de 4")
+print("fillna(0):")
+print(amb_forats.fillna(0))
 print()
-prediccions = model.predict(iris.data[:8])
-print("predict de les 8 primeres flors:", prediccions)
-print("el que eren de veritat:         ", iris.target[:8])
+print("i l'original NO ha canviat:", amb_forats.isna().sum().sum(), "forats encara")
 """))
 
 A(md(r"""
-`0.9733`: encerta 146 de les 150 flors. (Avaluar sobre les mateixes dades amb què has
-entrenat està malament fet, i ho veuràs a la sessió de validació; aquí només volíem que
-`.score()` tornés un número.)
+`.dropna()` treu les files amb buits i `.fillna(valor)` els omple. Cap dels dos toca el
+DataFrame original: **et tornen un de nou**. Si vols conservar el resultat, l'has d'assignar.
+""" ))
 
-### El mateix amb un arbre: `feature_importances_`
+# ---------------------------------------------------------- pregunta 5
+A(md(r"""
+## Pregunta 5 - Com es reparteix el que vull predir?
 
-Cada família de models aprèn coses diferents, i per tant té atributs acabats en `_`
-diferents. Un model lineal aprèn **coeficients**; un arbre aprèn **importàncies**. Si
-n'agafes un que no has fet servir mai, `que_te()` t'ho diu.
+Ja saps què tens, quina mida fa i que està net. L'última pregunta és sobre **la columna que
+vols endevinar**: quantes classes hi ha i quantes mostres de cada una.
+
+És la pregunta que més gent es salta, i la que més disgustos estalvia. `vins["classe"]` és
+una `Series`, i a una `Series` li pots demanar `.value_counts()`.
 """))
 
 A(code(r"""
-from sklearn.tree import DecisionTreeClassifier
-
-arbre = DecisionTreeClassifier(random_state=42).fit(iris.data, iris.target)
-
-print("atributs apresos de l'arbre:")
-print([n for n in dir(arbre) if not n.startswith("_") and n.endswith("_")])
-print()
-for nom, importancia in zip(iris.feature_names, arbre.feature_importances_):
-    print(f"  {nom:22} {importancia:.3f}")
-print()
-print("l'arbre NO té coef_:", "coef_" in dir(arbre))
-"""))
-
-A(md(r"""
-L'arbre diu que per distingir les tres espècies d'iris n'hi ha prou amb les mesures del
-pètal: `petal length` s'emporta el **0.564** de la importància i `petal width` el **0.423**,
-o sigui un **0.987** entre tots dos, mentre que les dues mesures del sèpal es queden amb
-0.013 i 0.000. Això no ho has programat tu: ho ha après de les dades, i per això el nom
-acaba en guió baix.
-
-Fixa't també en l'última línia: `coef_ in dir(arbre)` dona `False`. L'arbre no té
-coeficients, perquè un arbre no és un model lineal. **Els atributs acabats en `_` depenen del
-model**, i per això `dir()` filtrat és millor que intentar recordar-los.
-"""))
-
-# ============================================================ PART 3
-A(md(r"""
----
-
-# Part 3 - Una exploració de dades de principi a fi
-
-Ara ho posem tot a treballar. Anem a explorar el dataset dels vins de dalt a baix i, a cada
-pas, diré **quin objecte tinc a les mans i què li estic demanant**. Aquest recorregut és el
-que faràs cada vegada que et donin dades noves, sempre en el mateix ordre.
-
-El dataset: 178 vins italians de tres varietats, amb 13 mesures químiques de cada un. La
-pregunta que l'acompanya és: **es poden distingir les varietats a partir de la química?**
-"""))
-
-A(md(r"""
-## Pas 1 - Carregar-ho i veure què tinc
-
-Sempre igual: `type()` i `.shape` abans de qualsevol altra cosa.
-"""))
-
-A(code(r"""
-dades = load_wine(as_frame=True)     # dades és un Bunch
-vins = dades.frame                   # vins és un DataFrame
-
-print("dades és un", type(dades).__name__, "amb claus:", list(dades.keys()))
-print("vins  és un", type(vins).__name__, "de shape", vins.shape)
-print()
-print("varietats:", dades.target_names)
-"""))
-
-A(md(r"""
-178 files i 14 columnes: les 13 mesures més la columna `target`. Li poso un nom més clar a
-la columna del target perquè el codi de més avall es llegeixi millor, i faig `.copy()` per
-treballar sobre una còpia meva i no tocar el que hi ha dins del `Bunch`.
-"""))
-
-A(code(r"""
-vins = vins.copy()
-vins["classe"] = vins["target"]
-vins = vins.drop(columns=["target"])
-
-print(vins.shape)
-print(list(vins.columns))
-"""))
-
-A(md(r"""
-## Pas 2 - Quins tipus, quantes files, hi falta res
-
-`.info()` respon les tres preguntes de cop. Tinc un DataFrame i li demano el resum.
-"""))
-
-A(code(r"""
-vins.info()
-"""))
-
-A(md(r"""
-178 entrades, 14 columnes, i totes diuen `178 non-null`: **no falta cap valor**. Tot és
-numèric (13 `float64` i la classe `int64`), o sigui que no hauré de convertir text a
-números.
-
-Ho comprovo també pel meu compte, que és una línia:
-"""))
-
-A(code(r"""
-print("valors que falten:", vins.isna().sum().sum())
-print("files repetides:  ", vins.duplicated().sum())
-"""))
-
-A(md(r"""
-## Pas 3 - Quantes classes i quantes mostres de cada
-
-`vins["classe"]` és una **Series**, i a una Series li puc demanar `.value_counts()`.
-"""))
-
-A(code(r"""
-compte = vins["classe"].value_counts().sort_index()
+compte = vins["classe"].value_counts()
 
 print(compte)
 print()
-print("type del resultat:", type(compte).__name__, "-> també és una Series")
+print("en ordre de classe, amb .sort_index():")
+compte = compte.sort_index()
+print(compte)
 print()
 print("proporcions:")
 print((compte / len(vins)).round(3))
 """))
 
 A(md(r"""
-**59, 71 i 48**: un 33.1%, un 39.9% i un 27%. Les classes estan bastant equilibrades, i això
-és bona notícia. Si una classe tingués el 95% de les mostres, un model que digués sempre
-aquella classe encertaria el 95% sense haver après res, i el `.score()` mentiria.
+**59, 71 i 48**: un 33.1 %, un 39.9 % i un 27 %. Tres classes, bastant equilibrades.
 
-De passada, el número a batre: si sempre digués "classe 1", encertaria el **39.9%**.
-Qualsevol model ha de fer-ho millor que això, o no serveix.
-"""))
+Fixa't que `.value_counts()` ordena de més freqüent a menys (surt primer la classe 1, amb 71),
+no pel valor de la classe; per veure-ho en ordre, `.sort_index()`.
 
-A(md(r"""
-## Pas 4 - La mitjana de cada columna per classe
+I per què importa tant, això? Perquè et dona **el número a batre**. Si el teu model digués
+sempre "classe 1" sense mirar res, encertaria el **39.9 %**. Qualsevol model ha de fer-ho
+millor que aquest 39.9 %, o no ha après res. Si una classe tingués el 95 % de les mostres, un
+model que digués sempre aquella classe encertaria el 95 % i el resultat semblaria excel·lent
+sent inútil.
 
-Aquí ve el pas important, i és on cal anar amb compte amb què tens a les mans:
+### La mateixa pregunta, però per classe
 
-1. `vins` és un **DataFrame**.
-2. `vins.groupby("classe")` **no** és un DataFrame: és un objecte d'agrupació
-   (`DataFrameGroupBy`). És una promesa, no una taula. Si l'imprimeixes, no veus dades.
-3. `.mean()` sobre aquest objecte **el converteix en un DataFrame nou**, amb una fila per
-   classe i una columna per mesura.
+Ara ve el pas que converteix les cinc preguntes en una anàlisi de debò: **en què es
+diferencien les tres varietats?** La mitjana de cada mesura, calculada per separat dins de
+cada classe.
+
+L'eina és `.groupby()`, i abans de fer-la servir mira bé què et torna, que aquí s'hi ensopega
+molt:
 """))
 
 A(code(r"""
@@ -1134,6 +689,12 @@ print("imprimir-lo no ensenya dades:", agrupat)
 print()
 print("grups:", list(agrupat.groups.keys()))
 print("mides:", agrupat.size().to_dict())
+"""))
+
+A(md(r"""
+`vins.groupby("classe")` **no** és un DataFrame: és un objecte d'agrupació
+(`DataFrameGroupBy`). És una promesa, no una taula, i si l'imprimeixes no veus dades. Es
+converteix en taula quan li demanes **què vols calcular** de cada grup:
 """))
 
 A(code(r"""
@@ -1147,21 +708,21 @@ print(mitjanes[["alcohol", "flavanoids", "color_intensity", "proline"]].round(2)
 A(md(r"""
 Això ja diu coses. Llegeix-ho per files:
 
-- La **classe 0** és la més alcohòlica (**13.74**) i la que té més `proline`, molt destacada:
-  **1115.71** contra 519.51 i 629.90.
+- La **classe 0** és la més alcohòlica (**13.74**) i la que té més `proline`, amb molta
+  diferència: **1115.71** contra 519.51 i 629.90.
 - La **classe 2** és la que té menys `flavanoids` (**0.78** contra 2.98 i 2.08) i més
   `color_intensity` (**7.40**).
 - La **classe 1** queda al mig en gairebé tot, i és la més fluixa en alcohol (**12.28**).
 
-## Pas 5 - Quina columna separa millor les classes
+### Quina columna separa millor?
 
 "Les mitjanes són diferents" no n'hi ha prou. `magnesium` fa 106.34, 94.55 i 99.31: són
-números diferents, però la columna sencera es mou tant que aquesta diferència es perd dins
-del soroll.
+números diferents, però la columna sencera es mou tant que aquesta diferència es perd dins del
+soroll.
 
-El que vols és una mesura que compari **la distància entre les mitjanes** amb **la dispersió
-de la columna**. La més senzilla: el rang de les mitjanes dividit per la desviació típica de
-la columna. Com més gran, millor separa.
+El que vols és una mesura que compari **la distància entre les mitjanes** amb **la dispersió de
+la columna**. La més senzilla: el rang de les mitjanes dividit per la desviació típica de la
+columna. Com més gran, millor separa.
 """))
 
 A(code(r"""
@@ -1177,18 +738,18 @@ print(separacio.round(2))
 """))
 
 A(md(r"""
-El rànquing: **`flavanoids` (2.20)**, `od280/od315_of_diluted_wines` (2.08), `proline`
-(1.89), `color_intensity` (1.86). I a la cua, `ash` (0.77) i `magnesium` (0.83), que no
-separen gairebé res.
+El rànquing: **`flavanoids` (2.20)**, `od280/od315_of_diluted_wines` (2.08), `proline` (1.89),
+`color_intensity` (1.86). I a la cua, `ash` (0.77) i `magnesium` (0.83), que no separen
+gairebé res.
 
-Recorda que l'arbre entrenat amb iris deia que les mesures del pètal eren les que
-importaven. Això que acabes de calcular a mà és la mateixa idea, i és la que un model
-aprofitarà tot sol.
+Recorda aquests dos extrems, `flavanoids` i `ash`: a l'Acte 3 veuràs si un model entrenat
+arriba a la mateixa conclusió pel seu compte.
 
-## Pas 6 - Veure-ho
+### Veure-ho
 
-Dibuixem les dues millors columnes, una contra l'altra, amb un color per classe. Si les tres
-varietats surten en tres zones separades, un model les distingirà.
+L'última cosa. Dibuixem les dues millors columnes, una contra l'altra, amb un color per
+classe, i al costat la pitjor. Si les tres varietats surten en tres zones separades, un model
+les distingirà.
 """))
 
 A(code(r"""
@@ -1223,22 +784,775 @@ A(md(r"""
 A l'esquerra, tres núvols bastant separats: es veu a ull que amb dues mesures ja es
 distingeixen les varietats. A la dreta, els tres histogrames de `ash` estan encavalcats: si
 només tinguessis aquesta columna, no sabries de quina varietat és un vi. Per això `ash`
-sortia última al rànquing del Pas 5.
+sortia última al rànquing.
 
-Aquest és el recorregut sencer: `type` i `.shape`, `.info()`, `.value_counts()` del target,
-`.groupby().mean()`, buscar què separa, i dibuixar-ho. Sis passos, i ja pots dir alguna cosa
-sobre un dataset que no havies vist mai.
+## Fi de l'Acte 1
+
+Repassa el camí que has fet. No hi ha hagut cap moment de "ara toca aprendre `dir()`": cada
+eina ha entrat perquè sense ella no podies continuar.
+
+| | Pregunta | Què has fet servir a Wine | Què has trobat |
+|---|---|---|---|
+| **1** | Què és això? | `type()` sobre `dades`, `dades.data`, una columna | `Bunch`, `ndarray`, `DataFrame`, `Series` |
+| **2** | Què porta dins? | `dir()` filtrat, `.keys()`, `.columns` | `data`, `target`, `feature_names`, `frame` |
+| **3** | Quina mida i quins tipus? | `.shape`, `.dtypes`, `.info()`, `.head()`, `.describe()` | 178 x 14, tot numèric |
+| **4** | Hi falta res? Repetits? | `.isna().sum()`, `.duplicated().sum()` | 0 i 0 |
+| **5** | Com es reparteix el target? | `.value_counts()`, `.groupby().mean()` | 59/71/48; `flavanoids` separa, `ash` no |
+
+Les cinc preguntes, en aquest ordre, són el mètode. Ara comprovem si de debò te l'endús.
+"""))
+
+# ============================================================ ACTE 2
+A(md(r"""
+---
+
+# Acte 2 - I ara, amb un que no has vist mai
+
+Unes dades noves. No et diré què hi trobaràs, no hi ha cap taula de mètodes i no hi ha cap
+pista. Tens **les cinc preguntes**, i prou.
+
+Són imatges de dígits escrits a mà, i la pregunta que les acompanya és: **es pot endevinar
+quin número hi ha escrit?** Endavant.
+"""))
+
+A(code(r"""
+from sklearn.datasets import load_digits
+
+digits = load_digits()
+
+# Pregunta 1
+print(type(digits).__name__)
+"""))
+
+A(md(r"""
+Un `Bunch`, com Wine. Bona notícia: ja saps com s'obre.
+
+**Pregunta 2: què porta dins?** Aquesta la fas tu. Tens dues maneres de respondre-la, i les
+has fet servir totes dues fa deu minuts.
+"""))
+
+A(code(r"""
+# EXERCICI - Pregunta 2: què porta dins?
+# Respon-la de les dues maneres que coneixes:
+#   a) dir() filtrat, per quedar-te només els noms sense guió baix davant
+#   b) .keys(), que és la via curta dels Bunch
+#
+# Compara la llista amb la de Wine: ['DESCR', 'data', 'feature_names', 'frame',
+# 'target', 'target_names']. Què hi ha aquí que allà no hi era?
+"""))
+
+A(md(r"""
+Si l'has feta, has vist que hi ha **un nom que a Wine no hi era**: `images`.
+
+Ningú te n'ha parlat. No surt a cap taula d'aquest quadern ni te l'has après de memòria. **Ha
+sortit perquè has fet la pregunta 2**, i això és exactament de què serveix el mètode: et
+troba coses que no sabies que existien.
+
+Anem a veure què és, amb la pregunta 3.
+"""))
+
+A(code(r"""
+print("keys: ", list(digits.keys()))
+print()
+print("data:  ", digits.data.shape, digits.data.dtype)
+print("images:", digits.images.shape, digits.images.dtype)
+print("target:", digits.target.shape, " classes:", digits.target_names)
+"""))
+
+A(md(r"""
+`data` fa **1797 x 64** i `images` fa **1797 x 8 x 8**. El mateix primer número: 1797 mostres a
+les dues. I 8 x 8 = 64.
+
+Això fa pensar una cosa: que són **les mateixes dades guardades de dues maneres**. Una imatge
+de 8 x 8 píxels aplanada en una fila de 64 números, i la mateixa imatge en forma de quadrat.
+
+- `.data`, la fila de 64, és la forma que volen els models.
+- `.images`, el quadrat, és la forma que vols per dibuixar-la.
+
+**No t'ho creguis perquè ho digui jo. Comprova-ho.** `.reshape()` canvia la forma d'un array
+sense tocar els números, i `np.array_equal(a, b)` diu si dos arrays són idèntics.
+"""))
+
+A(code(r"""
+# EXERCICI - són el mateix?
+# Agafa digits.images, que fa (1797, 8, 8), i canvia-li la forma a (1797, 64)
+# amb .reshape(). Compara el resultat amb digits.data fent servir np.array_equal().
+#
+# aplanades = ...
+# print(np.array_equal(aplanades, digits.data))
+"""))
+
+A(md(r"""
+T'ha de sortir `True`.
+
+Cap dels dos atributs està explicat enlloc. Ho has esbrinat preguntant i comprovant, i aquesta
+és tota la tècnica del quadern.
+
+Ara que saps que `.images` és la versió quadrada, ja pots fer una cosa que amb `.data` no
+podries: mirar-les.
+"""))
+
+A(code(r"""
+print("la primera imatge, en forma de quadrat 8x8:")
+print(digits.images[0].astype(int))
+print()
+print("i el seu target:", digits.target[0])
+"""))
+
+A(md(r"""
+Amb els números davant ja s'endevina un zero: els valors alts (13, 15, 16) dibuixen l'anell i
+al mig hi ha el forat de zeros. Els valors van de 0 a 16, que és la intensitat del gris de cada
+píxel. Dibuixem-los de debò:
+"""))
+
+A(code(r"""
+fig, eixos = plt.subplots(1, 8, figsize=(11, 1.8))
+for i, eix in enumerate(eixos):
+    eix.imshow(digits.images[i], cmap="gray_r")
+    eix.set_title(f"target = {digits.target[i]}")
+    eix.axis("off")
+plt.tight_layout()
+plt.show()
+"""))
+
+A(md(r"""
+**Pregunta 4: hi falta res?** Amb `as_frame=True` tens les 1797 files x 64 píxels més el target
+en una taula, i les dues línies de sempre.
+"""))
+
+A(code(r"""
+taula_digits = load_digits(as_frame=True).frame
+
+print("shape:", taula_digits.shape)
+print("valors que falten:", taula_digits.isna().sum().sum())
+print("files repetides:  ", taula_digits.duplicated().sum())
+print()
+print("tipus diferents que hi ha:", list(taula_digits.dtypes.unique()))
+"""))
+
+A(md(r"""
+Net, com Wine, i pel mateix motiu: també és un dataset d'exemple.
+
+**Pregunta 5: com es reparteix el que vull predir?** Aquesta també la fas tu. Compte amb una
+cosa: `digits.target` és un array de NumPy, i `.value_counts()` és un mètode de les `Series`
+de pandas, no dels arrays. Ho tens resolt de dues maneres, i les dues et serveixen.
+"""))
+
+A(code(r"""
+# EXERCICI - Pregunta 5: com es reparteix el target?
+# Quantes classes hi ha i quantes mostres de cada una?
+#
+# Dues vies, tria'n una:
+#   a) pd.Series(digits.target).value_counts().sort_index()
+#   b) la columna "target" de taula_digits, que ja és una Series
+#
+# Digues també quin és el número a batre: quin percentatge encertaria un model
+# que sempre digués la classe més freqüent?
+"""))
+
+A(md(r"""
+T'han de sortir **10 classes** (els dígits del 0 al 9) amb entre **174 i 183** mostres cada una:
+el repartiment més equilibrat que et trobaràs mai. El número a batre és, doncs, d'un **10 %**
+aproximadament, molt més baix que el 39.9 % de Wine. Amb deu classes és més difícil encertar
+per casualitat.
+
+## Fi de l'Acte 2
+
+Les mateixes cinc preguntes, unes dades que no havies vist, i te n'has sortit sense que et
+donessin cap llista de mètodes. I pel camí has trobat `.images`, que no surt a Wine i que
+ningú t'havia dit que existís.
+
+Això és el que hauria de passar cada vegada.
+"""))
+
+# ============================================================ ACTE 3
+A(md(r"""
+---
+
+# Acte 3 - El model també és un objecte
+
+Tornem als vins. Ja saps què hi ha a la taula i quines columnes separen les varietats; ara
+entrenarem un model perquè ho faci ell.
+
+I aquí el quadern fa el seu últim gir: **a un model se li fan exactament les mateixes cinc
+preguntes que a les dades**. Perquè un model també és un objecte, i té una propietat que no
+té cap dels altres: **canvia quan l'entrenes**. Té atributs que **no existeixen** fins que li
+has donat dades.
+
+Primer preparo les dades tal com les vol scikit-learn: les mesures en una banda (`X`) i la
+resposta correcta a l'altra (`y`).
+"""))
+
+A(code(r"""
+from sklearn.linear_model import LogisticRegression
+
+X = vins.drop(columns=["classe"])    # DataFrame de 178 x 13
+y = vins["classe"]                   # Series de 178
+
+model = LogisticRegression(max_iter=20000, random_state=42)
+
+# Pregunta 1
+print(type(model).__name__)
+"""))
+
+A(md(r"""
+Un `LogisticRegression`. Encara no ha vist cap vi: acabo de crear-lo.
+
+**Pregunta 2: què porta dins?** Abans d'entrenar-lo. Un model té una versió pròpia d'aquesta
+pregunta, `.get_params()`, que et diu amb quins ajustos l'has creat:
+"""))
+
+A(code(r"""
+print("get_params(), els 6 primers:")
+for clau, valor in list(model.get_params().items())[:6]:
+    print(f"  {clau} = {valor}")
+"""))
+
+A(md(r"""
+Aquests són els ajustos que **tu** has triat (o que venen per defecte). No els ha après de
+res: hi eren abans de veure cap dada.
+
+I ara el `dir()` filtrat de sempre, amb un filtre de més: **els noms que acaben en guió baix**.
+Aguanta la curiositat un moment i mira el resultat:
+"""))
+
+A(code(r"""
+abans = [n for n in dir(model) if not n.startswith("_")]
+apresos_abans = [n for n in abans if n.endswith("_")]
+
+print("noms públics abans de fit():", len(abans))
+print("dels quals acabats en '_': ", apresos_abans)
+"""))
+
+A(md(r"""
+La llista és **buida**. Vint-i-set noms públics i cap que acabi en guió baix.
+
+### Els dos errors que veuràs avui
+
+Si li demanes una cosa que no ha après, això és el que passa. Els dos casos:
+"""))
+
+A(code(r"""
+try:
+    print(model.coef_)
+except AttributeError as e:
+    print(type(e).__name__, "->", e)
+"""))
+
+A(code(r"""
+from sklearn.exceptions import NotFittedError
+
+try:
+    model.predict(X[:3])
+except NotFittedError as e:
+    print(type(e).__name__, "->")
+    print(str(e)[:190])
+"""))
+
+A(md(r"""
+Els dos diuen el mateix amb paraules diferents: **`AttributeError` si li demanes un atribut
+après, `NotFittedError` si li demanes que treballi.** Tots dos volen dir "encara no has cridat
+`.fit()`". Quan te'n surti un, no busquis el problema al nom del mètode: busca la línia del
+`fit` que t'has deixat.
+
+Ara l'entrenem, i tornem a fer la pregunta 2.
+"""))
+
+A(code(r"""
+model.fit(X, y)
+
+despres = [n for n in dir(model) if not n.startswith("_")]
+apresos_despres = [n for n in despres if n.endswith("_")]
+
+print("noms públics abans de fit():  ", len(abans))
+print("noms públics després de fit():", len(despres))
+print()
+print("acabats en '_' que han APAREGUT:")
+for n in apresos_despres:
+    print("  ", n)
+"""))
+
+A(md(r"""
+De **27** noms públics a **33**: han aparegut **sis atributs nous**, i tots acaben en guió baix.
+Abans no hi eren. El mateix objecte, la mateixa variable, i ara té coses a dins que no tenia.
+Això és el que fa `.fit()`: no torna res útil, **modifica el model**.
+
+### La convenció del guió baix al final
+
+Ja saps què vol dir un guió baix **davant**: cosa interna de Python, no és per a tu. Doncs n'hi
+ha una altra convenció, i és la que et desencallarà avui:
+
+> **Un guió baix al FINAL del nom vol dir "això ho he après de les dades".**
+
+`coef_`, `classes_`, `n_features_in_`, `feature_names_in_`, `intercept_`, `n_iter_`: tots
+acaben en `_` i tots **només existeixen després de cridar `.fit()`**. No és decoració. És
+l'avís que no els pots demanar abans.
+
+Mirem què ha après, doncs.
+"""))
+
+A(code(r"""
+print("classes_:         ", model.classes_)
+print("n_features_in_:   ", model.n_features_in_)
+print("n_iter_:          ", model.n_iter_, "voltes li ha calgut per aprendre")
+print()
+print("feature_names_in_: recorda com es deien les columnes")
+print(model.feature_names_in_)
+"""))
+
+A(md(r"""
+Val la pena aturar-se en dues d'aquestes. `n_iter_` diu **5476**: ha necessitat 5476 passades
+sobre les dades per acabar. Això és moltíssim, i la culpa és de l'escala que has vist al
+`.describe()` de l'Acte 1 (`alcohol` d'11 a 15, `proline` de 278 a 1680): quan les columnes
+tenen mides tan diferents, el model triga molt a trobar el punt. Per això hi ha un
+`max_iter=20000` allà dalt. A la sessió d'escalat ho arreglaràs, i el número baixarà de
+cop.
+
+`feature_names_in_` existeix perquè li has passat un `DataFrame` en lloc d'un array: el model
+s'ha guardat els noms de les columnes. Si li haguessis passat `X.to_numpy()`, aquest atribut no
+hi seria i n'apareixerien cinc en lloc de sis. **Els atributs apresos depenen del que li dones,
+no només del model.**
+
+I el que ha après de debò:
+"""))
+
+A(code(r"""
+print("coef_.shape:", model.coef_.shape, "-> una fila per classe, una columna per mesura")
+print()
+print(pd.DataFrame(model.coef_.round(2),
+                   columns=model.feature_names_in_,
+                   index=[f"classe {c}" for c in model.classes_]
+                  )[["flavanoids", "color_intensity", "proline", "ash"]])
+"""))
+
+A(md(r"""
+Llegeix la fila de la classe 2: **`flavanoids` té -1.23**, el pes més gran en valor absolut de
+tota la taula. Vol dir "com menys flavanoids, més probable que sigui de la classe 2", i és
+exactament el que havies trobat a mà a l'Acte 1, quan `flavanoids` va sortir primera al
+rànquing de separació (2.20) i la classe 2 en tenia 0.78 contra 2.98.
+
+I mira la columna `ash`, l'última del rànquing: pesos de 0.71, -0.85 i 0.14, petits i sense
+un patró clar. **El model ha arribat sol a la mateixa conclusió que tu.**
+
+Ara que està entrenat, ja pot treballar:
+"""))
+
+A(code(r"""
+print("score sobre les mateixes dades:", round(model.score(X, y), 4))
+print()
+print("predict dels 8 primers vins:", model.predict(X[:8]))
+print("el que eren de veritat:     ", y[:8].to_numpy())
+"""))
+
+A(md(r"""
+`0.9944`: encerta 177 dels 178 vins. Molt per damunt del 39.9 % que hauria tret dient sempre
+"classe 1".
+
+(Avaluar sobre les mateixes dades amb què has entrenat està malament fet, i és el tema sencer
+de la sessió de validació. Aquí només volíem que `.score()` tornés un número.)
+
+### Un model diferent aprèn coses diferents
+
+Cada família de models aprèn una cosa seva, i per tant té atributs acabats en `_` diferents. Si
+agafes un model que no has fet servir mai, **no te l'has de buscar: li fas la pregunta 2**.
+"""))
+
+A(code(r"""
+from sklearn.tree import DecisionTreeClassifier
+
+arbre = DecisionTreeClassifier(random_state=42).fit(X, y)
+
+print("atributs apresos de l'arbre:")
+print([n for n in dir(arbre) if not n.startswith("_") and n.endswith("_")])
+print()
+print("hi ha 'coef_' a dir(arbre)?    ", "coef_" in dir(arbre))
+print("hi ha 'coef_' al model lineal?", "coef_" in dir(model))
+"""))
+
+A(md(r"""
+Vuit atributs apresos, i **cap es diu `coef_`**. L'arbre no té coeficients, perquè un arbre no
+és un model lineal: no multiplica les columnes per pesos, les va partint per llindars. El que
+té, i la regressió logística no, és `feature_importances_`.
+"""))
+
+A(code(r"""
+importancies = pd.Series(arbre.feature_importances_, index=X.columns)
+
+print(importancies.sort_values(ascending=False).round(3))
+"""))
+
+A(md(r"""
+L'arbre diu que amb **tres** columnes ja en té prou: `proline` (**0.382**),
+`od280/od315_of_diluted_wines` (**0.312**) i `flavanoids` (**0.141**), que sumen el 0.835. Les
+altres set les deixa a **0.000**: no les ha fet servir ni una vegada.
+
+Compara-ho amb el teu rànquing de l'Acte 1: `flavanoids` 2.20,
+`od280/od315_of_diluted_wines` 2.08, `proline` 1.89. **Les tres mateixes columnes, en un ordre
+lleugerament diferent.** Tu ho vas calcular amb una divisió; l'arbre ho ha après de les dades.
+
+## La conclusió del quadern
+
+El mètode de les cinc preguntes serveix per a les dades i serveix per als models. Són el
+mateix tipus de cosa: objectes als quals es pot preguntar.
+
+> **Un model entrenat no és una caixa negra. És un objecte, i se li pot preguntar què ha
+> après.**
+
+`type()` per saber què és, `dir()` filtrat per saber què porta, el guió baix final per saber
+què ha tret de les dades, i els parèntesis per saber si demanes una dada o una feina. Res
+d'això te l'has de recordar de memòria: és el que acabes de fer tres vegades.
+"""))
+
+# ============================================================ XULETA
+A(md(r"""
+---
+
+# La xuleta
+
+Aquí baixa tot el material de consulta. Ara ja té sentit, perquè cada mètode que hi surt l'has
+fet servir en algun moment de les últimes dues hores. **Torna-hi quan estiguis encallat.**
+
+## Les quatre eines per interrogar qualsevol objecte
+
+| Quan | Eina |
+|---|---|
+| Estic escrivint i vull veure què hi ha | **TAB** |
+| Vull la llista completa, per llegir-la amb calma | `dir(objecte)` filtrat |
+| He trobat un mètode i no sé què li he de passar | `objecte.metode?` |
+| No sé ni de quin tipus és el que tinc | `type(objecte)` |
+
+### `help()` i el signe d'interrogació
+
+`dir()` et diu **que una cosa existeix**. No et diu què fa ni quins arguments vol. Per això hi
+ha `help()`:
+"""))
+
+A(code(r"""
+mostra = [3, 1, 4, 1, 5]
+
+help(mostra.count)
+"""))
+
+A(md(r"""
+Amb això ja el pots fer servir: t'ha dit com es crida (`count(value, /)`) i què fa.
+
+**La versió curta, i la que faràs servir de debò:** a Colab i a Jupyter pots posar un `?`
+darrere del nom.
+
+```python
+mostra.count?
+```
+
+Escriu-ho en una cel·la nova i executa-la: la documentació s'obre en un **panell a baix de la
+pantalla**, sense embrutar la sortida. Amb dos interrogants (`mostra.count??`) veus fins i tot
+el codi font, quan està escrit en Python.
+
+Amb pandas i scikit-learn els textos d'ajuda són llarguíssims (el de `DataFrame.groupby` fa
+desenes de línies) i al panell es llegeixen molt millor que enmig del quadern.
+
+> Compte: `mostra.count?` **només** funciona dins d'un quadern. En un fitxer `.py` és un error
+> de sintaxi; allà has de fer servir `help(mostra.count)`.
+
+### La tecla TAB
+
+Aquesta és la més important de les quatre i és l'única que no es pot ensenyar amb una cel·la
+executada: l'has de fer tu.
+
+**Escriu el nom d'un objecte, un punt, i prem TAB.** Surt una llista amb tot el que pots posar
+després del punt, i mentre escrius lletres es va escurçant.
+
+Prova-ho ara. Crea una cel·la nova, escriu això **sense executar-ho**:
+
+```python
+vins.
+```
+
+i amb el cursor just darrere del punt, prem **TAB**. Apareixeran `abs`, `add`, `agg`, `align`,
+`all`... Ara escriu `des` (`vins.des`) i torna a prémer TAB: només queda `describe`.
+
+Això és **la manera normal de treballar**. No és una drecera per a principiants: és com ho fa
+tothom, tot el dia, i és la que faràs servir el 90 % de les vegades. Ningú es recorda de
+memòria els noms dels mètodes de pandas, i ningú els busca a Google un per un. Es prem TAB i es
+tria de la llista.
+"""))
+
+A(md(r"""
+## `que_te()`: la funció que faràs servir tot el curs
+
+Ajuntem-ho tot en una sola funció. Li passes un objecte qualsevol i t'imprimeix de quin tipus
+és, quins atributs públics té i quins mètodes públics té, **separats**, que és justament el que
+`dir()` no fa.
+
+Copia-la als teus quaderns. Com distingeix els atributs dels mètodes? Amb `callable()`,
+exactament com has vist a l'Acte 1.
+"""))
+
+A(code(r'''
+def que_te(objecte, filtre=""):
+    """Imprimeix el tipus, els atributs públics i els mètodes públics d'un objecte.
+
+    Amb `filtre`, només mostra els noms que contenen aquell text:
+    que_te(df, "na") per trobar isna, dropna, fillna...
+    """
+    atributs = []
+    metodes = []
+    for nom in dir(objecte):
+        if nom.startswith("_") or filtre not in nom:
+            continue
+        try:
+            valor = getattr(objecte, nom)
+        except Exception:
+            continue          # n'hi ha que peten si encara no existeixen: les saltem
+        if callable(valor):
+            metodes.append(nom)
+        else:
+            atributs.append(nom)
+
+    print("TIPUS:", type(objecte).__name__)
+    print()
+    print(f"ATRIBUTS ({len(atributs)}) - sense parèntesis:")
+    print("  " + (", ".join(atributs) if atributs else "(cap)"))
+    print()
+    print(f"MÈTODES ({len(metodes)}) - amb parèntesis:")
+    print("  " + (", ".join(metodes) if metodes else "(cap)"))
+
+
+que_te(vins)
+'''))
+
+A(md(r"""
+28 atributs i 193 mètodes: un DataFrame té molta cosa. Dues observacions sobre aquesta sortida,
+perquè si no et despistaran:
+
+- Entre els atributs hi surten `alcohol`, `proline`, `classe` i companyia, que són **els noms de
+  les columnes**. pandas les exposa també com a atributs, i per això `vins.alcohol` funciona
+  igual que `vins["alcohol"]`. Amb els claudàtors sempre funciona; amb el punt, no (prova-ho
+  amb `od280/od315_of_diluted_wines`).
+- `loc` i `iloc` han anat a la llista de mètodes, perquè `callable()` diu que sí. Són
+  l'excepció de tot plegat: es fan servir amb **claudàtors**, `vins.loc[8, "alcohol"]`.
+
+Com que la llista és tan llarga, `que_te()` accepta un filtre: quan busques una cosa concreta i
+no recordes com es diu, filtra per un tros del nom. Per exemple, saps que hi ha alguna cosa per
+als valors que falten i que en anglès es diu "NA":
+"""))
+
+A(code(r"""
+que_te(vins, "na")
+"""))
+
+A(md(r"""
+`isna`, `dropna`, `fillna`, `notna`: els que buscaves. També hi surten `rename` i `rename_axis`,
+perquè el filtre és una cerca de text ximple i "rename" conté "na". No hi passa res: sis noms es
+llegeixen en un segon, 193 no.
+"""))
+
+# ---------------------------------------------------------- taules
+A(md(r"""
+## Els cinc objectes del curs
+
+### `Bunch` - el que et torna `load_wine()`, `load_digits()`, `load_iris()`
+
+No són les dades: és la capsa que les porta a dins, amb les etiquetes, els noms de les columnes
+i la descripció.
+
+| | Nom | Què és |
+|---|---|---|
+| atribut | `.data` | les dades: array 2D, files = mostres, columnes = característiques |
+| atribut | `.target` | la resposta correcta de cada fila: array 1D de números |
+| atribut | `.feature_names` | els noms de les columnes de `.data` |
+| atribut | `.target_names` | a què correspon cada número de `.target` |
+| atribut | `.DESCR` | la descripció del dataset, en text |
+| atribut | `.frame` | tot el dataset en un DataFrame, **només si has demanat `as_frame=True`** |
+| atribut | `.images` | **només a `load_digits`**: les mateixes dades en forma d'imatge 8x8 |
+| mètode | `.keys()` | què porta a dins (perquè un `Bunch` també és un diccionari) |
+
+`.DESCR` és un text llarg amb la fitxa del dataset: d'on surt, què vol dir cada columna, quantes
+mostres hi ha. No l'imprimeixis sencer, que fa mig metre; talla'l.
+"""))
+
+A(code(r"""
+print(type(dades.DESCR).__name__, "de", len(dades.DESCR), "caràcters")
+print()
+print(dades.DESCR[:330])
+"""))
+
+A(md(r"""
+### `ndarray` - l'array de NumPy
+
+És el que hi ha dins de `.data`. Files = mostres, columnes = característiques.
+
+| | Nom | Què és |
+|---|---|---|
+| atribut | `.shape` | la forma: `(files, columnes)` |
+| atribut | `.dtype` | el tipus de dada que guarda: `float64`, `int64`... |
+| atribut | `.ndim` | quantes dimensions té: 1 = fila, 2 = taula |
+| atribut | `.size` | quants números hi ha en total |
+| atribut | `.T` | el mateix array transposat (files per columnes) |
+| mètode | `.mean()` `.std()` | mitjana, desviació típica |
+| mètode | `.min()` `.max()` `.sum()` | mínim, màxim, suma |
+| mètode | `.argmin()` `.argmax()` | **la posició** del mínim i del màxim, no el valor |
+| mètode | `.reshape()` | canvia la forma sense canviar els números (com a l'Acte 2) |
+| mètode | `.copy()` | una còpia independent |
+| mètode | `.astype()` | el mateix array amb un altre tipus de dada |
+| mètode | `.round()` | arrodonit a tants decimals |
+
+#### `axis`: el que costa més de tots
+
+Els mètodes de resum (`.mean()`, `.sum()`, `.max()`...) es comporten de tres maneres segons què
+li posis a `axis`:
+
+- **`numeros.mean()`**, sense res: un **sol número**, la mitjana dels 2314 valors alhora.
+  Gairebé mai és el que vols.
+- **`numeros.mean(axis=0)`**, "aixafa les files": **un número per columna**. La mitjana de cada
+  mesura. **És el que voldràs el 90 % de les vegades.**
+- **`numeros.mean(axis=1)`**, "aixafa les columnes": **un número per fila**. La mitjana de cada
+  vi, que aquí no vol dir gran cosa (barreja graus d'alcohol amb mil·ligrams de magnesi).
+
+El truc per recordar-ho: `axis` diu **quin eix desapareix**. `axis=0` és l'eix de les files, i el
+resultat ja no té files: en queda un valor per columna.
+"""))
+
+A(code(r"""
+print("numeros.shape        ->", numeros.shape)
+print("numeros.mean()       ->", round(numeros.mean(), 4), " (un sol número)")
+print()
+with np.printoptions(suppress=True):     # sense notació científica, que es llegeix millor
+    print("mean(axis=0), shape", numeros.mean(axis=0).shape, "-> un valor per COLUMNA:")
+    print(" ", numeros.mean(axis=0).round(2))
+    print("mean(axis=1), shape", numeros.mean(axis=1).shape, "-> un valor per FILA (els 5 primers):")
+    print(" ", numeros.mean(axis=1)[:5].round(2))
+print()
+# argmax NO dona el valor: dona la POSICIÓ
+columna_proline = numeros[:, 12]
+print("el proline més alt és     ", columna_proline.max())
+print("i és el del vi número     ", columna_proline.argmax())
+print("comprovació:              ", columna_proline[columna_proline.argmax()])
+"""))
+
+A(md(r"""
+### `DataFrame` - la taula de pandas
+
+Un array amb noms a les columnes i moltíssims mètodes d'anàlisi. És el que faràs servir per
+**mirar** les dades; l'array és el que faràs servir per **entrenar** els models.
+
+| | Nom | Què és |
+|---|---|---|
+| atribut | `.shape` | `(files, columnes)` |
+| atribut | `.columns` | els noms de les columnes |
+| atribut | `.index` | les etiquetes de les files |
+| atribut | `.dtypes` | el tipus de cada columna, una per una |
+| atribut | `.values` | les dades com a array de NumPy, sense els noms |
+| atribut | `.loc` | selecció **per etiqueta**: `df.loc[3, "nota"]` |
+| atribut | `.iloc` | selecció **per posició**: `df.iloc[0, 1]` |
+| mètode | `.head()` `.tail()` | les primeres / les últimes files |
+| mètode | `.info()` | resum: columnes, tipus, quants valors no nuls, memòria |
+| mètode | `.describe()` | estadístiques de cada columna numèrica |
+| mètode | `.isna()` | on falten valors (True/False a cada casella) |
+| mètode | `.dropna()` `.fillna()` | treure les files amb buits / omplir-los |
+| mètode | `.groupby()` | agrupar per una columna per calcular per grup |
+| mètode | `.sort_values()` | ordenar per una columna |
+| mètode | `.value_counts()` | comptar quantes vegades surt cada valor |
+| mètode | `.drop()` | treure columnes o files |
+| mètode | `.copy()` | una còpia independent |
+| mètode | `.duplicated()` `.drop_duplicates()` | trobar / treure files repetides |
+
+### `Series` - una columna
+
+Una columna d'un DataFrame **no és un DataFrame**: és una `Series`, amb els seus propis mètodes.
+Té els atributs que ja coneixes (`.shape`, `.dtype`, `.values`, `.index`, `.name`) i, a més:
+
+| | Nom | Què és |
+|---|---|---|
+| mètode | `.value_counts()` | quantes vegades surt cada valor, de més a menys |
+| mètode | `.unique()` | quins valors diferents hi ha |
+| mètode | `.nunique()` | quants valors diferents hi ha |
+| mètode | `.map()` | aplica una funció o un diccionari a cada valor |
+| mètode | `.astype()` | canvia el tipus de dada |
+| mètode | `.mean()` `.std()` `.min()` `.max()` `.sum()` | com a NumPy |
+| mètode | `.idxmax()` `.idxmin()` | l'**índex** de la fila del màxim i del mínim |
+
+`.map()` no ha sortit al quadern i val la pena veure'l: serveix per traduir valors, per exemple
+els números del target als noms de les varietats.
+"""))
+
+A(code(r"""
+noms = dades.target_names
+print("target_names:", noms)
+
+etiquetes = vins["classe"].map({0: noms[0], 1: noms[1], 2: noms[2]})
+print()
+print("type:", type(etiquetes).__name__)
+print(etiquetes.head(3))
+print()
+print(etiquetes.value_counts())
+"""))
+
+A(md(r"""
+### Un model de scikit-learn
+
+| | Nom | Què és |
+|---|---|---|
+| mètode | `.fit(X, y)` | **entrena**: aprèn dels exemples |
+| mètode | `.predict(X)` | prediu la classe de mostres noves |
+| mètode | `.score(X, y)` | quina proporció encerta |
+| mètode | `.get_params()` | amb quins ajustos l'has creat |
+| atribut | `.coef_` | el que ha après: el pes de cada característica (models lineals) |
+| atribut | `.classes_` | quines classes ha vist |
+| atribut | `.n_features_in_` | quantes columnes esperava |
+| atribut | `.feature_names_in_` | com es deien, si li has passat un DataFrame |
+| atribut | `.n_iter_` | quantes voltes li ha calgut per aprendre |
+| atribut | `.feature_importances_` | (als models d'arbre) quant compta cada columna |
+
+## Les tres taules que val la pena recordar
+
+**Els dos guions baixos:**
+
+| On | Què vol dir | Exemple |
+|---|---|---|
+| al **davant** | cosa interna de Python, no és per a tu | `__len__`, `__init__` |
+| al **final** | ho ha après de les dades, **només existeix després de `.fit()`** | `coef_`, `classes_` |
+
+**Atribut o mètode:**
+
+- Atribut = una dada guardada, **sense** parèntesis: `df.shape`, `X.dtype`, `model.coef_`.
+- Mètode = una acció, **amb** parèntesis: `df.head()`, `X.mean()`, `model.fit(X, y)`.
+- `callable(objecte.nom)` t'ho diu, si tens dubtes.
+- `.loc` i `.iloc` són l'excepció: atributs, però amb claudàtors.
+
+**Els tres errors que has vist avui:**
+
+| Error | Vol dir |
+|---|---|
+| `TypeError: 'tuple' object is not callable` | has posat parèntesis a un atribut |
+| a la sortida surt `method` o `bound method` | t'has deixat els parèntesis d'un mètode |
+| `AttributeError: coef_` o `NotFittedError` | no has cridat `.fit()` |
+
+## I, sobretot, les cinc preguntes
+
+| | Pregunta | Amb què es respon | Per què |
+|---|---|---|---|
+| **1** | Què és això? | `type()` | el que pots fer-hi depèn del que sigui |
+| **2** | Què porta dins? | `dir()` filtrat, `.keys()`, `.columns` | perquè no t'ho has de saber de memòria |
+| **3** | Quina mida i quins tipus? | `.shape`, `.dtypes`, `.info()`, `.head()` | per saber amb què tractes abans de calcular |
+| **4** | Hi falta res? Repetits? | `.isna().sum()`, `.duplicated().sum()` | perquè un buit et falseja la mitjana sense avisar |
+| **5** | Com es reparteix el target? | `.value_counts()`, `.groupby()` | per tenir el número a batre |
+
+I la pregunta 1 es repeteix amb cada cosa que treguis de dins d'una altra. Aquest és tot el
+mètode.
+
+Quan un exercici et posi al davant un objecte que no coneixes, ja no estàs encallat: li
+preguntes.
 """))
 
 # ---------------------------------------------------------- exercicis
 A(md(r"""
 ---
 
-## Exercicis - ara tu
+# Exercicis - ara tu
 
-Quatre preguntes sobre aquestes mateixes dades. **A cada enunciat et dic quins mètodes has
-de fer servir**: el nom de la funció no és el que has de descobrir. El que has de descobrir
-és **el que surt de les dades**.
+Quatre preguntes sobre les dades dels vins. **A cada enunciat et dic quins mètodes has de fer
+servir**: el nom de la funció no és el que has de descobrir. El que has de descobrir és **el
+que surt de les dades**.
 
 Si en algun moment no recordes com es diu alguna cosa, ja saps què fer: `que_te(vins)`,
 `que_te(vins, "sort")`, TAB, o `vins.sort_values?`.
@@ -1247,12 +1561,11 @@ Si en algun moment no recordes com es diu alguna cosa, ja saps què fer: `que_te
 A(md(r"""
 ### Exercici 1 - Els cinc vins més alcohòlics
 
-Amb **`.sort_values()`** i **`.head()`**: quins són els cinc vins amb més alcohol, i de
-quina classe són?
+Amb **`.sort_values()`** i **`.head()`**: quins són els cinc vins amb més alcohol, i de quina
+classe són?
 
 `.sort_values("columna")` ordena de menys a més. Per ordenar de més a menys li has de passar
-`ascending=False`. Imprimeix només les columnes `alcohol` i `classe`, que si no surten
-catorze.
+`ascending=False`. Imprimeix només les columnes `alcohol` i `classe`, que si no surten catorze.
 """))
 
 A(code(r"""
@@ -1264,21 +1577,20 @@ A(code(r"""
 """))
 
 A(md(r"""
-**Com saps que ho has fet bé:** el primer ha de tenir `14.83` graus (és el que hem trobat
-amb `.idxmax()` a la Part 2). I mira la columna `classe` dels cinc: no és casualitat, al Pas
-4 hem vist quina varietat era la més alcohòlica.
+**Com saps que ho has fet bé:** el primer ha de tenir `14.83` graus (és el que hem trobat amb
+`.idxmax()` a l'Acte 1). I mira la columna `classe` dels cinc: no és casualitat, amb
+`.groupby().mean()` hem vist quina varietat era la més alcohòlica.
 """))
 
 A(md(r"""
 ### Exercici 2 - Quina varietat és més uniforme
 
-Amb **`.groupby()`** i **`.std()`**: per a la columna `proline`, quina de les tres classes
-té els vins més semblants entre ells?
+Amb **`.groupby()`** i **`.std()`**: per a la columna `proline`, quina de les tres classes té
+els vins més semblants entre ells?
 
-La desviació típica mesura com de dispersos són els valors: com més petita, més semblants
-entre ells. Agrupa per `classe`, agafa la columna `proline` i demana-li `.std()`. Compara-ho
-després amb `.mean()` del mateix grup: la classe amb la mitjana més alta, és també la més
-dispersa?
+La desviació típica mesura com de dispersos són els valors: com més petita, més semblants entre
+ells. Agrupa per `classe`, agafa la columna `proline` i demana-li `.std()`. Compara-ho després
+amb `.mean()` del mateix grup: la classe amb la mitjana més alta, és també la més dispersa?
 """))
 
 A(code(r"""
@@ -1290,10 +1602,10 @@ A(code(r"""
 """))
 
 A(md(r"""
-**Com saps que ho has fet bé:** t'han de sortir tres números, un per classe, i la classe amb
-la desviació més petita és la més uniforme. Pista sobre el resultat: la classe que té la
-mitjana de `proline` més alta és també la que la té més dispersa, que és un patró
-habitualíssim en mesures físiques.
+**Com saps que ho has fet bé:** t'han de sortir tres números, un per classe, i la classe amb la
+desviació més petita és la més uniforme. Pista sobre el resultat: la classe que té la mitjana de
+`proline` més alta és també la que la té més dispersa, que és un patró habitualíssim en mesures
+físiques.
 """))
 
 A(md(r"""
@@ -1317,17 +1629,16 @@ A(code(r"""
 """))
 
 A(md(r"""
-**Com saps que ho has fet bé:** `mascara.sum()` t'ha de donar un número entre 0 i 178, i
-força a prop de la meitat. Al repartiment per classe, la classe 1 hi ha de ser molt poc
-representada: al Pas 4 hem vist que és la de menys alcohol (12.28, per sota de la mitjana
-general).
+**Com saps que ho has fet bé:** `mascara.sum()` t'ha de donar un número entre 0 i 178, i força a
+prop de la meitat. Al repartiment per classe, la classe 1 hi ha de ser molt poc representada: és
+la de menys alcohol (12.28, per sota de la mitjana general, que és 13.00).
 """))
 
 A(md(r"""
 ### Exercici 4 - La fitxa del vi més extrem
 
-Amb **`.idxmax()`** i **`.loc`**: troba el vi amb el `color_intensity` més alt i imprimeix
-la seva fila sencera. De quina classe és?
+Amb **`.idxmax()`** i **`.loc`**: troba el vi amb el `color_intensity` més alt i imprimeix la
+seva fila sencera. De quina classe és?
 
 `.idxmax()` sobre la columna et dona l'índex de la fila; `vins.loc[aquell_index]` et dona la
 fila. Compara després els seus valors amb les mitjanes de la seva classe
@@ -1345,65 +1656,9 @@ A(code(r"""
 """))
 
 A(md(r"""
-**Com saps que ho has fet bé:** `fila` és una **Series** (una fila d'un DataFrame també és
-una Series, amb els noms de columna com a índex), no un DataFrame. Comprova-ho amb
-`type(fila)`. I la classe que et surti hauria de ser la que al Pas 4 tenia el
-`color_intensity` mitjà més alt.
-"""))
-
-# ============================================================ resum
-A(md(r"""
----
-
-## Resum
-
-**Les quatre eines per interrogar qualsevol objecte:**
-
-- `type(objecte)` - de quina classe és. Sempre la primera pregunta.
-- `dir(objecte)` - tot el que té a dins. Filtra-ho:
-  `[n for n in dir(obj) if not n.startswith("_")]`.
-- `help(objecte.metode)` o, al quadern, `objecte.metode?` - què fa i què li has de passar.
-- **TAB** darrere del punt - la que faràs servir el 90% de les vegades.
-
-I `que_te(objecte)`, que ajunta les tres primeres i separa els atributs dels mètodes.
-
-**Els dos guions baixos:**
-
-| On | Què vol dir | Exemple |
-|---|---|---|
-| al **davant** | cosa interna de Python, no és per a tu | `__len__`, `__init__` |
-| al **final** | ho ha après de les dades, **només existeix després de `.fit()`** | `coef_`, `classes_` |
-
-**Atribut o mètode:**
-
-- Atribut = una dada guardada, **sense** parèntesis: `df.shape`, `X.dtype`, `model.coef_`.
-- Mètode = una acció, **amb** parèntesis: `df.head()`, `X.mean()`, `model.fit(X, y)`.
-- `callable(objecte.nom)` t'ho diu, si tens dubtes.
-
-**Els tres errors que ja has vist aquí, i què volen dir:**
-
-| Error | Vol dir |
-|---|---|
-| `TypeError: 'tuple' object is not callable` | has posat parèntesis a un atribut |
-| a la sortida surt `<bound method ...>` | t'has deixat els parèntesis d'un mètode |
-| `AttributeError: coef_` o `NotFittedError` | no has cridat `.fit()` |
-
-**Els cinc objectes:**
-
-| Objecte | D'on surt | El primer que li demanes |
-|---|---|---|
-| `Bunch` | `load_iris()`, `load_wine()`, `load_digits()` | `.keys()`, `.data.shape` |
-| `ndarray` | `.data`, `df.values` | `.shape`, `.dtype`, `.mean(axis=0)` |
-| `DataFrame` | `load_wine(as_frame=True).frame` | `.shape`, `.info()`, `.head()` |
-| `Series` | `df["columna"]`, `df.loc[fila]` | `.value_counts()`, `.unique()` |
-| model | `LogisticRegression()` | `.fit()`, i després `.score()` i `.coef_` |
-
-**El recorregut de sis passos per a un dataset nou:** `type` i `.shape` -> `.info()` ->
-`.value_counts()` del target -> `.groupby().mean()` -> buscar quina columna separa ->
-dibuixar-ho.
-
-A partir d'aquí, quan un exercici et posi al davant un objecte que no coneixes, ja no estàs
-encallat: li preguntes.
+**Com saps que ho has fet bé:** `fila` és una **Series** (una fila d'un DataFrame també és una
+Series, amb els noms de columna com a índex), no un DataFrame. Comprova-ho amb `type(fila)`. I la
+classe que et surti hauria de ser la que tenia el `color_intensity` mitjà més alt (7.40).
 """))
 
 info = escriu(cells, "Machine Learning/01_fonaments/FO_00_objectes_i_autocompletar.ipynb")

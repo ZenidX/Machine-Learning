@@ -16,50 +16,145 @@ diu, a `_moodle-25-26/material-complet/` (els quaderns de la docent anterior).
 
 **Quadern:** `01_fonaments/FO_00_objectes_i_autocompletar.ipynb`
 
-**Objectiu:** que puguin treballar sols. En sortir d'aquí han de saber **interrogar un objecte**
-i haver fet una exploració de dades de principi a fi.
+**Objectiu:** que en surtin amb **un mètode**, no amb una llista de funcions. El mètode són cinc
+preguntes que es fan a qualsevol conjunt de dades, i el descobreixen fent-les, no llegint-les.
 
 ### Per què aquesta sessió existeix
 
 La del 28 no va acabar de funcionar: se'ls va llançar contra els exercicis i van quedar
-encallats. **No és culpa seva ni de l'enunciat de l'exercici, és que els faltava una peça**: no
-sabien que `dades.data` existeix, ni que `df.shape` va sense parèntesis, ni que un model
-entrenat guarda el que ha après en atributs acabats en guió baix. I sobretot no sabien **com
-esbrinar-ho**.
+encallats. **No és culpa seva ni de l'enunciat**, és que els faltava una peça: no sabien que
+`dades.data` existeix, ni que `df.shape` va sense parèntesis, ni que un model entrenat guarda el
+que ha après en atributs acabats en guió baix. I sobretot no sabien **com esbrinar-ho**.
 
-**Comença dient-ho.** Val més reconèixer-ho que fer com si res: si creuen que van encallar per
-falta de cap, s'ho creuran tota l'assignatura. La frase, si serveix:
+**Comença dient-ho.** Si creuen que van encallar per falta de cap, s'ho creuran tota
+l'assignatura. La frase, si serveix:
 
 > Ahir us vau quedar encallats i no era cosa vostra. Us faltava saber una cosa que no us havia
 > explicat ningú: que a un objecte de Python se li pot preguntar què té a dins. Avui ho fem, i
 > a partir d'aquí podreu anar sols.
 
-### Repartiment
+### Les cinc preguntes: escriu-les a la pissarra i deixa-les tot el dia
+
+Són l'espina dorsal de la sessió i del curs. **Posa-les al principi com a promesa** («al final de
+les dues hores sabreu fer-vos aquestes cinc preguntes davant de qualsevol fitxer de dades») i
+torna-hi cada vegada que el quadern n'usi una.
+
+1. **Què és això?** → `type()`
+2. **Què porta dins?** → `dir()` filtrat, `.keys()`, `.columns`
+3. **Quina mida té i de quins tipus?** → `.shape`, `.dtypes`, `.info()`
+4. **Hi falta res? Hi ha repetits?** → `.isna().sum()`, `.duplicated().sum()`
+5. **Com es reparteix el que vull predir?** → `.value_counts()`, `.groupby()`
+
+### Repartiment: tres actes
 
 | Temps | Què |
 |---|---|
-| 10 min | El reconeixement de sobre, i **què canvia a partir d'avui**: els enunciats diran quina eina fer servir. El que no diran és el resultat, perquè aquesta és la seva part. |
-| 30 min | **Interrogar un objecte.** `type()`, `dir()` i com filtrar-ne el soroll, `help()`, i a Colab `objecte.metode?`. **Insisteix en l'autocompletat amb TAB**: ningú es recorda els noms de memòria, i creure que cal és el que els bloqueja. |
-| 15 min | **Atribut contra mètode**, que és la confusió que més els costarà. `df.shape` sense parèntesis, `df.head()` amb. **Ensenya els dos errors en directe**: `df.shape()` dona `TypeError: 'tuple' object is not callable`, i `df.head` sense parèntesis els imprimeix una descripció del mètode en lloc de les dades. Els veuran avui; val més que els vegin aquí. |
-| 25 min | **Els cinc objectes que es trobaran**: el `Bunch` de `load_wine()` amb `.data` i `.target`; l'`ndarray` amb `.shape` i `.mean(axis=0)`; el `DataFrame` i la `Series`; i **un model abans i després d'entrenar**. Aquí va la convenció del guió baix final: `.coef_` i `.feature_importances_` vol dir «això l'he après de les dades», i **no existeixen abans de cridar `.fit()`**. |
-| 30 min | **L'exploració guiada**, amb el codi escrit i executable, que és el que demanava la sessió: quantes files i columnes, quins tipus, quantes mostres per classe, la mitjana per classe amb `.groupby()`, i un gràfic. **Comenta a cada pas quin objecte tens a les mans i què li demanes.** Que la modifiquin en directe. |
-| 10 min | Les preguntes obertes del final, que l'enunciat ja els diu amb quin mètode es responen. Les que no acabin, a casa. |
+| 10 min | El reconeixement de sobre, les cinc preguntes a la pissarra, i **què canvia a partir d'avui**: els enunciats diran quina eina fer servir. El que no diran és el resultat. |
+| 55 min | **Acte 1 · «Què hi ha aquí dins?»** Wine. El quadern arrenca en fals a posta: `load_wine()` i prou, sense explicar què és. Cada eina entra **quan l'anàlisi es queda encallada sense ella**. |
+| | ↳ *Avís de mida: aquest acte són 78 cel·les, 38 de codi. En 55 minuts no hi caben totes si t'atures a cada una. Va pensat per anar de pressa executant i aturar-se només als tres moments marcats: l'error dels parèntesis, el `bound method`, i el pas de números a `DataFrame`.* |
+| 25 min | **Acte 2 · «I ara, amb un que no has vist mai.»** `load_digits()` i les cinc preguntes, sense cap taula ni cap pista. |
+| 20 min | **Acte 3 · «El model també és un objecte.»** Entrenen alguna cosa i li fan les mateixes preguntes. |
+| 10 min | La xuleta del final i què va a casa. |
 
-### El que ha de quedar dit abans de marxar
+### Acte 1 — el fil és «em cal això per continuar»
 
-- **A un objecte se li pregunta.** `type`, `dir`, `?` i TAB. No s'estudia de memòria.
-- **Atribut sense parèntesis, mètode amb.**
-- **Guió baix al final = après de les dades**, i només existeix després del `.fit()`.
-- I que **la caixa d'eines** `02_practica/EX_00_caixa_eines.ipynb` és la referència de totes les
-  funcions que faran servir, amb un exemple mínim i el parany de cada una. Que se l'obrin al
-  costat sempre.
+**No expliquis res per endavant.** L'ordre del quadern és l'ordre de la necessitat, i és el que
+has de respectar en veu alta:
 
-### Si sobra temps
+`type(dades)` dona `Bunch`, una paraula que no els diu res → per saber què hi porta cal `dir()`,
+i **amb un `Bunch` surten sis noms nets**, perquè scikit-learn sobreescriu `__dir__`. Digues que
+això és l'excepció: **el soroll dels guions baixos i el filtre arriben un pas més tard**, sobre
+l'array de `dades.data`, on `dir()` torna 169 noms i el filtre els deixa en 73. Allà el filtre no
+és un tecnicisme, és necessari.
 
-Que comencin els exercicis de `FO_01_numpy.ipynb`. Si en falta, la sessió es tanca a
-l'exploració guiada: el que no es pot deixar per a casa és la part d'interrogar l'objecte.
+`dades.data` és una altra cosa, i **la pregunta es repeteix amb el que hi ha a dins** → quina mida
+té: `.shape`.
 
----
+**I aquí, no abans, arriba l'error dels parèntesis.** És natural escriure `dades.data.shape()`, i
+el `TypeError: 'tuple' object is not callable` cau just on els passaria de veritat. És el moment
+d'introduir atribut contra mètode, amb la regla curta —**dada sense parèntesis, feina amb**— i
+amb l'altre cas, el que **no peta**:
+
+```
+print(df.head)   →   <bound method NDFrame.head of ...>
+```
+
+**La frase que els resol la vida:** quan veus `bound method` a la sortida, t'has deixat els
+parèntesis. És tot el diagnòstic que necessiten.
+
+Després: tenim números però no noms de columna, i sense noms no s'analitza res → `.feature_names`
+i `.target_names` → i la via bona, `load_wine(as_frame=True).frame`, que dona un `DataFrame`.
+D'aquí les preguntes 3, 4 i 5, cada mètode perquè respon una pregunta i no perquè toca la taula.
+
+**Un detall de la pregunta 4 que val la pena no amagar:** a Wine no falta cap valor i no hi ha
+duplicats. Això no és un anticlímax, és una informació, i és excepcional. Digues que al quadern de
+Pandas, el 13 d'octubre, veuran un fitxer real amb el 47 % de nuls en una columna.
+
+### Acte 2 — el que demostra que el mètode val
+
+**Aquest acte és el cor de la sessió i el que no pots retallar.** Se'ls dona `load_digits()` i les
+cinc preguntes, i res més: cap taula, cap llista de mètodes, cap pista de què hi trobaran.
+
+El premi arriba a la pregunta 2: apareix **`.images`**, que a Wine no hi era. Que descobreixin
+ells que és el mateix que `.data` amb una altra forma —1797×64 contra 1797×8×8— i que ho
+comprovin amb `.reshape()` i `np.array_equal`.
+
+**Aquí el mètode els ha ensenyat una cosa que ningú els havia dit.** Fes-ho explícit: no ho han
+llegit enlloc, ho han trobat preguntant. Dues o tres cel·les d'aquest acte estan buides a posta.
+
+### Acte 3 — i el model també
+
+Ja han analitzat les dades; ara entrenen alguna cosa i li fan **les mateixes cinc preguntes**.
+
+`dir()` filtrat abans del `.fit()`, el `.fit()`, `dir()` filtrat després: **el salt real de 27 a
+33 noms**, i els sis que apareixen de zero són els acabats en guió baix. Els dos errors reals
+—`AttributeError` demanant `.coef_` abans d'entrenar, `NotFittedError` predient sense
+entrenar— i el contrast amb un arbre, que aprèn uns altres atributs i **no té `coef_`**.
+
+**La conclusió de la sessió:** un model entrenat no és una caixa negra, és un objecte, i se li pot
+preguntar què ha après.
+
+Això et sembra la S09 del 20 d'octubre: quan treguin el `.coef_` d'una logística per fer la
+predicció a mà, ja sabran què estan traient i per què hi és.
+
+### Els dos guions baixos, que són coses diferents
+
+No ho trauran sols. Val la pena deixar-ho a la pissarra al costat de les cinc preguntes:
+
+| On | Què vol dir |
+|---|---|
+| **al davant** (`__len__`) | intern de Python, no és per a tu — per això es filtra el `dir()` |
+| **al final** (`coef_`) | **ho ha après de les dades**, i no existeix abans del `.fit()` |
+
+### Què faran mal, i què dir
+
+**Voldran memoritzar la taula de mètodes.** Talla-ho: la taula és de consulta, i per això és al
+final i no al principi. El que s'aprèn és el TAB.
+
+**Llegiran el `dir()` sencer i s'espantaran.** Sobre un DataFrame surten 193 mètodes. Ensenya'ls
+el filtre i el `que_te(objecte, "na")` per buscar per text.
+
+**Preguntaran per què `.loc` va amb claudàtors.** És l'excepció honesta del quadern: `callable()`
+diu que sí que és invocable, però s'indexa. No t'allarguis.
+
+**I algú preguntarà de què serveix això per fer machine learning.** La resposta curta: un model
+entrenat és un objecte, i tot el que ha après és als seus atributs. Qui no sap mirar dins d'un
+objecte, té els models com a caixes negres per sempre.
+
+### Si vas just de temps
+
+**Retalla l'acte 3**, que es pot reprendre en cinc minuts a la S05, i **deixa el gruix de l'acte 1
+com a lectura** si cal. **No retallis l'acte 2**: és l'únic on el mètode es posa a prova amb dades
+que no han vist, i és el que fa que s'ho creguin.
+
+Els quatre exercicis del final van a casa. Cada enunciat diu amb quin mètode es resol
+—`.sort_values()`, `.groupby()` amb `.std()`, una màscara booleana, `.idxmax()` amb `.loc`— i el
+que és seu és el resultat.
+
+### Com saps que ha anat bé
+
+Si al final algú, davant d'un objecte que no coneix, **escriu `dir()` o prem TAB en lloc
+d'aixecar la mà**, la sessió sencera ha valgut.
 
 ## S05 · dilluns 5 d'octubre · NumPy 1
 
