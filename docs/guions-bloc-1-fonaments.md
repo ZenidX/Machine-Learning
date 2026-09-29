@@ -45,16 +45,47 @@ torna-hi cada vegada que el quadern n'usi una.
 4. **Hi falta res? Hi ha repetits?** → `.isna().sum()`, `.duplicated().sum()`
 5. **Com es reparteix el que vull predir?** → `.value_counts()`, `.groupby()`
 
-### Repartiment: tres actes
+### Repartiment: tres actes, i hi caben tots
+
+**Sí que hi caben els tres actes sencers.** No és optimisme, és mesurat: comptant les paraules de
+cada cel·la de text a 130 per minut i cada cel·la de codi a 45 segons d'executar i comentar, el
+quadern sencer dona **116 minuts**, que no hi cabrien. Però d'aquests 116, **32 no són de classe**:
+
+| Tram | Temps mesurat | Va a classe? |
+|---|---|---|
+| Portada i les cinc preguntes | 3 min | Sí |
+| **Acte 1 · Wine** | **51 min** | Sí |
+| **Acte 2 · Digits** | **14 min** | Sí |
+| **Acte 3 · El model** | **16 min** | Sí |
+| La xuleta | 20 min | **No: és referència, es llegeix a casa** |
+| Els quatre exercicis | 12 min | **No: van a casa** |
+
+Els tres actes més la portada són **84 minuts**. Amb 110 minuts útils de sessió, queden **uns 25
+minuts de marge per a preguntes**, que amb aquest grup no és un luxe sinó una necessitat.
 
 | Temps | Què |
 |---|---|
-| 10 min | El reconeixement de sobre, les cinc preguntes a la pissarra, i **què canvia a partir d'avui**: els enunciats diran quina eina fer servir. El que no diran és el resultat. |
-| 55 min | **Acte 1 · «Què hi ha aquí dins?»** Wine. El quadern arrenca en fals a posta: `load_wine()` i prou, sense explicar què és. Cada eina entra **quan l'anàlisi es queda encallada sense ella**. |
-| | ↳ *Avís de mida: aquest acte són 78 cel·les, 38 de codi. En 55 minuts no hi caben totes si t'atures a cada una. Va pensat per anar de pressa executant i aturar-se només als tres moments marcats: l'error dels parèntesis, el `bound method`, i el pas de números a `DataFrame`.* |
-| 25 min | **Acte 2 · «I ara, amb un que no has vist mai.»** `load_digits()` i les cinc preguntes, sense cap taula ni cap pista. |
-| 20 min | **Acte 3 · «El model també és un objecte.»** Entrenen alguna cosa i li fan les mateixes preguntes. |
-| 10 min | La xuleta del final i què va a casa. |
+| 8 min | El reconeixement de sobre i **les cinc preguntes a la pissarra**. I què canvia a partir d'avui: els enunciats diran quina eina fer servir; el resultat, no. |
+| 51 min | **Acte 1 · «Què hi ha aquí dins?»** Wine. El quadern arrenca en fals a posta: `load_wine()` i prou. Cada eina entra **quan l'anàlisi es queda encallada sense ella**. |
+| 14 min | **Acte 2 · «I ara, amb un que no has vist mai.»** `load_digits()` i les cinc preguntes, sense cap taula ni cap pista. |
+| 16 min | **Acte 3 · «El model també és un objecte.»** Entrenen alguna cosa i li fan les mateixes preguntes. |
+| 5 min | Assenyalar la xuleta i repartir la feina de casa. |
+| ~25 min | **Marge.** Preguntes, ordinadors que no arrenquen, i el que s'allargui. |
+
+### La manera d'anar a aquest ritme
+
+L'acte 1 té **40 cel·les de text i 2.873 paraules**. Llegides en veu alta són 22 minuts, i llegir
+en veu alta el que ells poden llegir amb els ulls és la manera més segura de no arribar.
+
+**El repartiment que funciona: el text el llegeixen ells, el codi l'executes tu.** Tu vas
+executant i comentant en una frase què acaba de sortir, i **t'atures de debò només en tres
+moments**:
+
+1. **L'error dels parèntesis**, quan `dades.data.shape()` peta amb `TypeError`.
+2. **El `bound method`**, que no peta i és el que els menjarà mitja hora si no el veuen aquí.
+3. **El pas de números a `DataFrame`**, quan es veu que sense noms de columna no es pot analitzar res.
+
+La resta de l'acte 1 és encadenar preguntes, i va de pressa si no t'hi encalles.
 
 ### Acte 1 — el fil és «em cal això per continuar»
 
@@ -141,15 +172,21 @@ diu que sí que és invocable, però s'indexa. No t'allarguis.
 entrenat és un objecte, i tot el que ha après és als seus atributs. Qui no sap mirar dins d'un
 objecte, té els models com a caixes negres per sempre.
 
-### Si vas just de temps
+### Si tot i així vas just
 
-**Retalla l'acte 3**, que es pot reprendre en cinc minuts a la S05, i **deixa el gruix de l'acte 1
-com a lectura** si cal. **No retallis l'acte 2**: és l'únic on el mètode es posa a prova amb dades
-que no han vist, i és el que fa que s'ho creguin.
+El marge de 25 minuts se't pot menjar una aula amb ordinadors lents o una tanda de preguntes
+bona, i si passa val més gastar-lo en les preguntes que córrer. L'ordre de retallada:
 
-Els quatre exercicis del final van a casa. Cada enunciat diu amb quin mètode es resol
-—`.sort_values()`, `.groupby()` amb `.std()`, una màscara booleana, `.idxmax()` amb `.loc`— i el
-que és seu és el resultat.
+1. **L'acte 3**, que es reprèn en cinc minuts al començament de la S05 i no bloqueja res: el que
+   hi ha allà es torna a necessitar el 20 d'octubre, a la sessió d'àlgebra lineal.
+2. **La segona meitat de l'acte 1**, de `as_frame=True` endavant, com a lectura. Les preguntes 3,
+   4 i 5 sobre el `DataFrame` es tornen a fer senceres als quaderns de Pandas.
+
+**L'acte 2 no es toca.** Són 14 minuts i és l'únic tram on el mètode es posa a prova amb dades que
+no han vist. Si el retalles, el quadern torna a ser un manual.
+
+I si va al revés, si sobren vint minuts: que comencin els exercicis a classe, que és on veuràs de
+debò si el mètode els ha quedat.
 
 ### Com saps que ha anat bé
 
