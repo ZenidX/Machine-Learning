@@ -634,11 +634,15 @@ export default function Programa() {
           <h2 className="text-xl font-bold text-gray-900">Com s'avalua</h2>
         </div>
 
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-5">
-          <p className="text-sm text-amber-900">
-            <strong>Els pesos percentuals encara no estan confirmats.</strong> Els instruments sí:
-            són els que hi ha aquí sota. Els percentatges es confirmaran i s'anunciaran quan
-            estiguin decidits; fins llavors aquesta pàgina no en dona cap.
+        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 mb-5">
+          <p className="text-sm text-indigo-900">
+            <strong>80 % quatre proves pràctiques · 10 % cinc proves escrites · 10 % vint-i-cinc
+            activitats.</strong> El calendari sencer, amb totes les dates de lliurament i de
+            prova, és a{" "}
+            <Link to="/avaluacio" className="font-semibold underline hover:text-indigo-700">
+              Avaluació i calendari
+            </Link>
+            .
           </p>
         </div>
 
@@ -646,18 +650,20 @@ export default function Programa() {
           <div className="border border-gray-200 rounded-lg p-4">
             <h3 className="font-semibold text-gray-900 mb-1">Proves pràctiques</h3>
             <p className="text-sm text-gray-700">
-              Amb ordinador, i semblants als exercicis de classe. Una per bloc:{" "}
-              <strong>S11</strong> (27 d'octubre), <strong>S21</strong> (1 de desembre) i{" "}
-              <strong>S25</strong> (21 de desembre).
+              Amb ordinador, i semblants als exercicis de classe. En són quatre:{" "}
+              <strong>S11</strong> (27 d'octubre), <strong>S21</strong> (1 de desembre),{" "}
+              <strong>S25</strong> (21 de desembre) i l'agent del concurs a la{" "}
+              <strong>S33</strong> (2 de febrer). Cal un mínim de 5 a cadascuna.
             </p>
           </div>
 
           <div className="border border-gray-200 rounded-lg p-4">
             <h3 className="font-semibold text-gray-900 mb-1">Activitats dels quaderns</h3>
             <p className="text-sm text-gray-700">
-              Les cel·les buides dels quaderns de pràctica. Amb aquesta programació{" "}
+              Les cel·les buides dels quaderns. Amb aquesta programació{" "}
               <strong>són feina de casa i no són opcionals</strong>, perquè el temps de classe
-              se'l menja la matemàtica. Es lliuren i es qualifiquen fet o no fet.
+              se'l menja la matemàtica. N'hi ha 25, es qualifiquen 0 o 10, i{" "}
+              <strong>lliurar-les fora de termini compta com a negativa</strong>.
             </p>
           </div>
 

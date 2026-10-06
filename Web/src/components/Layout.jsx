@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Home, CalendarRange, Code2, Table2, Brain, Sigma, FlaskConical, Gamepad2, Wrench } from 'lucide-react'
+import { Menu, X, Home, CalendarRange, ClipboardCheck, Code2, Table2, Brain, Sigma, FlaskConical, Gamepad2, Wrench } from 'lucide-react'
 
 const navigation = [
   { name: 'Inici', href: '/', icon: Home },
   { name: 'Programa', href: '/programa', icon: CalendarRange },
+  { name: 'Avaluació', href: '/avaluacio', icon: ClipboardCheck },
   { name: 'Python i dades', href: '/python', icon: Code2 },
   { name: 'Fonaments de dades', href: '/fonaments', icon: Table2 },
   { name: 'Machine Learning', href: '/machine-learning', icon: Brain },

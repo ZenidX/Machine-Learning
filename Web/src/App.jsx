@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Programa from './pages/Programa'
+import Avaluacio from './pages/Avaluacio'
 import Python from './pages/Python'
 import Fonaments from './pages/Fonaments'
 import MachineLearning from './pages/MachineLearning'
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/programa" element={<Programa />} />
+        <Route path="/avaluacio" element={<Avaluacio />} />
         <Route path="/python" element={<Python />} />
         <Route path="/fonaments" element={<Fonaments />} />
         <Route path="/machine-learning" element={<MachineLearning />} />
