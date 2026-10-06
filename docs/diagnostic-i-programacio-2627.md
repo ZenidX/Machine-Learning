@@ -187,15 +187,40 @@ El guió detallat és a [`guions-bloc-1-fonaments.md`](guions-bloc-1-fonaments.m
 
 ## 2.3 Com s'avalua
 
-Els instruments segueixen el que demana la fitxa, **a l'espera de confirmar els pesos**:
+**El detall sencer és a [`avaluacio-2627.md`](avaluacio-2627.md).** Aquí, el resum.
 
-- **Proves pràctiques**, amb ordinador i semblants als exercicis de classe: una per bloc (S11, S21, S25) més el **projecte final de RL**, que és l'agent del concurs.
-- **Activitats**: els exercicis dels quaderns, amb les cel·les buides. **Amb aquesta programació passen a ser feina de casa i deixen de ser opcionals**, perquè el temps de classe se'l menja la matemàtica. Es lliuren i es qualifiquen 0 o 10.
-- **Proves escrites**: les que calguin segons quina versió de l'avaluació acabi valent.
+La fitxa fixa un **únic resultat d'aprenentatge** —«Crea aplicacions fent ús de models
+d'aprenentatge automàtic»— i una fórmula sense ambigüitat: **10 % cinc proves escrites, 10 %
+vint-i-cinc activitats, 80 % quatre proves pràctiques**, amb mínim de 5 a les pràctiques i
+superior a 3 a les escrites per poder ponderar.
 
-**El bloc de matemàtiques no s'avalua com a deducció.** No es demana derivar el gradient de la log-loss en un examen. Sí que es demana implementar una funció de pèrdua i comprovar-la, verificar un gradient per diferències finites, o explicar per què un model dona el que dona mirant-ne els pesos. Hi ha la llista a [`didactica-matematica-ml.md`](didactica-matematica-ml.md).
+**La idea que ordena el calendari d'avaluació:** cada prova no pregunta què han après, pregunta
+**si tenen el que els cal per al que ve**. El curs acaba amb un agent de RL competint, i cada
+prova és un graó d'aquesta escala.
 
-**El concurs no es puntua per posició al marcador.** Es puntua l'agent lliurat, que funcioni, i la justificació de les decisions. Guanyar el concurs és el premi, no la nota: si no, els que tinguin portàtil potent tenen avantatge.
+| | Quan | Pregunta que respon |
+|---|---|---|
+| **Pp1** | S11 · 27 oct | Pots manejar dades? *(porta del bloc 2)* |
+| **Pp2** | S21 · 1 des | Pots entrenar, mesurar i verificar? *(porta de les xarxes)* |
+| **Pp3** | S25 · 21 des | Pots treballar sense enganyar-te? |
+| **Pp4** | S33 · 2 feb | L'agent, i la seva defensa |
+
+Les cinc escrites (Pe1 a Pe5) cauen a les sessions **S08, S14, S20, S28 i S31**, sempre just
+abans d'un salt. Valen un 2 % cadascuna: la seva funció no és qualificar, és **detectar qui es
+despenja mentre encara s'hi pot fer alguna cosa**. La **Pe4 del 18 de gener** és la més important
+de les cinc, perquè tapa les sis setmanes entre la Pp3 i el concurs, que són el material més dur
+del curs i no tenien cap punt de control.
+
+Les **25 activitats** són un quadern lliurat cadascuna, qualificades 0 o 10. Compte: **fora de
+termini compten com a negatives**, no com a no lliurades.
+
+**El bloc de matemàtiques no s'avalua com a deducció.** No es demana derivar el gradient de la
+log-loss. Sí que es demana implementar una funció de pèrdua i comprovar-la, verificar un gradient
+per diferències finites, o explicar per què un model dona el que dona mirant-ne els pesos.
+
+**El concurs no es puntua per posició al marcador**, i la Pp4 és la **defensa a classe** de
+l'agent, no l'entrenament: això resol alhora el problema de les màquines desiguals i el xoc amb
+la clàusula d'ús d'IA de la fitxa.
 
 ## 2.4 Què cal preparar, i quan
 

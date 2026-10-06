@@ -21,6 +21,12 @@ encallats. Són per obrir cinc minuts abans de classe.
 | [`guions-bloc-3-dades-i-no-supervisat.md`](guions-bloc-3-dades-i-no-supervisat.md) | S22–S25 | 7 des – 21 des |
 | [`guions-blocs-4-i-5-xarxes-rl-concurs.md`](guions-blocs-4-i-5-xarxes-rl-concurs.md) | S26–S33 | 11 gen – 2 feb |
 
+## Avaluació
+
+**[`avaluacio-2627.md`](avaluacio-2627.md)** — el RA, la fórmula oficial i les seves condicions, i
+**per què cada prova cau on cau**: l'avaluació està muntada com l'escala que porta fins al concurs
+de RL, no com una capa administrativa. Calendari complet de les 4 pràctiques i les 5 escrites.
+
 ## Didàctica
 
 **[`didactica-matematica-ml.md`](didactica-matematica-ml.md)** — per què el material està fet com
@@ -41,14 +47,18 @@ aquí i es mira si cal tocar el pla.
 
 ## El que queda obert
 
-1. **La data de final del mòdul.** Amb 66 h des del 21 de setembre el curs arriba al **2 de
+1. **La fitxa d'inici és la del curs 2024-25** (UF1 del 18/09/2024 al 21/05/2025, i 2 h
+   setmanals). Cal actualitzar-la. Això resol la contradicció de les hores: no n'hi havia, hi
+   havia una fitxa vella.
+2. **La data de final del mòdul.** Amb 66 h des del 21 de setembre el curs arriba al **2 de
    febrer**; si ha d'acabar el gener són 31 sessions i 62 h. Cal confirmar-ho abans d'anunciar el
    concurs a l'alumnat.
-2. **Els pesos de l'avaluació.** La fitxa diu 10/10/80; la presentació del curs passat deia
-   60/40. Mentre no es confirmi, cap document ni la web en donen percentatges.
-3. **La sessió de k-means (S25)** és l'únic forat de material de tota la programació.
-4. **Les presentacions de Google de la docent anterior** viuen al seu Drive. Convé demanar-ne
+3. **Els pesos de l'avaluació: resolts.** Són 10/10/80, i el llibre de qualificacions del
+   Moodle ja està configurat així (1,0 · 1,0 · 8,0). El 60/40 de la presentació del curs passat
+   no apareix enlloc. **El que queda és refer el contingut del llibre**, que és del curs passat.
+4. **La sessió de k-means (S25)** és l'únic forat de material de tota la programació.
+5. **Les presentacions de Google de la docent anterior** viuen al seu Drive. Convé demanar-ne
    còpia abans de dependre'n. La llista és a `_moodle-25-26/ENLLACOS.md`.
-5. **El material de Deep Learning i RL està en castellà**, mentre que tot el de Machine Learning
+6. **El material de Deep Learning i RL està en castellà**, mentre que tot el de Machine Learning
    és en català. Funciona i no s'ha traduït, però val la pena dir-ho a classe en lloc de deixar
    que ho descobreixin.
