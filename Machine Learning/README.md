@@ -18,6 +18,12 @@ a entendre en què es diferencien.
 | Regressió logística | Traça una frontera i mesura de quin costat caus | Equació de la recta i funció sigmoide | `MA_02` (gradient) i `MA_03` (versemblança) |
 | Màquines de vectors de suport | Busca la frontera que passa més lluny de tothom | Distància d'un punt a una recta | `MA_05` (optimització amb restriccions) |
 
+I un sisè quadern que canvia de pregunta: **k-means** (`ML_06`) no aprèn cap resposta, perquè
+no en té. Agrupa les dades sense etiquetes, i és el primer model no supervisat després del PCA
+de `MA_06`. La matemàtica és la del k-NN (distàncies) i la del descens de gradient (on la
+derivada val zero): els dos passos de l'algorisme es dedueixen com a solucions exactes d'una
+minimització.
+
 ## Com estan fets els quaderns
 
 Tots segueixen la mateixa estructura, i és deliberada:
@@ -54,9 +60,11 @@ mateix número fins a l'últim decimal.
                  ML_03_boscos                 Per què votar funciona
                  ML_04_regressio_logistica    De la recta a la probabilitat
                  ML_05_svm                    El marge, i què fer quan cap recta serveix
+                 ML_06_kmeans                 Agrupar sense etiquetes: Lloyd deduït i a mà
 
 02_practica/     EX_00_caixa_eines            Referencia de les eines: que fa cada una i el seu parany
                  EX_01..EX_05                 Cinc datasets, amb les cel·les buides
+                 EX_06_kmeans                 Vi, dígits i una foto, sense etiquetes
 
 03_matematiques/ MA_01_algebra_lineal         Un model entrenat és un vector i una multiplicació
                  MA_02_descens_gradient       Com aprenen els models, de veritat

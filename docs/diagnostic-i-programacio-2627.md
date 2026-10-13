@@ -97,14 +97,14 @@ La conseqüència pràctica és un **bloc de matemàtiques de sis quaderns** (`M
 
 ## 2.1 Calendari real
 
-**33 sessions de 2 h, del dilluns 21 de setembre de 2026 al dimarts 2 de febrer de 2027.** Ja descomptats els festius que cauen en dia de classe (12 d'octubre i 8 de desembre) i les vacances de Nadal, del 22 de desembre al 7 de gener.
+**34 sessions de 2 h, del dilluns 21 de setembre de 2026 al dimarts 2 de febrer de 2027.** Ja descomptats el festiu del 8 de desembre i les vacances de Nadal, del 22 de desembre al 7 de gener. El 12 d'octubre és festiu, però **el centre el recupera**: el dimarts 13 fa horari de dilluns i el dimecres 14, de dimarts. Aquella setmana hi ha dues sessions i el curs en guanya una, la S07b.
 
 > **Avís sobre la data de final, que cal confirmar.** Si el mòdul són 66 h de veritat, amb 4 h setmanals des del 21 de setembre **el curs arriba al 2 de febrer**. Si en canvi ha d'acabar el gener, hi caben **31 sessions, o sigui 62 h**, i falten 4 h: llavors el concurs es fa el 26 de gener i se'n perden dues sessions pel camí. Val la pena saber-ho abans de prometre res a l'alumnat.
 
 | Bloc | Sessions | Hores | Del | Al |
 |---|---|---|---|---|
 | 0 · Arrencada i Python | S01-S03 | 6 | 21 set | 28 set |
-| **1 · Fonaments de dades** | **S04-S11** | **16** | **29 set** | **27 oct** |
+| **1 · Fonaments de dades** | **S04-S11** (amb la S07b) | **18** | **29 set** | **27 oct** |
 | 2 · Supervisat i la matemàtica que hi ha a sota | S12-S21 | 20 | 2 nov | 1 des |
 | 3 · Optimització, dades reals i no supervisat | S22-S25 | 8 | 7 des | 21 des |
 | 4 · Xarxes neuronals | S26-S28 | 6 | 11 gen | 18 gen |
@@ -130,12 +130,13 @@ Els sis quaderns de matemàtiques **no són sessions afegides**: ocupen les sess
 | S05 | dl 5 oct | **NumPy 1**: per què no llistes, l'array, indexació i llesques | `FO_01_numpy.ipynb` |
 | S06 | dt 6 oct | **NumPy 2**: operacions, màscares booleanes, agregacions i eixos | el mateix |
 | S07 | dt 13 oct | **Pandas 1**: DataFrame i Series, carregar un CSV, `.loc` i `.iloc` | `FO_02_pandas.ipynb` |
-| S08 | dl 19 oct | **Pandas 2**: nuls, `.groupby()`, gràfics, del DataFrame a `X` i `y` | el mateix |
+| S07b | dc 14 oct | **Pandas 2**: nuls, `.groupby()`, gràfics, del DataFrame a `X` i `y` | el mateix |
+| S08 | dl 19 oct | **Pe1** i **consolidació**: exercicis 4 a 7 de Pandas i un assaig de la Pp1 | el mateix |
 | S09 | dt 20 oct | **Àlgebra lineal**: norma, producte escalar, projecció, i que un model entrenat és un vector i una multiplicació | `03_matematiques/MA_01_algebra_lineal.ipynb` |
 | S10 | dl 26 oct | Diccionaris, funcions i comprensions, amb els quaderns de la Núria | `material-complet/Diccionaris.ipynb`, `Definicions.ipynb` |
 | S11 | dt 27 oct | **Prova pràctica 1** i tancament del bloc | |
 
-> El 12 d'octubre és festiu: aquella setmana només hi ha la sessió del dimarts.
+> El 12 d'octubre és festiu i es recupera: el dt 13 fa horari de dilluns (S07) i el dc 14 de dimarts (S07b). La sessió guanyada no mou cap data: serveix per arribar a la Pp1 amb Pandas tancat i una sessió d'assaig.
 
 El guió detallat és a [`guions-bloc-1-fonaments.md`](guions-bloc-1-fonaments.md).
 
@@ -163,7 +164,7 @@ El guió detallat és a [`guions-bloc-1-fonaments.md`](guions-bloc-1-fonaments.m
 | S22 | dl 7 des | **Optimització amb restriccions**: Lagrange, per què l'SVM depèn de pocs punts, i el kernel demostrat | `MA_05_marge_optimitzacio.ipynb` |
 | S23 | dl 14 des | **Dades brutes i pipelines**: nuls, categòriques, i la fuita d'informació | `EX_05_dades_brutes.ipynb` + `Pipeline.ipynb` de la Núria |
 | S24 | dt 15 des | **PCA i vectors propis**: la maledicció de la dimensionalitat, i reduir dimensions sense inventar-se res | `MA_06_pca_vectors_propis.ipynb` |
-| S25 | dl 21 des | **k-means** i **imatges com a taula**. **Prova pràctica 3** | `EX_03_digits.ipynb` · a casa: R, enllaços de la Núria |
+| S25 | dl 21 des | **k-means** i **imatges com a taula**. **Prova pràctica 3** | `ML_06_kmeans.ipynb`, `EX_03_digits.ipynb` · a casa: `EX_06_kmeans`, R, enllaços de la Núria |
 
 > El 8 de desembre és festiu: aquella setmana només hi ha la sessió del dilluns.
 
@@ -226,8 +227,7 @@ la clàusula d'ús d'IA de la fitxa.
 
 | Per a quan | Què |
 |---|---|
-| **Feta** | El manual d'objectes de Python, els de NumPy i Pandas, la caixa d'eines i els sis quaderns de matemàtiques |
-| Desembre | La sessió de k-means (S25), que encara no té material propi |
+| **Feta** | El manual d'objectes de Python, els de NumPy i Pandas, la caixa d'eines, els sis quaderns de matemàtiques i **la sessió de k-means (S25)**: `ML_06_kmeans` i `EX_06_kmeans`, amb el solucionari en local |
 | Gener | Tenir el concurs provat: script jutge i plantilla |
 | **Quan es pugui** | **Confirmar els pesos de l'avaluació** i demanar a la Núria còpia de les seves presentacions de Google |
 

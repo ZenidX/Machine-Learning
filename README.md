@@ -22,9 +22,10 @@ Machine Learning/
   00_demo/              La demostració del primer dia: Iris amb els cinc models
   01_fonaments/         NumPy i Pandas, amb dades reals d'habitatges
   01_teoria/            Els cinc models supervisats: k-NN, arbres, boscos,
-                        regressió logística i SVM. Cada un implementat a mà
-                        i comparat amb scikit-learn
-  02_practica/          La caixa d'eines (EX_00) i cinc quaderns d'exercicis amb
+                        regressió logística i SVM, i k-means per agrupar sense
+                        etiquetes. Cada un implementat a mà i comparat amb
+                        scikit-learn
+  02_practica/          La caixa d'eines (EX_00) i sis quaderns d'exercicis amb
                         datasets diferents, amb les cel·les buides
   03_matematiques/      La matemàtica que hi ha a sota, aterrada al codi:
                         àlgebra lineal, descens de gradient, versemblança,

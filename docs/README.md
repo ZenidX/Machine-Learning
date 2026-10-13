@@ -56,7 +56,8 @@ aquí i es mira si cal tocar el pla.
 3. **Els pesos de l'avaluació: resolts.** Són 10/10/80, i el llibre de qualificacions del
    Moodle ja està configurat així (1,0 · 1,0 · 8,0). El 60/40 de la presentació del curs passat
    no apareix enlloc. **El que queda és refer el contingut del llibre**, que és del curs passat.
-4. **La sessió de k-means (S25)** és l'únic forat de material de tota la programació.
+4. **La sessió de k-means (S25) ja té material** (`ML_06_kmeans` i `EX_06_kmeans`). No queda cap
+   forat de material a la programació.
 5. **Les presentacions de Google de la docent anterior** viuen al seu Drive. Convé demanar-ne
    còpia abans de dependre'n. La llista és a `_moodle-25-26/ENLLACOS.md`.
 6. **El material de Deep Learning i RL està en castellà**, mentre que tot el de Machine Learning

@@ -228,9 +228,9 @@ la taula a la pissarra i assenyala el que retorna cada cosa.
 
 ---
 
-## S07 · dimarts 13 d'octubre · Pandas 1
+## S07 · dimarts 13 d'octubre (horari de dilluns) · Pandas 1
 
-> El 12 és festiu, així que aquesta setmana només hi ha dimarts.
+> El 12 és festiu i es recupera: el dimarts 13 fa horari de dilluns i el dimecres 14, de dimarts. Aquesta setmana hi ha dues sessions.
 
 **Quadern:** `01_fonaments/FO_02_pandas.ipynb`
 
@@ -246,7 +246,7 @@ la taula a la pissarra i assenyala el que retorna cada cosa.
 
 ---
 
-## S08 · dilluns 19 d'octubre · Pandas 2
+## S07b · dimecres 14 d'octubre (horari de dimarts) · Pandas 2
 
 **Objectiu:** tancar el cercle, del CSV al model.
 
@@ -257,6 +257,23 @@ la taula a la pissarra i assenyala el que retorna cada cosa.
 | 20 min | Gràfics ràpids amb `.plot()`. |
 | 30 min | **Del DataFrame al model**: com es passa a les `X` i `y` de scikit-learn. Un exemple mínim entrenant amb dades d'un CSV. **Aquí es tanca el bloc**: ja poden fer sols el que van veure explicat a la S02. |
 | 15 min | Exercicis. |
+
+---
+
+## S08 · dilluns 19 d'octubre · Pe1 i consolidació
+
+> Sessió guanyada amb la recuperació del 12 d'octubre: el Pandas 2 es va fer el dimecres 14. Ara
+> hi ha temps per assentar el bloc abans de la Pp1 del 27, que ja compta amb mínim de 5.
+
+| Temps | Què |
+|---|---|
+| 20 min | **Pe1**, en paper i sense ordinador. Enunciat a `docs/proves/` (el solucionari no es publica). |
+| 40 min | Exercicis 4 a 7 de `FO_02_pandas.ipynb`, a classe, amb tu passant per les taules. |
+| 50 min | **Assaig de la Pp1**: un CSV que no hagin vist, amb el mateix format que tindrà la prova (carregar, forma, inventari de nuls, dues preguntes amb `.groupby()`, un gràfic, una norma amb NumPy). Es corregeix en veu alta al final. |
+| 10 min | Recordar què entra a la Pp1 i que el mínim és 5. |
+
+**Corregeix la Pe1 abans del dimarts 20**: qui hi tregui menys d'un 5 és qui necessita l'assaig
+més que ningú.
 
 ---
 

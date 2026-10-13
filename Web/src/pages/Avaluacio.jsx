@@ -43,7 +43,7 @@ const blocs = [
       { tipus: ACTIVITAT, codi: "A03", nom: "FO_01 · NumPy, exercicis 4 a 7", surt: "S06 · 6 oct", venc: "dg 11 d'octubre" },
       { tipus: ACTIVITAT, codi: "A04", nom: "FO_02 · Pandas, exercicis 1 a 3", surt: "S07 · 13 oct", venc: "dg 18 d'octubre" },
       { tipus: ESCRITA, codi: "Pe1", nom: "Atribut contra mètode, què retorna cada cosa, què vol dir axis", surt: "S08 · dl 19 oct", venc: "a classe" },
-      { tipus: ACTIVITAT, codi: "A05", nom: "FO_02 · Pandas, exercicis 4 a 7", surt: "S08 · 19 oct", venc: "dg 25 d'octubre" },
+      { tipus: ACTIVITAT, codi: "A05", nom: "FO_02 · Pandas, exercicis 4 a 7", surt: "S07b · 14 oct", venc: "dg 25 d'octubre" },
       { tipus: ACTIVITAT, codi: "A06", nom: "MA_01 · àlgebra lineal", surt: "S09 · 20 oct", venc: "dg 25 d'octubre" },
       { tipus: ACTIVITAT, codi: "A07", nom: "Diccionaris, funcions i comprensions", surt: "S10 · 26 oct", venc: "dg 1 de novembre" },
       { tipus: PRACTICA, codi: "Pp1", nom: "Pots manejar dades? Un CSV que no has vist: carregar, nuls, groupby i un gràfic", surt: "S11 · dt 27 oct", venc: "a classe" },

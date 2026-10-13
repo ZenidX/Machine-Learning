@@ -6,8 +6,9 @@ el registre.**
 El pla és a [`diagnostic-i-programacio-2627.md`](diagnostic-i-programacio-2627.md) i els guions
 de sessió als fitxers `guions-bloc-*.md`.
 
-**Calendari:** 33 sessions de 2 h, dilluns i dimarts, del **21 de setembre de 2026** al **2 de
-febrer de 2027**. Descomptats el 12 d'octubre, el 8 de desembre i les vacances de Nadal.
+**Calendari:** 34 sessions de 2 h, dilluns i dimarts, del **21 de setembre de 2026** al **2 de
+febrer de 2027**. Descomptats el 8 de desembre i les vacances de Nadal. El 12 d'octubre es
+recupera: el dt 13 fa horari de dilluns (S07) i el dc 14 de dimarts (S07b).
 
 > **Correcció del 29 de setembre.** Aquest diari i tot el calendari donaven per fet que les
 > classes havien començat el **14 de setembre**. Van començar el **21**. Ho ha corregit en Xavi, i
@@ -102,4 +103,5 @@ La contradicció de les hores **està resolta**: són 66 h a 4 h setmanals, o si
 enllaços funcionen mentre ella els mantingui compartits. Convé demanar-li'n còpia abans de
 dependre'n. La llista és a `_moodle-25-26/ENLLACOS.md`.
 
-**La sessió de k-means (S25)** és l'únic forat de material que queda a la programació.
+**La sessió de k-means (S25) ja té material** (13-oct): `ML_06_kmeans` i `EX_06_kmeans`, amb el
+solucionari en local. No queda cap forat de material a la programació.

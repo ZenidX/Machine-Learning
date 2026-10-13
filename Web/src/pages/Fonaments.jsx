@@ -77,7 +77,7 @@ const quaderns = [
   {
     fitxer: "FO_02_pandas.ipynb",
     titol: "Pandas",
-    sessions: "S07 i S08 · 13 i 19 d'octubre",
+    sessions: "S07, S07b i S08 · 13, 14 i 19 d'octubre",
     mida: "41 cel·les de codi",
     descripcio:
       "Què afegeix Pandas sobre NumPy: noms de columna i tipus barrejats. Series i DataFrame, i carregar melb_data.csv, que són 13.580 habitatges venuts a Melbourne, amb nuls i columnes de text de veritat. Seleccionar amb loc i iloc, filtrar, l'inventari de valors que falten, groupby i agg, i finalment com es passa d'un DataFrame a les X i y de scikit-learn.",

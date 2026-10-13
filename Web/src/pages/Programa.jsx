@@ -27,9 +27,9 @@ const recorregutChart = `flowchart LR
     style MA fill:#ede9fe,stroke:#7c3aed,stroke-width:2px,color:#4c1d95`;
 
 const dadesFermes = [
-  { etiqueta: "Hores", valor: "66 h" },
+  { etiqueta: "Hores", valor: "68 h" },
   { etiqueta: "Per setmana", valor: "4 h" },
-  { etiqueta: "Sessions", valor: "33 de 2 h" },
+  { etiqueta: "Sessions", valor: "34 de 2 h" },
   { etiqueta: "Dies", valor: "dilluns i dimarts" },
   { etiqueta: "Del", valor: "21 set 2026" },
   { etiqueta: "Al", valor: "2 feb 2027" },
@@ -48,7 +48,7 @@ const blocs = [
     num: "1",
     titol: "Fonaments de dades",
     rang: "S04-S11",
-    hores: "16 h",
+    hores: "18 h",
     del: "29 set",
     al: "27 oct",
     actual: true,
@@ -136,9 +136,15 @@ const sessions = [
         material: "FO_02_pandas.ipynb",
       },
       {
+        s: "S07b",
+        dia: "dc 14 oct",
+        text: "Pandas 2: nuls, groupby, gràfics, i del DataFrame a X i y",
+        material: "FO_02_pandas.ipynb",
+      },
+      {
         s: "S08",
         dia: "dl 19 oct",
-        text: "Pandas 2: nuls, groupby, gràfics, i del DataFrame a X i y",
+        text: "Prova escrita 1 i consolidació: exercicis 4 a 7 de Pandas i un assaig de la Pp1",
         material: "FO_02_pandas.ipynb",
       },
       {
@@ -360,7 +366,7 @@ export default function Programa() {
           ))}
         </div>
         <p className="text-sm text-gray-600 mt-4">
-          Dues sessions de 2 h per setmana, dilluns i dimarts. Les 33 sessions ja tenen descomptats
+          Dues sessions de 2 h per setmana, dilluns i dimarts. Les 34 sessions ja tenen descomptats
           els festius que cauen en dia de classe i les vacances de Nadal.
         </p>
         <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-4">
@@ -440,8 +446,8 @@ export default function Programa() {
               ))}
               <tr className="bg-gray-50 font-semibold">
                 <td className="p-3 border border-gray-200 text-gray-900">Total</td>
-                <td className="p-3 border border-gray-200 text-gray-900">33 sessions</td>
-                <td className="p-3 border border-gray-200 text-gray-900">66 h</td>
+                <td className="p-3 border border-gray-200 text-gray-900">34 sessions</td>
+                <td className="p-3 border border-gray-200 text-gray-900">68 h</td>
                 <td className="p-3 border border-gray-200 text-gray-900">21 set</td>
                 <td className="p-3 border border-gray-200 text-gray-900">2 feb</td>
               </tr>
@@ -609,7 +615,7 @@ export default function Programa() {
           <li className="flex gap-2">
             <span className="font-semibold text-amber-700 whitespace-nowrap">12 d'octubre</span>
             <span>
-              cau en dilluns de classe. Aquella setmana només hi ha la sessió del dimarts, la S07.
+              cau en dilluns de classe, però es recupera: el dimarts 13 fa horari de dilluns (S07) i el dimecres 14, de dimarts (S07b).
             </span>
           </li>
           <li className="flex gap-2">

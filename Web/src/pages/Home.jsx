@@ -8,7 +8,7 @@ import MermaidDiagram from '../components/MermaidDiagram'
 const seccions = [
   {
     name: 'Programa',
-    description: 'Els sis blocs i les 33 sessions, amb dates',
+    description: 'Els sis blocs i les 34 sessions, amb dates',
     href: '/programa',
     icon: CalendarRange,
     color: 'bg-blue-600',

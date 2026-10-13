@@ -1,7 +1,8 @@
 # Bateria d'exercicis de Machine Learning clàssic
 
 Cinc quaderns de pràctica, un per conjunt de dades. Es fan **després** de la teoria dels cinc
-models, que està a `../01_teoria/` i es va fer tota sobre Iris.
+models, que està a `../01_teoria/` i es va fer tota sobre Iris. I un sisè, `EX_06_kmeans`, que és
+el del no supervisat i va després de `../01_teoria/ML_06_kmeans.ipynb`.
 
 Cada quadern té les cel·les de codi **buides**, amb comentaris que guien, i comença amb la
 llista de les eines que necessita, que estan explicades a `EX_00_caixa_eines.ipynb`.
@@ -30,6 +31,7 @@ pot ensenyar**, i aquesta és tota la gràcia de la bateria:
 | **EX_03** | Digits · 1797×64, 10 classes | **Una imatge també és una taula.** Cada columna és un píxel i no vol dir res tota sola, i els mateixos cinc models funcionen igual. |
 | **EX_04** | Dades fabricades · 2 columnes | Amb només dues columnes **es pot dibuixar la frontera de cada model** i veure'n la forma: la recta de la logística, les escales de l'arbre, les corbes de l'SVM. |
 | **EX_05** | Wine, embrutat a posta | **A la feina les dades no vénen netes.** Valors que falten, columnes de text, duplicats. I per què l'ordre de les operacions importa. |
+| **EX_06** | Set punts de joguina, Wine, digits i una foto · sense etiquetes | **Ningú et dona la resposta.** Agrupar amb k-means, triar quants grups, i només al final mirar si s'assemblen a les etiquetes reals. |
 
 ## Ordre i quan fer-los
 
@@ -40,7 +42,8 @@ i el cinquè són els que més canvien la manera de pensar.
 - **EX_02 Cancer** — quan ja donen per bona la precisió com a mesura. Serveix per trencar-la.
 - **EX_03 Digits** — quan ja es mouen amb soltesa pel flux.
 - **EX_04 Fronteres** — es pot avançar: ajuda a entendre la teoria, no només a practicar-la.
-- **EX_05 Dades brutes** — l'últim, perquè necessita tota la resta i és el més pròxim a la feina real.
+- **EX_05 Dades brutes** — l'últim dels supervisats, perquè necessita tota la resta i és el més pròxim a la feina real.
+- **EX_06 k-means** — després de `ML_06_kmeans` (S25). És independent dels altres cinc.
 
 ## Com es fan servir
 

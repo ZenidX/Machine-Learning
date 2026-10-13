@@ -87,16 +87,19 @@ canvia d'eina (`KernelPCA`, `TSNE`), no de paràmetres.
 
 ## S25 · dilluns 21 de desembre · k-means, imatges i prova pràctica 3
 
-**Quadern:** `02_practica/EX_03_digits.ipynb` · **A casa:** els enllaços de R de la Núria
+**Quaderns:** `01_teoria/ML_06_kmeans.ipynb` (k-means) i `02_practica/EX_03_digits.ipynb`
+(imatges) · **A casa:** `02_practica/EX_06_kmeans.ipynb` i els enllaços de R de la Núria
 
 **Objectiu:** tancar el no supervisat i el bloc.
 
-**Aquesta sessió encara no té material propi per a la part de k-means.** És l'únic forat que
-queda a la programació i cal preparar-lo al desembre.
+**El material de k-means ja és fet** (`ML_06` + `EX_06`, amb el solucionari en local a
+`02_practica/solucions/`, fora del repositori). El quadern de teoria és més llarg que els 30
+minuts que té a classe, i és a posta: a classe es fan les seccions 2 a 6, i la resta (mínims
+locals, triar $k$, Iris, on falla) queda per llegir a casa abans de l'`EX_06`.
 
 | Temps | Què |
 |---|---|
-| 30 min | **k-means**: agrupar sense etiquetes. L'algorisme és prou senzill per implementar-lo a mà en una sessió —assignar cada punt al centre més pròxim, recalcular els centres, repetir— i **ja tenen les distàncies de la S13 i els eixos de la S06**. Aplica-ho a Iris i compara els grups que surten amb les espècies reals, que el model no ha vist. |
+| 30 min | **k-means**: agrupar sense etiquetes, amb `ML_06`. **La inèrcia** com a número a minimitzar (secció 2) i **els dos passos deduïts, no donats**: amb els centres fixos, el centre més proper és l'única assignació òptima (es comprova contra les 256 assignacions d'un cas petit); amb els grups fixos, el millor centre és la mitjana, per dos camins, sumant i restant la mitjana i amb la derivada de la S18 comprovada per diferències finites (seccions 3 i 4). **Lloyd en deu línies** i per què $J$ no puja mai (secció 5), i **la comparació amb `KMeans`** amb la mateixa `init`: centres iguals a $10^{-15}$ i les 300 etiquetes idèntiques (secció 6). **Ja tenen les distàncies de la S13 i els eixos de la S06**, i el *broadcasting* de `X[:, None, :]` és l'única peça nova de NumPy. |
 | 20 min | **Imatges com a taula**: el conjunt digits, on cada columna és un píxel. Els mateixos cinc models funcionen igual. Enllaça-ho amb el PCA de la S24 per dibuixar els dígits en dues dimensions. |
 | 50 min | **Prova pràctica 3.** Format: un CSV brut que no hagin vist. Netejar-lo, muntar un `Pipeline` sense fuita d'informació, entrenar, i respondre per què el resultat és el que és. |
 | 20 min | **R al costat de Python**, en cinc minuts de conversa i prou. És a la llista d'eines oficial i la docent anterior hi dedicava sis setmanes; aquí no hi cap. Es reparteixen els enllaços de `_moodle-25-26/ENLLACOS.md` com a lectura, i **es diu que no entra a l'examen**. I presentació del bloc de xarxes. |
@@ -111,6 +114,8 @@ Al final d'aquestes quatre sessions, un alumne hauria de poder, **sense ajuda**:
 - Explicar per què escalar abans de partir el conjunt és un error, i no només recordar que ho és.
 - Reduir un conjunt de 30 columnes a dues i dir quanta informació s'hi ha perdut.
 - Dir per què les distàncies deixen de servir en dimensió alta.
+- Agrupar un conjunt sense etiquetes, triar $k$ amb el colze i la silueta, i explicar per què
+  el número d'un grup no vol dir res.
 
 **El senyal d'alarma d'aquest bloc és a la S22**: si no els diu res la folgança complementària,
 segurament el que falla és el descens de gradient de les S18 i S19. Val més tornar-hi mitja
