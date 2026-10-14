@@ -7,7 +7,6 @@ import BlocDades from './pages/BlocDades'
 import BlocSupervisat from './pages/BlocSupervisat'
 import BlocNoSupervisat from './pages/BlocNoSupervisat'
 import BlocXarxesRL from './pages/BlocXarxesRL'
-import Matematiques from './pages/Matematiques'
 import Recursos from './pages/Recursos'
 
 // Rutes antigues: redirigeixen a la pàgina nova perquè els enllaços que ja circulen no es trenquin.
@@ -18,6 +17,7 @@ const REDIRECCIONS = {
   '/fonaments': '/dades',
   '/machine-learning': '/supervisat',
   '/practica': '/supervisat',
+  '/matematiques': '/supervisat',
   '/deep-rl': '/xarxes-i-rl',
 }
 
@@ -40,7 +40,6 @@ function App() {
         <Route path="/supervisat" element={<BlocSupervisat />} />
         <Route path="/no-supervisat" element={<BlocNoSupervisat />} />
         <Route path="/xarxes-i-rl" element={<BlocXarxesRL />} />
-        <Route path="/matematiques" element={<Matematiques />} />
         <Route path="/recursos" element={<Recursos />} />
         {Object.entries(REDIRECCIONS).map(([de, a]) => (
           <Route key={de} path={de} element={<Navigate to={a} replace />} />

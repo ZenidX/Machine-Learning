@@ -127,10 +127,10 @@ export default function BlocSupervisat() {
             </div>
             <p className="text-violet-900 text-sm">
               Els arbres continuen a l'entropia, la regressió logística al descens de gradient, i la
-              log-loss a la versemblança. Els quaderns de{" "}
-              <Link to="/matematiques" className="font-medium underline hover:text-violet-700">matemàtiques</Link>{" "}
-              van intercalats a la llista d'aquí sota, just on toquen: cada fórmula seguida de la línia
-              de NumPy que la calcula, i cada implementació comparada amb scikit-learn.
+              log-loss a la versemblança. Els quaderns de matemàtiques (MA) van intercalats a la llista
+              d'aquí sota, just on toquen: cada fórmula seguida de la línia de NumPy que la calcula, i cada
+              implementació comparada amb scikit-learn. Si el número que et surt no coincideix amb el de la
+              llibreria, alguna cosa del que has escrit no és el que creus.
             </p>
           </div>
           <details className="group rounded-lg border border-gray-200 bg-gray-50">

@@ -62,7 +62,15 @@ export default function BlocNoSupervisat() {
       <Pas id="apren" num={1} titol="Aprèn" color={C} subtitol="El tancament de l'SVM, les eines per a dades brutes, el PCA i el k-means." />
       <Seccio icona={BookOpen} color={C}>
         <div className="space-y-4">
-          <QuadernCard codi="MA_05" color="violet" etiqueta="tanca l'SVM del bloc 2" />
+          <QuadernCard codi="MA_05" color="violet" etiqueta="tanca l'SVM del bloc 2">
+            <p className="text-sm text-gray-700 mt-2">
+              <strong>L'únic punt del curs que no es deriva fins al final:</strong> el problema dual de
+              l'SVM no hi cap en el temps que tenim. El quadern en presenta el resultat, diu clarament que
+              no s'ha derivat i el verifica numèricament amb un model entrenat: els punts amb coeficient
+              diferent de zero són exactament els vectors de suport. Tota la resta de matemàtiques del curs
+              la pots comprovar tu des de zero.
+            </p>
+          </QuadernCard>
           <QuadernCard codi="EX_00" color="indigo" etiqueta="les eines de les dades brutes">
             <p className="text-sm text-gray-700 mt-2">
               SimpleImputer, OneHotEncoder, drop_duplicates, Pipeline i ColumnTransformer: els exemples

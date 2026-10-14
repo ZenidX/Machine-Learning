@@ -46,7 +46,6 @@ const seccions = [
   { name: "2 · Supervisat", description: "k-NN, arbres, boscos, regressió logística i SVM, amb la matemàtica de sota", href: "/supervisat", icon: Brain, color: "bg-sky-600" },
   { name: "3 · Dades brutes i no supervisat", description: "Pipelines sense fuites, PCA i k-means", href: "/no-supervisat", icon: Layers, color: "bg-teal-600" },
   { name: "4 · Xarxes i RL", description: "PyTorch, agents que aprenen jugant i el concurs", href: "/xarxes-i-rl", icon: Gamepad2, color: "bg-rose-600" },
-  { name: "Matemàtiques", description: "Els sis quaderns de matemàtiques, de consulta", href: "/matematiques", icon: Sigma, color: "bg-violet-600" },
   { name: "Recursos", description: "Caixa d'eines, catàleg de datasets, eines i vídeos", href: "/recursos", icon: Wrench, color: "bg-amber-600" },
 ];
 
@@ -55,7 +54,8 @@ flowchart LR
     B1["1 · Dades<br/>NumPy i Pandas"] --> B2["2 · Supervisat<br/>models que prediuen"]
     B2 --> B3["3 · Dades brutes<br/>i no supervisat"]
     B3 --> B4["4 · Xarxes i RL<br/>agents que juguen"]
-    MA["Matematiques<br/>sis quaderns"] -.cada formula, la seva linia de codi.-> B2
+    MA["Matematiques<br/>dins de cada bloc"] -.cada formula, la seva linia de codi.-> B1
+    MA -.-> B2
     MA -.-> B3
 
     style B1 fill:#d1fae5
