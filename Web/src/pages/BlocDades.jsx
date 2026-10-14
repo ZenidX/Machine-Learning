@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Table2, ChevronRight, CircleSlash, BookOpen, Eye, Mountain, ClipboardCheck, Code2, Wrench } from "lucide-react";
+import { Table2, CircleSlash, BookOpen, Eye, Mountain, ClipboardCheck, Code2, Wrench } from "lucide-react";
 import {
   CapcaleraBloc,
   PassosBloc,
@@ -12,6 +12,7 @@ import {
   ProvaBloc,
   ActivitatsBloc,
   SeguentBloc,
+  Chivato,
 } from "../components/Bloc";
 
 const C = "emerald";
@@ -100,33 +101,6 @@ const funcionsFO02 = {
   ],
   tancament: "Pandas és per mirar i preparar les dades. Quan estan netes, el model rep X i y.",
 };
-
-function Chivato({ f }) {
-  return (
-    <details className="mt-3 group rounded-lg border border-gray-200 bg-gray-50">
-      <summary className="flex cursor-pointer list-none items-center gap-2 p-3 text-sm font-medium text-gray-800 hover:bg-gray-100 rounded-lg">
-        <ChevronRight className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-90" />
-        {f.titol}
-      </summary>
-      <div className="border-t border-gray-200 p-4 space-y-3">
-        <p className="text-sm text-gray-600">{f.intro}</p>
-        <ol className="space-y-2">
-          {f.llista.map((x, n) => (
-            <li key={x.nom} className="flex gap-3 text-sm">
-              <span className="flex-shrink-0 font-medium text-gray-400 tabular-nums">{n + 1}.</span>
-              <span>
-                <code className="bg-white border border-gray-200 px-1.5 py-0.5 rounded text-xs text-gray-900">{x.nom}</code>
-                <span className="ml-2 text-gray-700">{x.text}</span>
-              </span>
-            </li>
-          ))}
-        </ol>
-        {f.describe && <p className="text-sm text-gray-600 border-t border-gray-200 pt-3">{f.describe}</p>}
-        <p className="text-sm font-medium text-gray-900">{f.tancament}</p>
-      </div>
-    </details>
-  );
-}
 
 function FuncionsFO00() {
   const f = funcionsFO00;

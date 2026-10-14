@@ -11,6 +11,7 @@ import {
   PenLine,
   CalendarRange,
   MessageCircle,
+  ChevronRight,
 } from "lucide-react";
 import { quaderns, colabUrl, rutaQuadern } from "../data/quaderns";
 import { reptes } from "../data/reptes";
@@ -177,6 +178,36 @@ export function QuadernCard({ codi, color = "indigo", etiqueta, children }) {
         )}
       </div>
     </div>
+  );
+}
+
+// El xivato desplegable d'un quadern: les eines que fa servir, per ordre d'importància.
+// f = { titol, intro, llista: [{ nom, text }], describe?, tancament }
+export function Chivato({ f }) {
+  if (!f) return null;
+  return (
+    <details className="mt-3 group rounded-lg border border-gray-200 bg-gray-50">
+      <summary className="flex cursor-pointer list-none items-center gap-2 p-3 text-sm font-medium text-gray-800 hover:bg-gray-100 rounded-lg">
+        <ChevronRight className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-90" />
+        {f.titol}
+      </summary>
+      <div className="border-t border-gray-200 p-4 space-y-3">
+        <p className="text-sm text-gray-600">{f.intro}</p>
+        <ol className="space-y-2">
+          {f.llista.map((x, n) => (
+            <li key={x.nom} className="flex gap-3 text-sm">
+              <span className="flex-shrink-0 font-medium text-gray-400 tabular-nums">{n + 1}.</span>
+              <span>
+                <code className="bg-white border border-gray-200 px-1.5 py-0.5 rounded text-xs text-gray-900">{x.nom}</code>
+                <span className="ml-2 text-gray-700">{x.text}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        {f.describe && <p className="text-sm text-gray-600 border-t border-gray-200 pt-3">{f.describe}</p>}
+        <p className="text-sm font-medium text-gray-900">{f.tancament}</p>
+      </div>
+    </details>
   );
 }
 

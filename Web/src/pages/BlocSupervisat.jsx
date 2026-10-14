@@ -25,7 +25,9 @@ import {
   ProvaBloc,
   ActivitatsBloc,
   SeguentBloc,
+  Chivato,
 } from "../components/Bloc";
+import { chivatos } from "../data/chivatos";
 
 const C = "sky";
 
@@ -181,15 +183,33 @@ export default function BlocSupervisat() {
       <Pas id="apren" num={1} titol="Aprèn" color={C} subtitol="Els quaderns de teoria en l'ordre del calendari, amb els de matemàtiques on fan falta." />
       <Seccio icona={BookOpen} color={C}>
         <div className="space-y-4">
-          <QuadernCard codi="ML_00" color={C} />
-          <QuadernCard codi="ML_01" color={C} />
-          <QuadernCard codi="ML_02" color={C} />
-          <QuadernCard codi="MA_04" color="violet" etiqueta="matemàtiques dels arbres" />
-          <QuadernCard codi="ML_03" color={C} />
-          <QuadernCard codi="ML_04" color={C} />
-          <QuadernCard codi="MA_02" color="violet" etiqueta="matemàtiques de la logística" />
-          <QuadernCard codi="MA_03" color="violet" etiqueta="d'on surt la log-loss" />
-          <QuadernCard codi="ML_05" color={C} />
+          <QuadernCard codi="ML_00" color={C}>
+            <Chivato f={chivatos.ML_00} />
+          </QuadernCard>
+          <QuadernCard codi="ML_01" color={C}>
+            <Chivato f={chivatos.ML_01} />
+          </QuadernCard>
+          <QuadernCard codi="ML_02" color={C}>
+            <Chivato f={chivatos.ML_02} />
+          </QuadernCard>
+          <QuadernCard codi="MA_04" color="violet" etiqueta="matemàtiques dels arbres">
+            <Chivato f={chivatos.MA_04} />
+          </QuadernCard>
+          <QuadernCard codi="ML_03" color={C}>
+            <Chivato f={chivatos.ML_03} />
+          </QuadernCard>
+          <QuadernCard codi="ML_04" color={C}>
+            <Chivato f={chivatos.ML_04} />
+          </QuadernCard>
+          <QuadernCard codi="MA_02" color="violet" etiqueta="matemàtiques de la logística">
+            <Chivato f={chivatos.MA_02} />
+          </QuadernCard>
+          <QuadernCard codi="MA_03" color="violet" etiqueta="d'on surt la log-loss">
+            <Chivato f={chivatos.MA_03} />
+          </QuadernCard>
+          <QuadernCard codi="ML_05" color={C}>
+            <Chivato f={chivatos.ML_05} />
+          </QuadernCard>
         </div>
         <p className="text-sm text-gray-600 mt-4">
           El marge de l'SVM es tanca al bloc 3, amb el quadern MA_05. El descens de gradient té dues
@@ -201,9 +221,15 @@ export default function BlocSupervisat() {
       <Pas id="exemples" num={2} titol="Exemples" color={C} subtitol="Exemples resolts: per veure com es fa. Cadascun fa servir un conjunt de dades que ensenya una cosa que Iris no pot ensenyar." />
       <Seccio icona={Eye} color={C}>
         <div className="space-y-4">
-          <QuadernCard codi="EX_01" color={C} etiqueta="exemple resolt" />
-          <QuadernCard codi="EX_02" color={C} etiqueta="exemple resolt" />
-          <QuadernCard codi="EX_04" color={C} etiqueta="exemple resolt" />
+          <QuadernCard codi="EX_01" color={C} etiqueta="exemple resolt">
+            <Chivato f={chivatos.EX_01} />
+          </QuadernCard>
+          <QuadernCard codi="EX_02" color={C} etiqueta="exemple resolt">
+            <Chivato f={chivatos.EX_02} />
+          </QuadernCard>
+          <QuadernCard codi="EX_04" color={C} etiqueta="exemple resolt">
+            <Chivato f={chivatos.EX_04} />
+          </QuadernCard>
           <QuadernCard codi="EX_00" color="indigo" etiqueta="referència">
             <div className="flex flex-wrap gap-1.5 pt-2">
               {eines.map((e) => (
@@ -212,6 +238,7 @@ export default function BlocSupervisat() {
                 </code>
               ))}
             </div>
+            <Chivato f={chivatos.EX_00} />
           </QuadernCard>
         </div>
       </Seccio>

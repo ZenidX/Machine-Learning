@@ -12,7 +12,9 @@ import {
   ProvaBloc,
   ActivitatsBloc,
   SeguentBloc,
+  Chivato,
 } from "../components/Bloc";
+import { chivatos } from "../data/chivatos";
 
 const C = "teal";
 
@@ -70,6 +72,7 @@ export default function BlocNoSupervisat() {
               diferent de zero són exactament els vectors de suport. Tota la resta de matemàtiques del curs
               la pots comprovar tu des de zero.
             </p>
+            <Chivato f={chivatos.MA_05} />
           </QuadernCard>
           <QuadernCard codi="EX_00" color="indigo" etiqueta="les eines de les dades brutes">
             <p className="text-sm text-gray-700 mt-2">
@@ -77,9 +80,14 @@ export default function BlocNoSupervisat() {
               les fan servir totes, i aquí tens què fa cadascuna i el seu parany. Els quaderns de pipelines del
               curs passat són al Moodle.
             </p>
+            <Chivato f={chivatos.EX_00_brutes} />
           </QuadernCard>
-          <QuadernCard codi="MA_06" color="violet" etiqueta="la porta al no supervisat" />
-          <QuadernCard codi="ML_06" color={C} />
+          <QuadernCard codi="MA_06" color="violet" etiqueta="la porta al no supervisat">
+            <Chivato f={chivatos.MA_06} />
+          </QuadernCard>
+          <QuadernCard codi="ML_06" color={C}>
+            <Chivato f={chivatos.ML_06} />
+          </QuadernCard>
         </div>
         <div className="mt-4 flex items-start gap-3 bg-gray-50 border border-gray-200 rounded-lg p-4">
           <Info className="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" />
@@ -96,9 +104,15 @@ export default function BlocNoSupervisat() {
       <Pas id="exemples" num={2} titol="Exemples" color={C} subtitol="Exemples resolts: per veure com es fa. L'EX_05 és el més proper a la Pp3." />
       <Seccio icona={Eye} color={C}>
         <div className="space-y-4">
-          <QuadernCard codi="EX_05" color={C} etiqueta="exemple resolt" />
-          <QuadernCard codi="EX_03" color={C} etiqueta="exemple resolt" />
-          <QuadernCard codi="EX_06" color={C} etiqueta="exemple resolt" />
+          <QuadernCard codi="EX_05" color={C} etiqueta="exemple resolt">
+            <Chivato f={chivatos.EX_05} />
+          </QuadernCard>
+          <QuadernCard codi="EX_03" color={C} etiqueta="exemple resolt">
+            <Chivato f={chivatos.EX_03} />
+          </QuadernCard>
+          <QuadernCard codi="EX_06" color={C} etiqueta="exemple resolt">
+            <Chivato f={chivatos.EX_06} />
+          </QuadernCard>
           <p className="text-sm text-gray-700">
             Si una eina no la coneixes, és a la{" "}
             <Link to="/recursos" className="text-teal-700 font-medium hover:text-teal-900 inline-flex items-center gap-1">

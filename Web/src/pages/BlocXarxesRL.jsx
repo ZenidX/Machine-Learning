@@ -29,7 +29,9 @@ import {
   ProvaBloc,
   ActivitatsBloc,
   SeguentBloc,
+  Chivato,
 } from "../components/Bloc";
+import { chivatos } from "../data/chivatos";
 import { githubUrl } from "../data/quaderns";
 
 const C = "rose";
@@ -80,7 +82,9 @@ export default function BlocXarxesRL() {
       <Seccio titol="Xarxes neuronals" icona={Layers} color={C}>
         <div className="space-y-4">
           {["DL_00", "DL_01", "DL_02", "DL_03", "DL_04", "DL_05"].map((c) => (
-            <QuadernCard key={c} codi={c} color={C} />
+            <QuadernCard key={c} codi={c} color={C}>
+              <Chivato f={chivatos[c]} />
+            </QuadernCard>
           ))}
         </div>
         <p className="text-gray-700 text-sm mt-4 mb-3">
@@ -98,7 +102,9 @@ export default function BlocXarxesRL() {
       <Seccio titol="Reinforcement Learning" icona={Gamepad2} color={C}>
         <div className="space-y-4">
           {["RL_01", "RL_02", "RL_03"].map((c) => (
-            <QuadernCard key={c} codi={c} color={C} />
+            <QuadernCard key={c} codi={c} color={C}>
+              <Chivato f={chivatos[c]} />
+            </QuadernCard>
           ))}
         </div>
         <p className="text-gray-700 text-sm mt-4 mb-3">
@@ -148,8 +154,12 @@ jupyter lab`}
       <Pas id="exemples" num={2} titol="Exemples" color={C} subtitol="El pas de PyTorch a DQN fet de principi a fi, i la plantilla on entrenes el teu agent." />
       <Seccio icona={Eye} color={C}>
         <div className="space-y-4">
-          <QuadernCard codi="DL_PR" color={C} etiqueta="de PyTorch a DQN" />
-          <QuadernCard codi="CONCURS" color={C} etiqueta="el teu agent" />
+          <QuadernCard codi="DL_PR" color={C} etiqueta="de PyTorch a DQN">
+            <Chivato f={chivatos.DL_PR} />
+          </QuadernCard>
+          <QuadernCard codi="CONCURS" color={C} etiqueta="el teu agent">
+            <Chivato f={chivatos.CONCURS} />
+          </QuadernCard>
         </div>
       </Seccio>
 
