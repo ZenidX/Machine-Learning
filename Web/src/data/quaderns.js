@@ -20,10 +20,10 @@ export const quaderns = {
   FO_00: {
     fitxer: "FO_00_objectes_i_autocompletar.ipynb",
     carpeta: `${ML}/01_fonaments`,
-    titol: "Objectes de Python i autocompletat",
+    titol: "Les cinc preguntes: com esbrinar què tens a les mans",
     descarrega: true,
     descripcio:
-      "Com es pregunta a un objecte de Python què té a dins: type(), dir(), objecte.metode? i l'autocompletat amb la tecla TAB. La diferència entre un atribut i un mètode, que és per què df.shape va sense parèntesis i df.head() amb. I els objectes que et trobaràs a tot el curs: el Bunch que tornen els load_*, l'ndarray, el DataFrame, la Series, i un model de scikit-learn abans i després d'entrenar-lo. Acaba amb una exploració de dades guiada de principi a fi.",
+      "Les cinc preguntes que es fan a qualsevol dataset abans de calcular res, i com se li fan a un objecte de Python: type(), dir(), objecte.metode? i l'autocompletat amb la tecla TAB. La diferència entre un atribut i un mètode, que és per què df.shape va sense parèntesis i df.head() amb. I els objectes que et trobaràs a tot el curs: el Bunch que tornen els load_*, l'ndarray, el DataFrame, la Series, i un model de scikit-learn abans i després d'entrenar-lo. Acaba amb una exploració de dades guiada de principi a fi.",
   },
   FO_01: {
     fitxer: "FO_01_numpy.ipynb",

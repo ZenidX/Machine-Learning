@@ -34,37 +34,111 @@ const funcionsFO00 = {
   tancament: ".describe() descriu. .groupby() compara. Analitzar és comparar.",
 };
 
+const cinquePreguntes = [
+  { q: "Què és això?", eina: "type()" },
+  { q: "Què porta dins?", eina: "dir(), TAB" },
+  { q: "Quina mida té i de quins tipus és?", eina: ".shape, .dtypes, .info()" },
+  { q: "Hi falta res? Hi ha repetits?", eina: ".isna().sum(), .duplicated().sum()" },
+  { q: "Com es reparteix el que vull predir?", eina: ".value_counts()" },
+];
+
+function CinquePreguntes() {
+  return (
+    <div className="mt-3 rounded-lg border border-emerald-200 bg-white p-4">
+      <p className="text-sm font-medium text-gray-900 mb-2">
+        Les cinc preguntes que fa tot data scientist quan li arriba un dataset
+      </p>
+      <ol className="space-y-1.5">
+        {cinquePreguntes.map((x, n) => (
+          <li key={x.q} className="flex gap-3 text-sm">
+            <span className="flex-shrink-0 font-semibold text-emerald-700 tabular-nums">{n + 1}.</span>
+            <span className="text-gray-800">
+              {x.q}{" "}
+              <code className="bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded text-xs text-gray-700">{x.eina}</code>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p className="text-xs text-gray-500 mt-2">
+        Es fan a qualsevol objecte, també a un model. I són el primer que fas amb les dades d'un repte, abans de calcular res.
+      </p>
+    </div>
+  );
+}
+
+const funcionsFO01 = {
+  titol: "Les eines de NumPy que fas servir, per ordre d'importància",
+  intro: "NumPy té centenars de funcions. Per fer machine learning, amb aquestes en tens prou per a gairebé tot.",
+  llista: [
+    { nom: ".shape", text: "Com a Pandas, la primera i la que més errors caça. Files = mostres, columnes = característiques. Si un model es queixa de dimensions, mira-la abans de res." },
+    { nom: "X[:, j]", text: "«Totes les files, la columna j»: és com s'agafa una característica. [fila, columna] dins d'uns sols claudàtors, no [fila][columna]." },
+    { nom: ".mean(axis=0)", text: "Les agregacions amb eix. axis=0 aixafa les files i et dona un valor per columna; axis=1, un per fila. És el concepte que més costa del bloc." },
+    { nom: "X[X > 5]", text: "Les màscares booleanes: filtrar sense bucles. Combinades amb & i |, i cada condició entre parèntesis." },
+    { nom: "a - b, a * 2", text: "Les operacions vectoritzades, element a element i sense bucle. Amb el broadcasting, una fila es resta de tota la taula d'un sol cop." },
+    { nom: "np.sqrt(((a - b)**2).sum())", text: "La distància euclidiana, que és el mateix que np.linalg.norm(a - b). Una línia, i és el cor del k-NN." },
+    { nom: "(pred == y).mean()", text: "La precisió d'un model: una màscara de True/False i la seva mitjana." },
+    { nom: ".argmax() i .argsort()", text: "La posició, no el valor. Per trobar la mostra més gran o les k més properes." },
+    { nom: ".copy()", text: "Una llesca no és una còpia: si la modifiques, modifiques l'original. Si l'has de tocar, copia-la abans." },
+  ],
+  tancament: "NumPy és càlcul: si escrius un bucle for sobre les files d'un array, gairebé segur que hi ha una manera vectoritzada.",
+};
+
+const funcionsFO02 = {
+  titol: "Les eines de Pandas d'aquest quadern, per ordre d'importància",
+  intro: "Les de FO_00 continuen valent (.shape, .info(), .value_counts(), .groupby(), .isna()). Aquestes són les que afegeix aquest quadern.",
+  llista: [
+    { nom: "pd.read_csv()", text: "La porta d'entrada. Mira sempre el resultat amb .head() i .info() abans de tocar res: un separador o un decimal mal llegit fa que una columna de números surti com a text." },
+    { nom: 'df["col"] i df[["a", "b"]]', text: "Uns claudàtors et donen una Series; dos, un DataFrame. La diferència decideix quins mètodes pots fer servir després." },
+    { nom: ".loc[] contra .iloc[]", text: ".loc va per etiquetes (el nom de la fila i de la columna), .iloc per posició. Després d'un filtre, les etiquetes ja no són 0, 1, 2..." },
+    { nom: "df[(cond1) & (cond2)]", text: "Filtrar amb diverses condicions. Els parèntesis són obligatoris, i and/or no funcionen." },
+    { nom: ".groupby().agg([...])", text: "Comparar grups amb diverses funcions alhora: mitjana, mediana i quants n'hi ha. El count et diu si una mitjana es pot creure." },
+    { nom: ".dropna() i .fillna()", text: "Eliminar o omplir. Abans de triar, mira quantes files et costa cada opció." },
+    { nom: ".sort_values()", text: "Ordenar per veure els extrems: allà hi ha els errors de dades i els casos interessants." },
+    { nom: ".plot()", text: "Un gràfic en una línia, directament des del DataFrame o d'un groupby. Per mirar, no per presentar." },
+    { nom: ".apply() i .map()", text: "Una funció pròpia fila a fila, o recodificar valors coneguts amb un diccionari." },
+    { nom: 'X = df[cols], y = df["objectiu"]', text: "Del DataFrame al model: les columnes amb què prediràs i la que vols predir, numèriques i sense nuls." },
+  ],
+  tancament: "Pandas és per mirar i preparar les dades. Quan estan netes, el model rep X i y.",
+};
+
+function Chivato({ f }) {
+  return (
+    <details className="mt-3 group rounded-lg border border-gray-200 bg-gray-50">
+      <summary className="flex cursor-pointer list-none items-center gap-2 p-3 text-sm font-medium text-gray-800 hover:bg-gray-100 rounded-lg">
+        <ChevronRight className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-90" />
+        {f.titol}
+      </summary>
+      <div className="border-t border-gray-200 p-4 space-y-3">
+        <p className="text-sm text-gray-600">{f.intro}</p>
+        <ol className="space-y-2">
+          {f.llista.map((x, n) => (
+            <li key={x.nom} className="flex gap-3 text-sm">
+              <span className="flex-shrink-0 font-medium text-gray-400 tabular-nums">{n + 1}.</span>
+              <span>
+                <code className="bg-white border border-gray-200 px-1.5 py-0.5 rounded text-xs text-gray-900">{x.nom}</code>
+                <span className="ml-2 text-gray-700">{x.text}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        {f.describe && <p className="text-sm text-gray-600 border-t border-gray-200 pt-3">{f.describe}</p>}
+        <p className="text-sm font-medium text-gray-900">{f.tancament}</p>
+      </div>
+    </details>
+  );
+}
+
 function FuncionsFO00() {
   const f = funcionsFO00;
   return (
     <>
+      <CinquePreguntes />
       <p className="mt-3 text-sm text-emerald-900 bg-emerald-50 border-l-4 border-emerald-400 rounded-r-lg p-3">
         Els atributs que acaben en guió baix, com .coef_ o .feature_importances_, volen dir «això ho
         he après de les dades». No existeixen abans de cridar .fit(), i buscar-los abans és el primer
         error que fa tothom.
       </p>
-      <details className="mt-3 group rounded-lg border border-gray-200 bg-gray-50">
-        <summary className="flex cursor-pointer list-none items-center gap-2 p-3 text-sm font-medium text-gray-800 hover:bg-gray-100 rounded-lg">
-          <ChevronRight className="w-4 h-4 flex-shrink-0 transition-transform group-open:rotate-90" />
-          {f.titol}
-        </summary>
-        <div className="border-t border-gray-200 p-4 space-y-3">
-          <p className="text-sm text-gray-600">{f.intro}</p>
-          <ol className="space-y-2">
-            {f.llista.map((x, n) => (
-              <li key={x.nom} className="flex gap-3 text-sm">
-                <span className="flex-shrink-0 font-medium text-gray-400 tabular-nums">{n + 1}.</span>
-                <span>
-                  <code className="bg-white border border-gray-200 px-1.5 py-0.5 rounded text-xs text-gray-900">{x.nom}</code>
-                  <span className="ml-2 text-gray-700">{x.text}</span>
-                </span>
-              </li>
-            ))}
-          </ol>
-          <p className="text-sm text-gray-600 border-t border-gray-200 pt-3">{f.describe}</p>
-          <p className="text-sm font-medium text-gray-900">{f.tancament}</p>
-        </div>
-      </details>
+      <Chivato f={f} />
     </>
   );
 }
@@ -99,8 +173,12 @@ export default function BlocDades() {
           <QuadernCard codi="FO_00" color={C}>
             <FuncionsFO00 />
           </QuadernCard>
-          <QuadernCard codi="FO_01" color={C} />
-          <QuadernCard codi="FO_02" color={C} />
+          <QuadernCard codi="FO_01" color={C}>
+            <Chivato f={funcionsFO01} />
+          </QuadernCard>
+          <QuadernCard codi="FO_02" color={C}>
+            <Chivato f={funcionsFO02} />
+          </QuadernCard>
           <QuadernCard codi="MA_01" color="violet" etiqueta="matemàtiques" />
         </div>
       </Seccio>
