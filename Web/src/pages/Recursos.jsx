@@ -18,6 +18,7 @@ import {
   Table2,
   KeyRound,
   Boxes,
+  ChevronRight,
 } from "lucide-react";
 import { QuadernCard, ReptesResolts } from "../components/Bloc";
 import { githubUrl } from "../data/quaderns";
@@ -208,12 +209,14 @@ function ObjecteCard({ o }) {
       </li>
     ));
   return (
-    <div className="rounded-lg border border-gray-200 p-4">
-      <div className="flex flex-wrap items-baseline gap-2">
+    <details className="group rounded-lg border border-gray-200">
+      <summary className="flex cursor-pointer list-none flex-wrap items-baseline gap-2 p-4 hover:bg-gray-50 rounded-lg">
+        <ChevronRight className="w-4 h-4 self-center flex-shrink-0 text-gray-500 transition-transform group-open:rotate-90" />
         <h3 className="text-lg font-semibold text-gray-900">{o.nom}</h3>
         <span className="text-sm text-gray-500">{o.on}</span>
-      </div>
-      <p className="text-sm text-gray-700 mt-1">{o.que}</p>
+      </summary>
+      <div className="border-t border-gray-200 p-4">
+      <p className="text-sm text-gray-700">{o.que}</p>
       <div className="grid lg:grid-cols-2 gap-4 mt-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-sky-700 mb-1">Atributs · sense parèntesis</p>
@@ -225,7 +228,8 @@ function ObjecteCard({ o }) {
         </div>
       </div>
       {o.nota && <p className="text-sm text-amber-900 bg-amber-50 border-l-4 border-amber-300 rounded-r p-2 mt-3">{o.nota}</p>}
-    </div>
+      </div>
+    </details>
   );
 }
 
@@ -289,11 +293,15 @@ export default function Recursos() {
           Guió baix <strong>al final</strong> (<Codi>coef_</Codi>): ho ha après de les dades, i només existeix
           després de <Codi>.fit()</Codi>.
         </p>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {objectes.map((o) => <ObjecteCard key={o.nom} o={o} />)}
         </div>
-        <div className="mt-5">
-          <p className="font-medium text-gray-900 mb-2">Els errors que et diuen que t'has equivocat d'atribut o de mètode</p>
+        <details className="group mt-3 rounded-lg border border-gray-200">
+          <summary className="flex cursor-pointer list-none items-center gap-2 p-4 font-medium text-gray-900 hover:bg-gray-50 rounded-lg">
+            <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-500 transition-transform group-open:rotate-90" />
+            Els errors que et diuen que t'has equivocat d'atribut o de mètode
+          </summary>
+          <div className="border-t border-gray-200 p-4">
           <ul className="divide-y divide-gray-100">
             {errorsTipics.map(([err, vol]) => (
               <li key={err} className="flex flex-col sm:flex-row sm:gap-3 text-sm py-1.5">
@@ -302,13 +310,19 @@ export default function Recursos() {
               </li>
             ))}
           </ul>
-        </div>
-        <div className="mt-5">
-          <p className="font-medium text-gray-900 mb-2">Per anar més enllà: les referències oficials</p>
+          </div>
+        </details>
+        <details className="group mt-3 rounded-lg border border-gray-200">
+          <summary className="flex cursor-pointer list-none items-center gap-2 p-4 font-medium text-gray-900 hover:bg-gray-50 rounded-lg">
+            <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-500 transition-transform group-open:rotate-90" />
+            Per anar més enllà: les referències oficials
+          </summary>
+          <div className="border-t border-gray-200 p-4">
           <div className="grid sm:grid-cols-2 gap-3">
             {referencies.map((r) => <RecursItem key={r.nom} item={r} />)}
           </div>
-        </div>
+          </div>
+        </details>
       </div>
 
       <div ref={caixaRef} className="bg-white rounded-xl p-6 shadow-sm border-2 border-indigo-200">
