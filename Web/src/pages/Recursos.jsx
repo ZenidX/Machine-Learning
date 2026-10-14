@@ -17,9 +17,11 @@ import {
   Gamepad2,
   Table2,
   KeyRound,
+  Boxes,
 } from "lucide-react";
 import { QuadernCard, ReptesResolts } from "../components/Bloc";
 import { githubUrl } from "../data/quaderns";
+import { objectes, errorsTipics, referencies } from "../data/objectes";
 
 const EINES = [
   {
@@ -192,7 +194,43 @@ function RecursItem({ item }) {
   );
 }
 
+
+function Codi({ children }) {
+  return <code className="bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded text-xs text-gray-900 whitespace-pre">{children}</code>;
+}
+
+function ObjecteCard({ o }) {
+  const files = (llista) =>
+    llista.map(([nom, que]) => (
+      <li key={nom} className="flex flex-col sm:flex-row sm:gap-3 text-sm py-1">
+        <span className="sm:w-56 flex-shrink-0"><Codi>{nom}</Codi></span>
+        <span className="text-gray-700">{que}</span>
+      </li>
+    ));
+  return (
+    <div className="rounded-lg border border-gray-200 p-4">
+      <div className="flex flex-wrap items-baseline gap-2">
+        <h3 className="text-lg font-semibold text-gray-900">{o.nom}</h3>
+        <span className="text-sm text-gray-500">{o.on}</span>
+      </div>
+      <p className="text-sm text-gray-700 mt-1">{o.que}</p>
+      <div className="grid lg:grid-cols-2 gap-4 mt-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-sky-700 mb-1">Atributs · sense parèntesis</p>
+          <ul className="divide-y divide-gray-100">{files(o.atributs)}</ul>
+        </div>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700 mb-1">Mètodes · amb parèntesis</p>
+          <ul className="divide-y divide-gray-100">{files(o.metodes)}</ul>
+        </div>
+      </div>
+      {o.nota && <p className="text-sm text-amber-900 bg-amber-50 border-l-4 border-amber-300 rounded-r p-2 mt-3">{o.nota}</p>}
+    </div>
+  );
+}
+
 export default function Recursos() {
+  const objectesRef = useRef(null);
   const caixaRef = useRef(null);
   const datasetsRef = useRef(null);
   const resoltsRef = useRef(null);
@@ -203,6 +241,7 @@ export default function Recursos() {
   const consellsRef = useRef(null);
 
   const seccions = [
+    { nom: "Els objectes del curs", ref: objectesRef },
     { nom: "Caixa d'eines", ref: caixaRef },
     { nom: "Datasets dels reptes", ref: datasetsRef },
     { nom: "Reptes resolts", ref: resoltsRef },
@@ -235,6 +274,41 @@ export default function Recursos() {
             {s.nom}
           </button>
         ))}
+      </div>
+
+      <div ref={objectesRef} className="bg-white rounded-xl p-6 shadow-sm border-2 border-sky-200">
+        <CategoriaHeader icona={Boxes} titol="Els objectes del curs: atributs i mètodes" />
+        <p className="text-gray-700 text-sm mb-2">
+          Els cinc objectes amb què treballaràs tot el curs. <strong>Atribut</strong> = una dada que l'objecte
+          porta guardada, sense parèntesis: <Codi>df.shape</Codi>. <strong>Mètode</strong> = una acció, amb
+          parèntesis: <Codi>df.head()</Codi>. Si dubtes, <Codi>callable(objecte.nom)</Codi> t'ho diu, i
+          <Codi>dir(objecte)</Codi> o la tecla TAB et mostren tot el que porta.
+        </p>
+        <p className="text-gray-700 text-sm mb-4">
+          Guió baix <strong>al davant</strong> (<Codi>__len__</Codi>): cosa interna de Python, no és per a tu.
+          Guió baix <strong>al final</strong> (<Codi>coef_</Codi>): ho ha après de les dades, i només existeix
+          després de <Codi>.fit()</Codi>.
+        </p>
+        <div className="space-y-4">
+          {objectes.map((o) => <ObjecteCard key={o.nom} o={o} />)}
+        </div>
+        <div className="mt-5">
+          <p className="font-medium text-gray-900 mb-2">Els errors que et diuen que t'has equivocat d'atribut o de mètode</p>
+          <ul className="divide-y divide-gray-100">
+            {errorsTipics.map(([err, vol]) => (
+              <li key={err} className="flex flex-col sm:flex-row sm:gap-3 text-sm py-1.5">
+                <span className="sm:w-96 flex-shrink-0"><Codi>{err}</Codi></span>
+                <span className="text-gray-700">{vol}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="mt-5">
+          <p className="font-medium text-gray-900 mb-2">Per anar més enllà: les referències oficials</p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {referencies.map((r) => <RecursItem key={r.nom} item={r} />)}
+          </div>
+        </div>
       </div>
 
       <div ref={caixaRef} className="bg-white rounded-xl p-6 shadow-sm border-2 border-indigo-200">
