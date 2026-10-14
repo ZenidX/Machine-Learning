@@ -171,23 +171,23 @@ Cost total de les cinc: uns 100 minuts de les 66 hores.
 
 ## 5. Les vint-i-cinc activitats (10 %)
 
-**Un quadern lliurat = una activitat.** Es qualifiquen 0 o 10: només cal lliurar-les.
+**Un lliurament = una activitat.** Es qualifiquen 0 o 10: només cal lliurar-les. La llista sencera,
+amb dates, és a `Web/src/data/curs.js` i a la pàgina de calendari de la web.
 
-| Bloc | Quaderns |
-|---|---|
-| Fonaments | `FO_00`, `FO_01`, `FO_02` |
-| Models | `ML_00`, `ML_01`, `ML_02`, `ML_03`, `ML_04`, `ML_05` |
-| Matemàtiques | `MA_01` a `MA_06` |
-| Pràctica | `EX_01` a `EX_05` |
-| Xarxes i RL | els de `Deep Learning/` i `Reinforcement Learning/` que es treballin |
+| Tipus | Quines | Quantes |
+|---|---|---|
+| Quaderns de teoria amb exercicis | `FO_00` a `FO_02`, `ML_01` a `ML_05`, `MA_01` a `MA_06`, el repàs de Python, i els dos de xarxes i RL | 19 |
+| **Reptes** | **dos per bloc, a triar**, dels bloc 1, 2 i 3 (RE_1xx, RE_2xx, RE_3xx/4xx) | 6 |
 
-Són **20 al bloc de Machine Learning**, i amb els de xarxes i RL s'arriba a 25 sense forçar res.
+**Canvi del 14-oct-2026.** Els `EX_01` a `EX_06` eren activitats; ara són **exemples resolts** que
+l'alumnat mira per veure com es fa, i el seu lloc l'ocupen els reptes. Les A01 a A03, que vencien
+el 4 i l'11 d'octubre, s'amplien fins al 25 d'octubre perquè al Moodle no hi havia on lliurar-les.
 
 **Dues coses que s'han de dir a classe el primer dia que es reparteixin:**
 
 1. **Fora de termini compten com a negatives**, no com a no lliurades. No és el mateix.
 2. Només cal lliurar-les, però **no fer-les és la manera més segura de suspendre les pràctiques**,
-   perquè les pràctiques són variacions d'aquestes mateixes activitats. És el que diu la fitxa i
+   perquè les pràctiques són variacions d'aquestes mateixes activitats i reptes. És el que diu la fitxa i
    és literalment cert amb aquest material.
 
 ---
