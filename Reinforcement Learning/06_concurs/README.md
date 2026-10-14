@@ -43,15 +43,16 @@ contra una línia base del professor i contra un agent aleatori.
   `avalua_agent.py` (que ara assumeix `CarDQN`); no s'ha fet en aquesta
   entrega perquè l'encàrrec deia explícitament de no instal·lar res.
 
-## Calendari (5 sessions, del 12 al 26 de gener de 2027)
+## Calendari (sessions S30 a S33, del 25 de gener al 2 de febrer de 2027)
+
+Les dates són les del calendari del curs (`docs/diagnostic-i-programacio-2627.md`).
 
 | Sessió | Data | Tipus | Contingut |
 |---|---|---|---|
-| 1 | dt 12 gener | Teoria | Recapitulació DQN + presentació del concurs: reglament, entorn, com es puntua. Es reparteix `plantilla_agent.ipynb`. |
-| 2 | dl 18 gener | Teoria | Arquitectura `CarDQN`, disseny de la recompensa, variants A-D de `racing_game.py`. Comença l'entrenament a la plantilla. |
-| 3 | dt 19 gener | Entrenament lliure | Cadascú entrena i ajusta el seu agent (portàtil o Colab). Autoavaluació amb `avalua_agent.py --model`. |
-| 4 | dl 25 gener | Entrenament lliure + tancament | Última finestra per pujar la versió final d'`agent.pth`. Al final de la sessió es tanca el lliurament i es genera el marcador de classificació. |
-| 5 | dt 26 gener | **EL CONCURS** | Gran Cursa Final projectada a classe (`avalua_agent.py --cursa-final`) + lliurament del podi. |
+| S30 | dl 25 gener | Teoria | DQN i Gymnasium, i presentació del concurs: reglament, entorn, arquitectura `CarDQN`, disseny de la recompensa i variants A-D de `racing_game.py`. Es reparteix `plantilla_agent.ipynb`. |
+| S31 | dt 26 gener | Entrenament lliure | Pe5 a l'inici. Després, cadascú entrena i ajusta el seu agent (portàtil o Colab) i s'autoavalua amb `avalua_agent.py --model`. |
+| S32 | dl 1 febrer | Entrenament lliure + tancament | Última finestra per pujar la versió final d'`agent.pth`. Al final de la sessió es tanca el lliurament i es genera el marcador. |
+| S33 | dt 2 febrer | **EL CONCURS (Pp4)** | Gran Cursa Final projectada a classe (`avalua_agent.py --cursa-final`) i defensa de cada agent. La posició al marcador no puntua: el que es qualifica és que l'agent funcioni i que l'alumne en sàpiga justificar les decisions. |
 
 ## Format de lliurament
 

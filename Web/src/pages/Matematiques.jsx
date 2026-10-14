@@ -86,12 +86,13 @@ export default function Matematiques() {
           que has escrit no és el que creus.
         </p>
         <p className="text-gray-700 mt-3">
-          Els sis quaderns no són un bloc a part del curs. Ocupen sessions dins dels blocs 1, 2 i 3,
-          just quan toca la teoria del model corresponent:{" "}
-          <Link to="/programa" className="text-violet-700 font-medium hover:text-violet-900">
-            S09, S15, S18, S19, S20 i S22
-          </Link>
-          .
+          Els sis quaderns no són un bloc a part del curs: van dins dels blocs, just quan toca la
+          teoria del model corresponent, i a les pàgines de{" "}
+          <Link to="/dades" className="text-violet-700 font-medium hover:text-violet-900">dades</Link>,{" "}
+          <Link to="/supervisat" className="text-violet-700 font-medium hover:text-violet-900">supervisat</Link> i{" "}
+          <Link to="/no-supervisat" className="text-violet-700 font-medium hover:text-violet-900">no supervisat</Link>{" "}
+          els trobes intercalats on toquen. Aquí els tens tots junts, de consulta. Les dates són al{" "}
+          <Link to="/calendari" className="text-violet-700 font-medium hover:text-violet-900">calendari</Link>.
         </p>
       </section>
 
@@ -254,14 +255,14 @@ export default function Matematiques() {
       <section className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <h2 className="text-lg font-semibold text-gray-900 mb-3">Continua per aquí</h2>
         <div className="flex flex-wrap gap-3">
-          <Link to="/machine-learning" className="text-sm font-medium text-violet-700 hover:text-violet-900">
-            Machine Learning →
+          <Link to="/supervisat" className="text-sm font-medium text-violet-700 hover:text-violet-900">
+            Bloc 2 · Supervisat →
           </Link>
-          <Link to="/practica" className="text-sm font-medium text-violet-700 hover:text-violet-900">
-            Pràctica →
+          <Link to="/no-supervisat" className="text-sm font-medium text-violet-700 hover:text-violet-900">
+            Bloc 3 · Dades brutes i no supervisat →
           </Link>
-          <Link to="/programa" className="text-sm font-medium text-violet-700 hover:text-violet-900">
-            Programa del curs →
+          <Link to="/calendari" className="text-sm font-medium text-violet-700 hover:text-violet-900">
+            Calendari i avaluació →
           </Link>
         </div>
       </section>

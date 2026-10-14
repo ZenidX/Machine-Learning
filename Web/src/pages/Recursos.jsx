@@ -15,7 +15,11 @@ import {
   TreePine,
   Flame,
   Gamepad2,
+  Table2,
+  KeyRound,
 } from "lucide-react";
+import { QuadernCard, ReptesResolts } from "../components/Bloc";
+import { githubUrl } from "../data/quaderns";
 
 const EINES = [
   {
@@ -34,7 +38,7 @@ const EINES = [
     nom: "Teachable Machine",
     url: "https://teachablemachine.withgoogle.com",
     icona: Sparkles,
-    desc: "Entrenar un classificador sense codi. Es fa servir el primer dia de curs.",
+    desc: "Entrenar un classificador sense codi, per veure la idea abans del codi.",
   },
   {
     nom: "Kaggle",
@@ -121,8 +125,8 @@ const DOCS = [
   },
   {
     nom: "Apunts de Reinforcement Learning",
-    url: "/deep-rl",
-    desc: "Apunts propis del professor sobre reinforcement learning.",
+    url: "/xarxes-i-rl",
+    desc: "El bloc 4 d'aquesta web: quaderns, projectes i el concurs.",
     extern: false,
   },
 ];
@@ -189,6 +193,9 @@ function RecursItem({ item }) {
 }
 
 export default function Recursos() {
+  const caixaRef = useRef(null);
+  const datasetsRef = useRef(null);
+  const resoltsRef = useRef(null);
   const einesRef = useRef(null);
   const videosRef = useRef(null);
   const docsRef = useRef(null);
@@ -196,6 +203,9 @@ export default function Recursos() {
   const consellsRef = useRef(null);
 
   const seccions = [
+    { nom: "Caixa d'eines", ref: caixaRef },
+    { nom: "Datasets dels reptes", ref: datasetsRef },
+    { nom: "Reptes resolts", ref: resoltsRef },
     { nom: "Eines de treball", ref: einesRef },
     { nom: "Vídeos i divulgació", ref: videosRef },
     { nom: "Documentació", ref: docsRef },
@@ -225,6 +235,43 @@ export default function Recursos() {
             {s.nom}
           </button>
         ))}
+      </div>
+
+      <div ref={caixaRef} className="bg-white rounded-xl p-6 shadow-sm border-2 border-indigo-200">
+        <CategoriaHeader icona={Wrench} titol="La caixa d'eines" />
+        <p className="text-gray-700 text-sm mb-4">
+          Tingues-la oberta al costat de qualsevol repte. Hi ha totes les eines de
+          scikit-learn i Pandas que surten als exemples i als reptes, amb el que fan, el que retornen i el seu
+          parany. L'enunciat et diu quina eina fer servir; el resultat el trobes tu.
+        </p>
+        <QuadernCard codi="EX_00" color="indigo" />
+      </div>
+
+      <div ref={datasetsRef} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <CategoriaHeader icona={Table2} titol="Els datasets dels reptes" />
+        <p className="text-gray-700 text-sm mb-4">
+          Dades reals i públiques (Open Data BCN, Generalitat, UCI, TidyTuesday, Our World in Data...),
+          ordenades per bloc i per dificultat. Cada fitxa porta la línia de càrrega per a Colab, la
+          llicència, els paranys coneguts i unes quantes preguntes per començar. No hi ha respostes.
+        </p>
+        <a
+          href={githubUrl("docs/cataleg-datasets-reptes.md")}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700"
+        >
+          Obre el catàleg de datasets
+          <ExternalLink className="w-4 h-4" />
+        </a>
+      </div>
+
+      <div ref={resoltsRef} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <CategoriaHeader icona={KeyRound} titol="Reptes resolts" />
+        <p className="text-gray-700 text-sm mb-4">
+          La solució d'un repte, quan es publica. Mira-la després d'haver-lo fet tu, no abans: si la
+          mires primer, et quedes sense el repte.
+        </p>
+        <ReptesResolts />
       </div>
 
       <div ref={einesRef} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
@@ -272,7 +319,7 @@ export default function Recursos() {
           aleatoris, pipelines) i els enunciats dels exercicis es distribueixen
           pel Moodle del centre. No hi ha enllaços de descàrrega en aquesta
           pàgina: aquest material el va preparar una altra docent i no es
-          publica aquí.
+          publica aquí. També hi ha els enllaços de lectura sobre R, que queda fora d'aquest curs.
         </p>
       </div>
 
@@ -294,8 +341,9 @@ export default function Recursos() {
             no que cadascun sigui perfecte.
           </li>
           <li>
-            El que no s'entengui, es pregunta el mateix dia. Deixar-ho
-            passar només fa que s'acumuli.
+            Si et quedes encallat en un dubte de criteri (esborro o imputo?,
+            això té sentit?), crida en Xavi. Si és de sintaxi, primer les
+            pistes del quadern i la caixa d'eines.
           </li>
           <li>
             Us podeu ajudar entre vosaltres, però l'aprenentatge és

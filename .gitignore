@@ -16,6 +16,7 @@ _RESUMEN_NOTAS.md
 # Es queden en local, i el professor els reparteix quan toca.
 # ---------------------------------------------------------------------------
 Machine Learning/02_practica/solucions/
+Machine Learning/04_reptes/solucions/
 Deep Learning/04_practica/solucions/
 *_solucions.ipynb
 *_soluciones.ipynb
@@ -31,6 +32,7 @@ Reinforcement Learning/06_concurs/**/agent.pth
 
 # Datasets descarregables (torchvision i gymnasium els baixen sols)
 data/
+!Web/src/data/
 # Copia que deixa el quadern de Pandas si s'executa des de l'arrel del repositori:
 # la bona es a Machine Learning/01_fonaments/dades/
 /dades/
@@ -91,3 +93,6 @@ Web/dist/
 
 # Scratch de sessions de treball
 Temp/
+
+# Notes privades del catàleg de datasets: contenen les troballes que espatllarien els reptes.
+docs/cataleg-datasets-notes-privades.md

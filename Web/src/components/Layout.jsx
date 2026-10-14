@@ -1,17 +1,15 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Home, CalendarRange, ClipboardCheck, Code2, Table2, Brain, Sigma, FlaskConical, Gamepad2, Wrench } from 'lucide-react'
+import { Menu, X, Home, CalendarRange, Table2, Brain, Layers, Gamepad2, Sigma, Wrench } from 'lucide-react'
 
 const navigation = [
   { name: 'Inici', href: '/', icon: Home },
-  { name: 'Programa', href: '/programa', icon: CalendarRange },
-  { name: 'Avaluació', href: '/avaluacio', icon: ClipboardCheck },
-  { name: 'Python i dades', href: '/python', icon: Code2 },
-  { name: 'Fonaments de dades', href: '/fonaments', icon: Table2 },
-  { name: 'Machine Learning', href: '/machine-learning', icon: Brain },
+  { name: 'Calendari i avaluació', href: '/calendari', icon: CalendarRange },
+  { name: '1 · Dades', href: '/dades', icon: Table2, bloc: true },
+  { name: '2 · Supervisat', href: '/supervisat', icon: Brain, bloc: true },
+  { name: '3 · Dades brutes i no supervisat', href: '/no-supervisat', icon: Layers, bloc: true },
+  { name: '4 · Xarxes i RL', href: '/xarxes-i-rl', icon: Gamepad2, bloc: true },
   { name: 'Matemàtiques', href: '/matematiques', icon: Sigma },
-  { name: 'Pràctica', href: '/practica', icon: FlaskConical },
-  { name: 'Xarxes i RL', href: '/deep-rl', icon: Gamepad2 },
   { name: 'Recursos', href: '/recursos', icon: Wrench },
 ]
 
@@ -57,21 +55,28 @@ export default function Layout({ children }) {
         </div>
 
         <nav className="p-4 space-y-1 overflow-y-auto flex-1">
-          {navigation.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              onClick={() => setSidebarOpen(false)}
-              className={`
-                flex items-center space-x-3 px-4 py-3 rounded-lg
-                ${isActive(item.href)
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-700 hover:bg-gray-100'}
-              `}
-            >
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.name}</span>
-            </Link>
+          {navigation.map((item, i) => (
+            <div key={item.href}>
+              {item.bloc && !navigation[i - 1]?.bloc && (
+                <p className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Els blocs</p>
+              )}
+              {!item.bloc && navigation[i - 1]?.bloc && (
+                <p className="px-4 pt-3 pb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Consulta</p>
+              )}
+              <Link
+                to={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className={`
+                  flex items-center space-x-3 px-4 py-3 rounded-lg
+                  ${isActive(item.href)
+                    ? 'bg-primary-50 text-primary-700'
+                    : 'text-gray-700 hover:bg-gray-100'}
+                `}
+              >
+                <item.icon className="w-5 h-5 flex-shrink-0" />
+                <span className="font-medium">{item.name}</span>
+              </Link>
+            </div>
           ))}
         </nav>
 
