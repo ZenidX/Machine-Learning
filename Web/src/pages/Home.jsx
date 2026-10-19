@@ -11,11 +11,6 @@ import {
   Target,
   Users,
   Clock,
-  ExternalLink,
-  ClipboardCheck,
-  PenLine,
-  CalendarClock,
-  ListChecks,
   User,
   Mountain,
   Cloud,
@@ -23,22 +18,7 @@ import {
 } from "lucide-react";
 import MermaidDiagram from "../components/MermaidDiagram";
 import { QuanCridar } from "../components/Bloc";
-import { quaderns, colabUrl, rutaQuadern } from "../data/quaderns";
-import {
-  SESSIONS,
-  PROVES,
-  ACTIVITATS,
-  BLOCS,
-  DADES_CURS,
-  isoAvui,
-  setmanaDe,
-  dataLlarga,
-  dataCurta,
-  diesFins,
-  provesDeSessio,
-} from "../data/curs";
-
-const ICONES_BLOC = { 1: Table2, 2: Brain, 3: Layers, 4: Gamepad2 };
+import { DADES_CURS } from "../data/curs";
 
 const seccions = [
   { name: "Calendari i avaluació", description: "Les 34 sessions, les proves i com es calcula la nota", href: "/calendari", icon: CalendarRange, color: "bg-blue-600" },
@@ -65,194 +45,9 @@ flowchart LR
     style MA fill:#ede9fe,stroke:#7c3aed,stroke-width:2px
 `;
 
-function compteEnrere(dies) {
-  if (dies === 0) return "avui";
-  if (dies === 1) return "demà";
-  return `d'aquí ${dies} dies`;
-}
-
-function ObreQuadern({ codi }) {
-  const q = quaderns[codi];
-  if (!q) return null;
-  return (
-    <a
-      href={colabUrl(rutaQuadern(q))}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center justify-between gap-3 p-3 rounded-lg border border-white/20 bg-white/10 hover:bg-white/20 transition-colors"
-    >
-      <span className="min-w-0">
-        <code className="text-xs text-primary-200">{codi}</code>
-        <span className="block text-sm font-medium text-white truncate">{q.titol}</span>
-      </span>
-      <span className="flex items-center gap-1 text-xs text-primary-100 whitespace-nowrap">
-        Obre a Colab <ExternalLink className="w-3.5 h-3.5" />
-      </span>
-    </a>
-  );
-}
-
-function AquestaSetmana() {
-  const avui = isoAvui();
-  const { dilluns, diumenge } = setmanaDe(avui);
-  const acabat = avui > DADES_CURS.final;
-
-  if (acabat) {
-    return (
-      <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-6 lg:p-8 text-white">
-        <h2 className="text-2xl font-bold">El curs s'ha acabat</h2>
-        <p className="text-primary-100 mt-2">L'última sessió va ser el concurs del 2 de febrer. Tot el material continua aquí.</p>
-      </div>
-    );
-  }
-
-  const setmana = SESSIONS.filter((s) => s.data >= dilluns && s.data <= diumenge);
-  const pendents = SESSIONS.filter((s) => s.data >= avui);
-  const propera = pendents[0];
-  // Si aquesta setmana ja no queda cap sessió (cap de setmana), s'ensenya la setmana que ve.
-  const setmanaAcabada = setmana.length > 0 && setmana.every((s) => s.data < avui) && propera;
-  const setmanaVinent = propera ? setmanaDe(propera.data) : null;
-  const vinent = setmanaAcabada
-    ? SESSIONS.filter((s) => s.data >= setmanaVinent.dilluns && s.data <= setmanaVinent.diumenge)
-    : [];
-  const sessionsMostrar = setmanaAcabada ? vinent : setmana.length ? setmana : propera ? [propera] : [];
-  const blocActual = BLOCS.find((b) => b.num === propera?.bloc);
-  const materials = [...new Set(sessionsMostrar.filter((s) => s.data >= avui).flatMap((s) => [...(s.material || []), ...(s.casa || [])]))];
-  const venciments = ACTIVITATS.filter((a) => a.venc >= avui && a.venc <= diumenge);
-  const properaProva = PROVES.find((p) => p.data >= avui);
-  const properaPractica = PROVES.find((p) => p.data >= avui && p.tipus === "practica");
-  const BlocIcona = blocActual ? ICONES_BLOC[blocActual.num] : null;
-
-  return (
-    <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl p-6 lg:p-8 text-white">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-        <div>
-          <p className="text-primary-200 text-sm font-medium capitalize">{dataLlarga(avui)}</p>
-          <h2 className="text-2xl lg:text-3xl font-bold">
-            {setmanaAcabada
-              ? "Què toca la setmana que ve"
-              : setmana.length
-                ? "Què toca aquesta setmana"
-                : "Aquesta setmana no hi ha classe"}
-          </h2>
-        </div>
-        {blocActual && (
-          <Link
-            to={blocActual.ruta}
-            className="inline-flex items-center gap-2 bg-white text-primary-800 rounded-lg px-4 py-2 text-sm font-semibold hover:bg-primary-50"
-          >
-            {BlocIcona && <BlocIcona className="w-4 h-4" />}
-            Bloc {blocActual.num} · {blocActual.titol}
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        )}
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-6">
-        <div className="space-y-3">
-          {!setmana.length && propera && (
-            <p className="text-sm text-primary-100">La propera sessió és el {dataLlarga(propera.data)}.</p>
-          )}
-          {sessionsMostrar.map((s) => {
-            const estat = s.data < avui ? "feta" : s.data === avui ? "avui" : "ve";
-            const proves = provesDeSessio(s.s);
-            return (
-              <div
-                key={s.s}
-                className={`rounded-lg p-4 ${estat === "avui" ? "bg-white text-gray-900" : estat === "feta" ? "bg-white/5 text-primary-100" : "bg-white/10"}`}
-              >
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <span className={`text-sm font-bold ${estat === "avui" ? "text-primary-700" : ""}`}>{s.s}</span>
-                  <span className={`text-sm ${estat === "avui" ? "text-gray-600" : "text-primary-200"}`}>{dataCurta(s.data)}</span>
-                  {estat === "avui" && <span className="text-xs font-semibold bg-primary-600 text-white rounded px-1.5 py-0.5">avui</span>}
-                  {estat === "feta" && <CheckCircle2 className="w-4 h-4 text-primary-200" />}
-                  {proves.map((p) => (
-                    <span key={p.codi} className="text-xs font-semibold bg-amber-300 text-amber-950 rounded px-1.5 py-0.5">
-                      {p.codi}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-sm">{s.text}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="space-y-5">
-          {materials.length > 0 && (
-            <div>
-              <p className="text-sm font-semibold text-primary-100 mb-2">Què has d'obrir</p>
-              <div className="space-y-2">
-                {materials.map((m) => (
-                  <ObreQuadern key={m} codi={m} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {venciments.length > 0 && (
-            <div>
-              <p className="text-sm font-semibold text-primary-100 mb-2 flex items-center gap-1.5">
-                <ListChecks className="w-4 h-4" /> Activitats que vencen aquest diumenge
-              </p>
-              <ul className="text-sm space-y-1">
-                {venciments.map((a) => (
-                  <li key={a.codi}>
-                    <code className="text-primary-200 mr-2">{a.codi}</code>
-                    {a.nom} · <span className="text-primary-100">{dataCurta(a.venc)}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {properaProva && (
-            <div className="rounded-lg bg-white/10 border border-white/20 p-4">
-              <p className="text-sm font-semibold text-primary-100 mb-1 flex items-center gap-1.5">
-                <CalendarClock className="w-4 h-4" /> Propera prova
-              </p>
-              <ProvaResum p={properaProva} avui={avui} />
-              {properaPractica && properaPractica.codi !== properaProva.codi && (
-                <div className="mt-3 pt-3 border-t border-white/20">
-                  <ProvaResum p={properaPractica} avui={avui} />
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProvaResum({ p, avui }) {
-  const dies = diesFins(p.data, avui);
-  const practica = p.tipus === "practica";
-  return (
-    <div className="flex items-start gap-3">
-      <div className="text-center flex-shrink-0 w-16">
-        <p className="text-3xl font-bold leading-none">{dies}</p>
-        <p className="text-xs text-primary-200">{dies === 1 ? "dia" : "dies"}</p>
-      </div>
-      <div className="min-w-0">
-        <p className="font-semibold flex items-center gap-1.5">
-          {practica ? <ClipboardCheck className="w-4 h-4" /> : <PenLine className="w-4 h-4" />}
-          {p.codi} · {practica ? "prova pràctica" : "prova escrita"}
-        </p>
-        <p className="text-sm text-primary-100">
-          {p.s} · {dataLlarga(p.data)} · {compteEnrere(dies)}
-        </p>
-        <p className="text-sm mt-0.5">{p.titol}</p>
-      </div>
-    </div>
-  );
-}
-
 export default function Home() {
   return (
     <div className="space-y-10">
-      <AquestaSetmana />
-
       {/* Com es treballa */}
       <div className="bg-white rounded-xl p-6 lg:p-8 shadow-sm border border-gray-100">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Com es treballa</h2>
