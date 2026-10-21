@@ -3,14 +3,7 @@ import { Database, ExternalLink, AlertTriangle, HelpCircle, Mountain } from "luc
 import { NavInterna, QuanCridar } from "../components/Bloc";
 import { datasetsPractica } from "../data/datasetsPractica";
 
-const NIVELLS = {
-  1: { text: "Dificultat 1 · carrega net", classe: "bg-emerald-100 text-emerald-800" },
-  2: { text: "Dificultat 2 · cal convertir o netejar", classe: "bg-amber-100 text-amber-800" },
-  3: { text: "Dificultat 3 · les dades enganyen", classe: "bg-rose-100 text-rose-800" },
-};
-
 function FitxaDataset({ d }) {
-  const nivell = NIVELLS[d.dificultat];
   return (
     <section id={d.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 scroll-mt-20">
       <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
@@ -20,13 +13,13 @@ function FitxaDataset({ d }) {
             {d.origen} · {d.llicencia}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2 text-xs font-semibold">
-          <span className="rounded px-2 py-1 bg-gray-100 text-gray-700">{d.mida}</span>
-          <span className={`rounded px-2 py-1 ${nivell.classe}`}>{nivell.text}</span>
-        </div>
+        <span className="rounded px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold">{d.mida}</span>
       </div>
 
-      <p className="text-gray-700 mb-4">{d.context}</p>
+      <p className="text-gray-700 mb-3">{d.context}</p>
+      <p className="text-sm text-emerald-900 bg-emerald-50 border-l-4 border-emerald-400 rounded-r px-3 py-2 mb-4">
+        <strong>On és la feina:</strong> {d.repte}
+      </p>
 
       <pre className="bg-gray-900 text-gray-100 text-xs rounded-lg p-3 overflow-x-auto mb-4">
         <code>{`import pandas as pd\nimport numpy as np\n${d.carrega}`}</code>
@@ -86,7 +79,6 @@ function FitxaDataset({ d }) {
 }
 
 export default function Datasets() {
-  const ordenats = [...datasetsPractica].sort((a, b) => a.dificultat - b.dificultat);
   return (
     <div className="space-y-8">
       <div>
@@ -115,9 +107,9 @@ export default function Datasets() {
         </p>
       </div>
 
-      <NavInterna color="emerald" items={ordenats.map((d) => ({ id: d.id, label: d.nom }))} />
+      <NavInterna color="emerald" items={datasetsPractica.map((d) => ({ id: d.id, label: d.nom }))} />
 
-      {ordenats.map((d) => (
+      {datasetsPractica.map((d) => (
         <FitxaDataset key={d.id} d={d} />
       ))}
 

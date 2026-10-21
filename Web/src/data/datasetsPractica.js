@@ -8,7 +8,7 @@
 //   font        URL de la pàgina de la font
 //   llicencia   llicència de reutilització
 //   mida        files × columnes, tal com surt amb df.shape el dia de la verificació
-//   dificultat  1 = carrega net · 2 = cal netejar o convertir alguna columna · 3 = les dades enganyen si no es miren bé
+//   repte       on és la feina d'aquest dataset, dit en paraules
 //   carrega     la línia de pd.read_csv
 //   context     de què va, en dues frases
 //   columnes    les columnes que fan servir les preguntes: [nom, què és]
@@ -25,7 +25,8 @@ export const datasetsPractica = [
     font: "https://analisi.transparenciacatalunya.cat/d/6st4-ptsi",
     llicencia: "Llicència oberta d'ús d'informació – Catalunya",
     mida: "8.524 × 12",
-    dificultat: 1,
+    repte:
+      "No hi ha res a netejar: el difícil és fer bones preguntes. Què vol dir comparar comarques que tenen un nombre molt diferent de municipis?",
     carrega: 'df = pd.read_csv("https://analisi.transparenciacatalunya.cat/resource/6st4-ptsi.csv?$limit=20000")',
     context:
       "El preu del metre cúbic d'aigua de cada municipi de Catalunya, any per any des del 2017, partit en el que cobra qui subministra, el cànon de l'ACA i el clavegueram.",
@@ -56,7 +57,8 @@ export const datasetsPractica = [
     font: "https://analisi.transparenciacatalunya.cat/d/eds6-562k",
     llicencia: "Llicència oberta d'ús d'informació – Catalunya",
     mida: "338.568 × 15",
-    dificultat: 2,
+    repte:
+      "Abans de comptar res has de saber què representa una fila, perquè no sempre és un vehicle. I els buits no sempre es diuen NaN.",
     carrega: 'df = pd.read_csv("https://analisi.transparenciacatalunya.cat/resource/eds6-562k.csv?$limit=500000", low_memory=False)',
     context:
       "Els vehicles elèctrics i híbrids matriculats cada mes a Catalunya des del 2017, per municipi, tipus de vehicle i tecnologia. Les dades són vives: cada mes hi ha més files.",
@@ -87,7 +89,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2021/2021-04-20",
     llicencia: "CC0 el repositori; ús educatiu de les dades",
     mida: "7.787 × 12",
-    dificultat: 2,
+    repte:
+      "Columnes que barregen coses diferents: una durada que de vegades són minuts i de vegades temporades, i països en plural dins d'una sola cel·la.",
     carrega: `df = pd.read_csv("${TT}2021/2021-04-20/netflix_titles.csv")`,
     context:
       "Les pel·lícules i sèries que hi havia a Netflix el 2021, amb país, any d'estrena, data en què es van afegir, classificació per edats i durada.",
@@ -118,7 +121,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-01-18",
     llicencia: "CC0 el repositori; ús educatiu de les dades",
     mida: "2.530 × 10",
-    dificultat: 1,
+    repte:
+      "Un número disfressat de text, i mitjanes fetes amb grups de mides molt diferents.",
     carrega: `df = pd.read_csv("${TT}2022/2022-01-18/chocolate.csv")`,
     context:
       "Més de 2.500 rajoles de xocolata negra valorades per un expert de l'1 al 4, amb el fabricant, l'origen del cacau i el percentatge de cacau.",
@@ -148,7 +152,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-01-25",
     llicencia: "CC0 el repositori; ús educatiu de les dades",
     mida: "21.831 × 10",
-    dificultat: 2,
+    repte:
+      "Dues notes que semblen la mateixa i no ho són, i anys que no poden ser.",
     carrega: `df = pd.read_csv("${TT}2022/2022-01-25/ratings.csv")`,
     context:
       "Més de 21.000 jocs de taula amb la nota mitjana dels usuaris de BoardGameGeek, quanta gent els ha valorat i la posició al rànquing.",
@@ -177,7 +182,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-12-22",
     llicencia: "CC0 el repositori; dades de The Economist",
     mida: "1.386 × 19",
-    dificultat: 2,
+    repte:
+      "Cada país paga en la seva moneda: comparar sense convertir no té sentit. I hi ha columnes que només existeixen a partir d'una data.",
     carrega: `df = pd.read_csv("${TT}2020/2020-12-22/big-mac.csv")`,
     context:
       "El preu d'un Big Mac a 57 països del 2000 al 2020, en moneda local i en dòlars. The Economist el fa servir per veure si una moneda està sobrevalorada o infravalorada.",
@@ -207,7 +213,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-09-22",
     llicencia: "CC0 el repositori; dades de The Himalayan Database",
     mida: "10.364 × 16",
-    dificultat: 2,
+    repte:
+      "Has de decidir tu què és un èxit: la columna que ho explica no respon amb un sí o un no.",
     carrega: `df = pd.read_csv("${TT}2020/2020-09-22/expeditions.csv")`,
     context:
       "Més de 10.000 expedicions als cims de l'Himàlaia del Nepal entre el 1905 i el 2019: quin cim, quina temporada, quanta gent hi anava, quina alçada van assolir i per què es van acabar.",
@@ -237,7 +244,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-07-28",
     llicencia: "CC0",
     mida: "344 × 8",
-    dificultat: 1,
+    repte:
+      "Dades petites i netes: la feina és interpretar. Quina mesura distingeix les espècies, i per què la distància depèn de les unitats?",
     carrega: `df = pd.read_csv("${TT}2020/2020-07-28/penguins.csv")`,
     context:
       "344 pingüins de tres espècies de tres illes de l'arxipèlag Palmer, amb les mesures del bec, l'aleta i el pes. És petit i net: bo per començar.",
@@ -266,7 +274,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-04",
     llicencia: "CC0 el repositori; ús educatiu de les dades",
     mida: "3.180 × 6",
-    dificultat: 1,
+    repte:
+      "Grups minúsculs que encapçalen rànquings: quan et pots creure una mitjana?",
     carrega: `df = pd.read_csv("${TT}2019/2019-06-04/ramen_ratings.csv")`,
     context:
       "Més de 3.000 ramen instantanis valorats amb estrelles de 0 a 5, amb la marca, el país i el format (got, paquet, safata...).",
@@ -293,7 +302,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-05-14",
     llicencia: "CC0 el repositori; dades de la Fundació Nobel",
     mida: "969 × 18",
-    dificultat: 2,
+    repte:
+      "Persones i organitzacions barrejades, gent que surt més d'un cop i dates en text: calcular una edat té feina.",
     carrega: `df = pd.read_csv("${TT}2019/2019-05-14/nobel_winners.csv")`,
     context:
       "Tots els premis Nobel fins al 2016: categoria, any, quina part del premi es van endur, i on i quan va néixer cada guardonat.",
@@ -323,7 +333,8 @@ export const datasetsPractica = [
     font: "https://github.com/rfordatascience/tidytuesday/tree/master/data/2021/2021-07-27",
     llicencia: "CC0 el repositori; ús educatiu de les dades",
     mida: "271.116 × 15",
-    dificultat: 3,
+    repte:
+      "Entendre què és una fila: és una participació en una prova, no un esportista ni una medalla. Si t'equivoques aquí, tot el que ve després surt malament.",
     carrega: `df = pd.read_csv("${TT}2021/2021-07-27/olympics.csv")`,
     context:
       "Cada participació d'un esportista en una prova olímpica, d'Atenes 1896 a Rio 2016, amb l'edat, l'alçada, el pes, l'equip i la medalla si en va guanyar.",
