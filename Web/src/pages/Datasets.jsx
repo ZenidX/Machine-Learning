@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Database, ExternalLink, AlertTriangle, HelpCircle, Mountain } from "lucide-react";
+import { Database, ExternalLink, HelpCircle, Mountain } from "lucide-react";
 import { NavInterna, QuanCridar } from "../components/Bloc";
 import { datasetsPractica } from "../data/datasetsPractica";
 
@@ -16,10 +16,7 @@ function FitxaDataset({ d }) {
         <span className="rounded px-2 py-1 bg-gray-100 text-gray-700 text-xs font-semibold">{d.mida}</span>
       </div>
 
-      <p className="text-gray-700 mb-3">{d.context}</p>
-      <p className="text-sm text-emerald-900 bg-emerald-50 border-l-4 border-emerald-400 rounded-r px-3 py-2 mb-4">
-        <strong>On és la feina:</strong> {d.repte}
-      </p>
+      <p className="text-gray-700 mb-4">{d.context}</p>
 
       <pre className="bg-gray-900 text-gray-100 text-xs rounded-lg p-3 overflow-x-auto mb-4">
         <code>{`import pandas as pd\nimport numpy as np\n${d.carrega}`}</code>
@@ -45,23 +42,13 @@ function FitxaDataset({ d }) {
         <div className="space-y-4">
           <div>
             <p className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-1.5">
-              <HelpCircle className="w-4 h-4 text-emerald-600" /> Per començar
+              <HelpCircle className="w-4 h-4 text-emerald-600" /> Què has de respondre
             </p>
             <ol className="list-decimal list-inside text-sm text-gray-700 space-y-1">
               {d.preguntes.map((p) => (
                 <li key={p}>{p}</li>
               ))}
             </ol>
-          </div>
-          <div className="rounded-lg bg-amber-50 border border-amber-200 p-3">
-            <p className="text-sm font-semibold text-amber-900 mb-1 flex items-center gap-1.5">
-              <AlertTriangle className="w-4 h-4" /> Paranys
-            </p>
-            <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-              {d.paranys.map((p) => (
-                <li key={p}>{p}</li>
-              ))}
-            </ul>
           </div>
         </div>
       </div>
