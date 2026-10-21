@@ -8,6 +8,7 @@ import BlocSupervisat from './pages/BlocSupervisat'
 import BlocNoSupervisat from './pages/BlocNoSupervisat'
 import BlocXarxesRL from './pages/BlocXarxesRL'
 import Recursos from './pages/Recursos'
+import Datasets from './pages/Datasets'
 
 // Rutes antigues: redirigeixen a la pàgina nova perquè els enllaços que ja circulen no es trenquin.
 const REDIRECCIONS = {
@@ -40,6 +41,7 @@ function App() {
         <Route path="/supervisat" element={<BlocSupervisat />} />
         <Route path="/no-supervisat" element={<BlocNoSupervisat />} />
         <Route path="/xarxes-i-rl" element={<BlocXarxesRL />} />
+        <Route path="/datasets" element={<Datasets />} />
         <Route path="/recursos" element={<Recursos />} />
         {Object.entries(REDIRECCIONS).map(([de, a]) => (
           <Route key={de} path={de} element={<Navigate to={a} replace />} />
