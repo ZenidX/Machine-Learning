@@ -7,7 +7,6 @@ import {
   Gamepad2,
   Sigma,
   Wrench,
-  Database,
   ArrowRight,
   Target,
   Users,
@@ -27,7 +26,6 @@ const seccions = [
   { name: "2 · Supervisat", description: "k-NN, arbres, boscos, regressió logística i SVM, amb la matemàtica de sota", href: "/supervisat", icon: Brain, color: "bg-sky-600" },
   { name: "3 · Dades brutes i no supervisat", description: "Pipelines sense fuites, PCA i k-means", href: "/no-supervisat", icon: Layers, color: "bg-teal-600" },
   { name: "4 · Xarxes i RL", description: "PyTorch, agents que aprenen jugant i el concurs", href: "/xarxes-i-rl", icon: Gamepad2, color: "bg-rose-600" },
-  { name: "Datasets per practicar", description: "Onze datasets reals nous per entrenar-te com als reptes", href: "/datasets", icon: Database, color: "bg-lime-600" },
   { name: "Recursos", description: "Caixa d'eines, catàleg de datasets, eines i vídeos", href: "/recursos", icon: Wrench, color: "bg-amber-600" },
 ];
 
