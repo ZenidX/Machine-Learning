@@ -14,7 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { quaderns, colabUrl, rutaQuadern } from "../data/quaderns";
-import { reptes } from "../data/reptes";
+import { reptes, BLOCS_RESOLTS } from "../data/reptes";
 import { SESSIONS, PROVES, BLOCS, ACTIVITATS, sessio, dataCurta, dataLlarga, diesFins, isoAvui } from "../data/curs";
 
 // Classes completes per color: Tailwind només genera les que veu escrites senceres.
@@ -453,7 +453,7 @@ export function ActivitatsBloc({ bloc }) {
 
 // Els reptes que ja tenen el quadern resolt publicat (camp "resolt" de src/data/reptes.js).
 export function ReptesResolts() {
-  const llista = reptes.filter((r) => r.resolt);
+  const llista = reptes.filter((r) => r.resolt && BLOCS_RESOLTS.includes(r.bloc));
   if (!llista.length) {
     return (
       <p className="text-sm text-gray-500">

@@ -30,6 +30,9 @@
 //     resolt: "Machine Learning/04_reptes/resolts/RE_101_accidents_bcn_resolt.ipynb",
 //   },
 
+// Blocs amb les solucions ja publicades a Recursos. Se n'afegeix un quan toca.
+export const BLOCS_RESOLTS = [1];
+
 export const reptes = [
   {
     "codi": "RE_101",
