@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Table2, CircleSlash, BookOpen, Eye, Mountain, ClipboardCheck, Code2, Wrench } from "lucide-react";
+import { Table2, CircleSlash, BookOpen, Eye, Mountain, ClipboardCheck, Code2, Wrench, ListChecks, ChevronDown } from "lucide-react";
 import {
   CapcaleraBloc,
   PassosBloc,
@@ -101,6 +101,113 @@ const funcionsFO02 = {
   ],
   tancament: "Pandas és per mirar i preparar les dades. Quan estan netes, el model rep X i y.",
 };
+
+const repasPp1 = [
+  {
+    titol: "1. Carregar i fer inventari",
+    codi: `df = pd.read_csv(URL)
+df.shape                                  # files, columnes
+df.info(); df.head()                      # números o dates llegits com a text?
+df.isna().sum()[df.isna().sum() > 0]      # només les columnes amb nuls
+df.duplicated().sum()`,
+  },
+  {
+    titol: "2. Comptar i comparar grups",
+    codi: `df["col"].value_counts()                         # quants de cada
+df["col"].value_counts(normalize=True) * 100     # percentatge
+df.groupby("grup")["valor"].agg(["count", "sum", "mean", "median"])`,
+    nota: "Mitjana contra mediana: si la mitjana és molt més gran, hi ha uns pocs valors enormes que l'arrosseguen. Explica-ho amb els números.",
+  },
+  {
+    titol: "3. Rànquings i filtres",
+    codi: `df["col"].value_counts().head(10)
+df.groupby("x")["v"].mean().nlargest(10)         # o sort_values(ascending=False).head(10)
+df[df["any"] == 2022]                            # filtra abans d'agrupar
+df[df["zona"].isin(["A", "B"])]`,
+  },
+  {
+    titol: "4. Dates",
+    codi: `df["data"] = pd.to_datetime(df["data"], errors="coerce")
+df["any"] = df["data"].dt.year
+df["mes"] = df["data"].dt.month
+df["decada"] = df["any"] // 10 * 10
+df["any"].value_counts().sort_index()            # quants per any, ORDENATS per any`,
+    nota: "És el que menys heu practicat. Surt als reptes RE_103 i RE_105.",
+  },
+  {
+    titol: "5. Gràfics",
+    codi: `s.plot(kind="bar")   /   s.plot()             # una sèrie: barres o línies
+df.plot(kind="scatter", x="x", y="y", alpha=0.3)
+t = df.pivot_table(index="any", columns="tipus", values="v", aggfunc="mean")
+t.plot()                                         # una línia per grup
+plt.title("..."); plt.xlabel("..."); plt.ylabel("...")`,
+    nota: "Sempre amb títol i eixos amb nom.",
+  },
+  {
+    titol: "6. NumPy: vectors i distàncies",
+    codi: `# un vector per any (o per mes), amb els forats a 0
+# perquè els dos vectors tinguin la mateixa llargada
+a =(df[df["zona"] == "A"].groupby("any")["v"].sum()
+       .reindex(range(any_inici, any_fi + 1), fill_value=0).to_numpy())
+b = ...
+np.linalg.norm(a - b)                            # norma de la diferència
+a / a.sum()                                      # normalitzar pel total abans de comparar
+
+# distància de cada fila a un punt (lat0, lon0)
+d = np.sqrt((lat - lat0)**2 + (lon - lon0)**2)
+np.argsort(d)[:5]                                # els 5 més propers (o df.assign(d=d).nsmallest(5, "d"))`,
+    nota: "L'error típic: sense el reindex, si a un dels dos li falta un any els vectors no fan la mateixa llargada i la resta peta.",
+  },
+];
+
+const sospitesPp1 = [
+  ["Text escrit de dues maneres", "majúscules, espais, accents. Mira-ho amb value_counts() i arregla-ho amb str.strip().str.upper()."],
+  ["Nuls disfressats", "zeros, o coordenades (0, 0), que en realitat volen dir «no se sap»."],
+  ["Valors impossibles", "anys del futur, o un període incomplet que per això sembla que baixa."],
+  ["Números que arriben com a text", 'pd.to_numeric(df["col"], errors="coerce").'],
+  ["Coses que haurien de ser-hi i no hi són", "una ciutat, un any."],
+];
+
+function RepasPp1() {
+  return (
+    <div className="space-y-4 text-sm text-gray-700">
+      <p>
+        Amb aquest repertori de Pandas i NumPy en tens prou. El que s'avalua és que el sàpigues
+        encadenar i explicar cada resultat amb una frase.
+      </p>
+      {repasPp1.map((x) => (
+        <div key={x.titol}>
+          <p className="font-medium text-gray-900 mb-1">{x.titol}</p>
+          <pre className="bg-gray-900 text-gray-100 rounded-lg p-3 overflow-x-auto text-xs">{x.codi}</pre>
+          {x.nota && <p className="text-xs text-gray-600 mt-1">{x.nota}</p>}
+        </div>
+      ))}
+      <div>
+        <p className="font-medium text-gray-900 mb-1">7. Desconfia de les dades</p>
+        <p className="mb-2">
+          No resta si no ho veus, però suma si ho detectes i ho expliques.
+        </p>
+        <ul className="list-disc pl-5 space-y-1">
+          {sospitesPp1.map(([t, d]) => (
+            <li key={t}>
+              <strong>{t}:</strong> {d}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="bg-emerald-50 border-l-4 border-emerald-400 rounded-r-lg p-3 text-emerald-900">
+        <p className="font-medium mb-1">8. Com es lliura</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>A dalt del quadern, quina fitxa has triat.</li>
+          <li>
+            Cada resposta amb el seu codi i <strong>una frase que l'expliqui amb el número</strong>.
+          </li>
+          <li>Compta que el resultat surti del codi i que la frase el llegeixi bé.</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
 
 function FuncionsFO00() {
   const f = funcionsFO00;
@@ -234,6 +341,17 @@ x[(x < 2) | (x > 8)]`}</pre>
           exercicis de Pandas i algun repte, ja has fet la prova abans.
         </p>
       </Seccio>
+
+      <details className="group bg-white rounded-xl shadow-sm border border-gray-100">
+        <summary className="flex items-center gap-3 p-6 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+          <ListChecks className="w-6 h-6 flex-shrink-0 text-emerald-600" />
+          <h2 className="text-xl font-semibold text-gray-900 flex-1">Què has de saber per a la Pp1</h2>
+          <ChevronDown className="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="px-6 pb-6">
+          <RepasPp1 />
+        </div>
+      </details>
 
       <SeguentBloc actual={1} />
     </div>
