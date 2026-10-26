@@ -222,7 +222,7 @@ x[(x < 2) | (x > 8)]`}</pre>
       </Seccio>
 
       {/* ---------- 4 · Prova ---------- */}
-      <Pas id="prova" num={4} titol="Prova" color={C} subtitol="La Pp1 és la porta del bloc 2 i ja compta amb mínim de 5: no és un assaig." />
+      <Pas id="prova" num={4} titol="Prova" color={C} subtitol="La Pp1 (dimarts 27 d'octubre) és l'únic que s'avalua d'aquest bloc. Els quaderns i els reptes no es lliuren: són la pràctica per arribar-hi." />
       <Seccio icona={ClipboardCheck} color={C}>
         <ProvaBloc bloc={1} color={C} />
         <div className="mt-4">

@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   Clock,
   CalendarDays,
-  ListChecks,
 } from "lucide-react";
 import { NavInterna } from "../components/Bloc";
 import {
@@ -140,7 +139,7 @@ export default function Calendari() {
           <h1 className="text-3xl font-bold text-gray-900">Calendari i avaluació</h1>
         </div>
         <p className="text-gray-600 max-w-3xl">
-          Què es fa cada dia, què es lliura, quan són les proves i quant compta cada cosa. És l'únic
+          Què es fa cada dia, quan són les proves i quant compta cada cosa. És l'únic
           calendari del curs: la portada i les pàgines dels blocs en llegeixen d'aquí.
         </p>
       </div>
@@ -167,8 +166,8 @@ export default function Calendari() {
             <p className="text-3xl font-bold text-rose-700">80 %</p>
             <p className="font-medium text-gray-900 mt-1">4 proves pràctiques</p>
             <p className="text-sm text-gray-600 mt-1">
-              Amb ordinador, i <strong>semblants a les activitats i els reptes</strong> o variacions
-              seves. Cal un mínim de 5 a cadascuna.
+              Amb ordinador, sobre un conjunt de dades que no has vist, i{" "}
+              <strong>semblants als reptes</strong>.
             </p>
           </div>
           <div className="border border-amber-200 bg-amber-50/40 rounded-lg p-4">
@@ -179,31 +178,23 @@ export default function Calendari() {
             </p>
           </div>
           <div className="border border-gray-200 bg-gray-50 rounded-lg p-4">
-            <p className="text-3xl font-bold text-gray-700">10 %</p>
-            <p className="font-medium text-gray-900 mt-1">25 activitats</p>
+            <p className="font-medium text-gray-900">Quaderns i reptes</p>
             <p className="text-sm text-gray-600 mt-1">
-              Quaderns lliurats. Es qualifiquen <strong>0 o 10</strong>: només cal lliurar-los a temps.
+              <strong>No es lliuren ni es qualifiquen.</strong> Són la pràctica per arribar a les proves:
+              qui els ha fet, ja ha fet la prova abans.
             </p>
           </div>
         </div>
-        <pre className="mt-4 bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto text-xs sm:text-sm">{`Nota = 10 % · mitjana(Pe1…Pe5)
-     + 10 % · mitjana(A01…A25)
-     + 80 % · mitjana(Pp1…Pp4)`}</pre>
       </section>
 
       <section id="perill" className="bg-rose-50 border border-rose-200 rounded-xl p-6 scroll-mt-20">
         <div className="flex items-center gap-3 mb-4">
           <AlertTriangle className="w-6 h-6 text-rose-600" />
-          <h2 className="text-xl font-semibold text-rose-900">Tres coses que et poden costar el curs</h2>
+          <h2 className="text-xl font-semibold text-rose-900">El que et pot costar el curs</h2>
         </div>
         <ul className="space-y-3 text-sm text-rose-900">
           <li>
-            <strong>Lliurar una activitat fora de termini compta com a negativa</strong>, no com a no
-            lliurada. No és el mateix, i amb 25 activitats es nota.
-          </li>
-          <li>
-            <strong>Les proves pràctiques demanen un mínim de 5.</strong> La primera és el 27
-            d'octubre i ja compta: no és un assaig.
+            <strong>La primera prova pràctica és el 27 d'octubre i ja compta</strong>: no és un assaig.
           </li>
           <li>
             <strong>No presentar-se a una prova sense justificar-ho</strong> suposa perdre el dret a
@@ -263,16 +254,11 @@ export default function Calendari() {
           <CalendarDays className="w-6 h-6 text-primary-600" />
           <h2 className="text-2xl font-bold text-gray-900">Sessió a sessió</h2>
         </div>
-        <p className="text-sm text-gray-600">
-          Les activitats <strong>vencen sempre el diumenge de la setmana en què es donen</strong>.
-          L'única excepció són les vacances de Nadal.
-        </p>
         <div className="flex flex-wrap gap-2 text-xs">
           <Xip className="bg-primary-50 text-primary-700 border-primary-300"><Clock className="w-3 h-3" /> avui</Xip>
           <Xip className="bg-violet-50 text-violet-700 border-violet-200"><Sigma className="w-3 h-3" /> matemàtiques</Xip>
           <Xip className="bg-amber-50 text-amber-800 border-amber-200"><PenLine className="w-3 h-3" /> prova escrita</Xip>
           <Xip className="bg-rose-50 text-rose-800 border-rose-200"><ClipboardCheck className="w-3 h-3" /> prova pràctica</Xip>
-          <Xip className="bg-gray-100 text-gray-700 border-gray-200"><ListChecks className="w-3 h-3" /> activitat i venciment</Xip>
         </div>
 
         {BLOCS.map((b) => {

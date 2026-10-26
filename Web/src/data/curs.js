@@ -64,7 +64,7 @@ export const SESSIONS = [
 // Les proves, amb la sessió on cauen.
 export const PROVES = [
   { codi: "Pe1", tipus: "escrita", s: "S08", data: "2026-10-19", bloc: 1, titol: "Atribut contra mètode, què retorna cada cosa, què vol dir axis" },
-  { codi: "Pp1", tipus: "practica", s: "S11", data: "2026-10-27", bloc: 1, titol: "Pots manejar dades?", detall: "Un CSV que no has vist: carregar-lo, files i columnes, inventari de nuls, dues preguntes amb groupby, un gràfic, i una norma o una distància amb NumPy." },
+  { codi: "Pp1", tipus: "practica", s: "S11", data: "2026-10-27", bloc: 1, titol: "Pots manejar dades?", detall: "Un conjunt de dades reservat per a la prova, que no has vist: carregar-lo, files i columnes, inventari de nuls, dues preguntes amb groupby, un gràfic, i una norma o una distància amb NumPy." },
   { codi: "Pe2", tipus: "escrita", s: "S14", data: "2026-11-09", bloc: 2, titol: "Per què es parteix el conjunt, què és el sobreajust, què vol dir que un model «encerti»" },
   { codi: "Pe3", tipus: "escrita", s: "S20", data: "2026-11-30", bloc: 2, titol: "Què és una derivada aquí, què fa el descens de gradient, per què la log-loss" },
   { codi: "Pp2", tipus: "practica", s: "S21", data: "2026-12-01", bloc: 2, titol: "Pots entrenar, mesurar i verificar?", detall: "Sobre un conjunt que no has vist: dos models comparats amb la mètrica adequada, una funció de pèrdua implementada i comprovada contra scikit-learn, i explicar per què un model prediu el que prediu mirant-ne els pesos o les importàncies." },
@@ -74,35 +74,9 @@ export const PROVES = [
   { codi: "Pp4", tipus: "practica", s: "S33", data: "2027-02-02", bloc: 4, titol: "L'agent i la seva defensa davant del grup", detall: "L'agent lliurat, que funcioni, i que puguis explicar quina recompensa vas dissenyar i per què, què vas provar i què vas descartar. No es puntua la posició al marcador." },
 ];
 
-// Les activitats: es qualifiquen 0 o 10 i vencen el diumenge de la setmana en què es donen.
-// Des del 14-oct: els exemples resolts (EX) ja no es lliuren; al seu lloc, dos reptes per bloc, a triar.
-export const ACTIVITATS = [
-  { codi: "A01", nom: "FO_00 · objectes de Python", s: "S04", venc: "2026-10-25", nota: "Ampliada: fins ara no hi havia on lliurar-la" },
-  { codi: "A02", nom: "FO_01 · NumPy, exercicis 1 a 3", s: "S05", venc: "2026-10-25", nota: "Ampliada: fins ara no hi havia on lliurar-la" },
-  { codi: "A03", nom: "FO_01 · NumPy, exercicis 4 a 7", s: "S06", venc: "2026-10-25", nota: "Ampliada: fins ara no hi havia on lliurar-la" },
-  { codi: "A04", nom: "FO_02 · Pandas, exercicis 1 a 3", s: "S07", venc: "2026-10-25" },
-  { codi: "A05", nom: "FO_02 · Pandas, exercicis 4 a 7", s: "S07b", venc: "2026-10-25" },
-  { codi: "A06", nom: "Repte del bloc 1, el primer (un de RE_101 a RE_106, a triar)", s: "S07b", venc: "2026-10-25" },
-  { codi: "A07", nom: "MA_01 · àlgebra lineal", s: "S09", venc: "2026-10-25" },
-  { codi: "A08", nom: "Diccionaris, funcions i comprensions", s: "S10", venc: "2026-11-01" },
-  { codi: "A09", nom: "Repte del bloc 1, el segon (un altre de RE_101 a RE_106)", s: "S10", venc: "2026-11-01" },
-  { codi: "A10", nom: "ML_01 · k veïns més propers", s: "S13", venc: "2026-11-08" },
-  { codi: "A11", nom: "ML_02 · arbres de decisió", s: "S14", venc: "2026-11-15" },
-  { codi: "A12", nom: "MA_04 · entropia i informació", s: "S15", venc: "2026-11-15" },
-  { codi: "A13", nom: "ML_03 · boscos aleatoris", s: "S16", venc: "2026-11-22" },
-  { codi: "A14", nom: "ML_04 · regressió logística", s: "S17", venc: "2026-11-22" },
-  { codi: "A15", nom: "Repte del bloc 2, el primer (un de RE_201 a RE_206, a triar)", s: "S16", venc: "2026-11-22" },
-  { codi: "A16", nom: "MA_02 · descens de gradient", s: "S18", venc: "2026-11-29" },
-  { codi: "A17", nom: "Repte del bloc 2, el segon (un altre de RE_201 a RE_206)", s: "S19", venc: "2026-11-29" },
-  { codi: "A18", nom: "MA_03 · probabilitat i versemblança", s: "S20", venc: "2026-12-06" },
-  { codi: "A19", nom: "ML_05 · màquines de vectors de suport", s: "S21", venc: "2026-12-06" },
-  { codi: "A20", nom: "MA_05 · marge i optimització", s: "S22", venc: "2026-12-13" },
-  { codi: "A21", nom: "MA_06 · PCA i vectors propis", s: "S24", venc: "2026-12-20" },
-  { codi: "A22", nom: "Repte del bloc 3, el primer (un de RE_301 a RE_403, a triar)", s: "S23", venc: "2026-12-20" },
-  { codi: "A23", nom: "Repte del bloc 3, el segon (un altre de RE_301 a RE_403)", s: "S25", venc: "2027-01-10", nota: "Salta les vacances de Nadal" },
-  { codi: "A24", nom: "De PyTorch a DQN", s: "S27", venc: "2027-01-17" },
-  { codi: "A25", nom: "Q-learning amb el Taxi", s: "S29", venc: "2027-01-24" },
-];
+// Des del 26-oct no hi ha activitats per lliurar: els quaderns i els reptes són pràctica.
+// L'únic que s'avalua són les proves.
+export const ACTIVITATS = [];
 
 export const FESTIUS = [
   { quan: "12 d'octubre", text: "Cau en dilluns de classe, però es recupera: el dimarts 13 fa horari de dilluns (S07) i el dimecres 14, de dimarts (S07b)." },
