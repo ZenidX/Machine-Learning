@@ -17,6 +17,9 @@ import matplotlib.pyplot as plt
 
 ## A · Instal·lacions d'autoconsum elèctric
 
+**[▶ Obre la fitxa A a Colab](https://colab.research.google.com/github/ZenidX/Machine-Learning/blob/main/Machine%20Learning/05_proves/Pp1_A.ipynb)** · el quadern ja porta la càrrega de les dades i un espai per a cada pregunta. Fes **Fitxer → Desa una còpia a Drive** abans de començar.
+
+
 - **Origen:** Departament de Territori, Habitatge i Transició Ecològica · Dades Obertes de la Generalitat
 - **Font:** https://analisi.transparenciacatalunya.cat/d/2b4s-skfm
 - **Llicència:** Llicència oberta d'ús d'informació – Catalunya
@@ -55,6 +58,9 @@ són vives: cada actualització hi afegeix files.
 ---
 
 ## B · Intensitat mitjana diària de vehicles a les carreteres
+
+**[▶ Obre la fitxa B a Colab](https://colab.research.google.com/github/ZenidX/Machine-Learning/blob/main/Machine%20Learning/05_proves/Pp1_B.ipynb)** · el quadern ja porta la càrrega de les dades i un espai per a cada pregunta. Fes **Fitxer → Desa una còpia a Drive** abans de començar.
+
 
 - **Origen:** Direcció General d'Infraestructures i Mobilitat · Dades Obertes de la Generalitat
 - **Font:** https://analisi.transparenciacatalunya.cat/d/xsvx-ym46
@@ -97,6 +103,9 @@ estació en un any.
 
 ## C · Meteorits
 
+**[▶ Obre la fitxa C a Colab](https://colab.research.google.com/github/ZenidX/Machine-Learning/blob/main/Machine%20Learning/05_proves/Pp1_C.ipynb)** · el quadern ja porta la càrrega de les dades i un espai per a cada pregunta. Fes **Fitxer → Desa una còpia a Drive** abans de començar.
+
+
 - **Origen:** The Meteoritical Society, publicat al portal de dades obertes de la NASA · TidyTuesday 2019-06-11
 - **Font:** https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-06-11
 - **Llicència:** dades de la NASA, de domini públic; repositori CC0
@@ -134,6 +143,9 @@ veure caure, de quina classe són i quant pesaven.
 ---
 
 ## D · Actuacions dels Bombers de la Generalitat (2025)
+
+**[▶ Obre la fitxa D a Colab](https://colab.research.google.com/github/ZenidX/Machine-Learning/blob/main/Machine%20Learning/05_proves/Pp1_D.ipynb)** · el quadern ja porta la càrrega de les dades i un espai per a cada pregunta. Fes **Fitxer → Desa una còpia a Drive** abans de començar.
+
 
 - **Origen:** Departament d'Interior i Seguretat Pública · Dades Obertes de la Generalitat
 - **Font:** https://analisi.transparenciacatalunya.cat/d/g2ay-3vnj
