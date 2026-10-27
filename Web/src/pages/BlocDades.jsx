@@ -332,6 +332,12 @@ x[(x < 2) | (x > 8)]`}</pre>
       <Pas id="prova" num={4} titol="Prova" color={C} subtitol="La Pp1 (dimarts 27 d'octubre) és l'únic que s'avalua d'aquest bloc. Els quaderns i els reptes no es lliuren: són la pràctica per arribar-hi." />
       <Seccio icona={ClipboardCheck} color={C}>
         <ProvaBloc bloc={1} color={C} />
+        <Link
+          to="/pp1"
+          className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700"
+        >
+          <ClipboardCheck className="w-4 h-4" /> Enunciat de la Pp1 · lliurament al Moodle
+        </Link>
         <div className="mt-4">
           <ActivitatsBloc bloc={1} />
         </div>
