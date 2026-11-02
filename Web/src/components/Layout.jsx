@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Home, CalendarRange, Table2, Brain, Layers, Gamepad2, Wrench, Laptop } from 'lucide-react'
+import { Menu, X, Home, CalendarRange, Table2, Brain, Layers, Gamepad2, Wrench, Laptop, Move } from 'lucide-react'
 
 const navigation = [
   { name: 'Inici', href: '/', icon: Home },
@@ -9,6 +9,7 @@ const navigation = [
   { name: '2 · Supervisat', href: '/supervisat', icon: Brain, bloc: true },
   { name: '3 · Dades brutes i no supervisat', href: '/no-supervisat', icon: Layers, bloc: true },
   { name: '4 · Xarxes i RL', href: '/xarxes-i-rl', icon: Gamepad2, bloc: true },
+  { name: 'Àlgebra interactiva', href: '/algebra-interactiva', icon: Move },
   { name: 'Recursos', href: '/recursos', icon: Wrench },
   { name: 'Treballar en local', href: '/installacio', icon: Laptop },
 ]

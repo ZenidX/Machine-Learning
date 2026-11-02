@@ -10,6 +10,7 @@ import BlocXarxesRL from './pages/BlocXarxesRL'
 import Recursos from './pages/Recursos'
 import Pp1 from './pages/Pp1'
 import Installacio from './pages/Installacio'
+import AlgebraInteractiva from './pages/AlgebraInteractiva'
 
 // Rutes antigues: redirigeixen a la pàgina nova perquè els enllaços que ja circulen no es trenquin.
 const REDIRECCIONS = {
@@ -45,6 +46,7 @@ function App() {
         <Route path="/recursos" element={<Recursos />} />
         <Route path="/pp1" element={<Pp1 />} />
         <Route path="/installacio" element={<Installacio />} />
+        <Route path="/algebra-interactiva" element={<AlgebraInteractiva />} />
         {Object.entries(REDIRECCIONS).map(([de, a]) => (
           <Route key={de} path={de} element={<Navigate to={a} replace />} />
         ))}
