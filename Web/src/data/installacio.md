@@ -19,7 +19,7 @@ Microsoft Store.
 
 Obre un terminal nou (a Windows, *PowerShell* o *Símbol del sistema*) i comprova-ho:
 
-```
+```bash
 python --version
 ```
 
@@ -43,14 +43,14 @@ Al terminal, entra a la carpeta del curs (`cd` i la ruta) i executa, d'una en un
 
 **Windows**
 
-```
+```bash
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 ```
 
 **macOS i Linux**
 
-```
+```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 ```
@@ -63,13 +63,13 @@ Python.
 
 **Windows**
 
-```
+```bash
 .venv\Scripts\python -m jupyter lab
 ```
 
 **macOS i Linux**
 
-```
+```bash
 .venv/bin/python -m jupyter lab
 ```
 
