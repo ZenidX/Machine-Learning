@@ -96,6 +96,7 @@ Si imprimeix tres números de versió, l'entorn està complet.
 
 - **Els quaderns que modifiquis són teus.** Si tornes a descarregar el ZIP, sobreescriuràs els
   canvis. Desa la teva feina amb un altre nom o en una carpeta a part (per exemple `treball/`).
+- **Si vas instal·lar l'entorn abans del 3 de novembre**, et falta `ipywidgets` (els controls lliscants dels quaderns): torna a executar l'ordre del pas 3 amb `-r requirements.txt` després de descarregar el material nou.
 - **Material nou:** amb git, `git pull`; sense git, torna a descarregar el ZIP en una carpeta nova.
 - **Les dades** es carreguen des de GitHub, així que cal connexió a internet, però no cal Google.
 - **VS Code:** si ja el fas servir, instal·la l'extensió *Jupyter*, obre la carpeta del curs i, en
