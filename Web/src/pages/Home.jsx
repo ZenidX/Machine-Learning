@@ -87,7 +87,8 @@ export default function Home() {
             <h3 className="font-semibold text-amber-900 mb-1">Sense instal·lar res</h3>
             <p className="text-sm text-gray-700">
               Tot s'obre a Google Colab des del navegador. Desa una còpia al teu Drive just en obrir
-              cada quadern.
+              cada quadern. Si Colab es penja,{' '}
+              <Link to="/installacio" className="text-amber-800 underline">treballa en local</Link>.
             </p>
           </div>
         </div>
