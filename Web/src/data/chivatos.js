@@ -574,8 +574,23 @@ const CONCURS = {
   tancament: "Al concurs només viatja l'state_dict. Si el jutge el carrega i el cotxe arriba lluny, ja està.",
 };
 
+const MA_01b = {
+  titol: "Les fórmules i la seva línia de codi",
+  intro:
+    "Una recta, dos pesos i el bucle que els troba. Cada línia d'aquesta llista surt al quadern i té la seva comprovació.",
+  llista: [
+    { nom: "np.mean((w * x + b - y) ** 2)", text: "L'error quadràtic mitjà. Entrenar és fer-lo tan petit com es pugui." },
+    { nom: "(mse(w + h, b) - mse(w - h, b)) / (2 * h)", text: "La derivada numèrica: el pendent de l'error si mous w una mica. Serveix per comprovar el gradient de la fórmula." },
+    { nom: "2 * np.mean(residu * x)  i  2 * np.mean(residu)", text: "El gradient del MSE respecte de w i de b, amb residu = w * x + b - y." },
+    { nom: "2 / n * X.T @ residu", text: "El mateix gradient amb moltes columnes. La transposada de MA_01 fent feina." },
+    { nom: "w = w - eta * grad_w; b = b - eta * grad_b", text: "Un pas de descens. Repetit, és l'entrenament. Guarda l'error de cada iteració i dibuixa'l amb l'eix logarítmic." },
+    { nom: "(x - x.mean()) / x.std()", text: "Escalar abans d'entrenar. Si l'error explota o no baixa, mira primer eta i després les escales." },
+  ],
+  tancament: "Si el teu w i el teu b no coincideixen amb LinearRegression fins al cinquè decimal, alguna cosa del bucle no és el que creus.",
+};
+
 export const chivatos = {
-  ML_00, ML_01, ML_02, MA_04, ML_03, ML_04, MA_02, MA_03, ML_05,
+  ML_00, MA_01b, ML_01, ML_02, MA_04, ML_03, ML_04, MA_02, MA_03, ML_05,
   EX_01, EX_02, EX_04, EX_00,
   MA_05, EX_00_brutes, MA_06, ML_06, EX_05, EX_03, EX_06,
   DL_00, DL_01, DL_02, DL_03, DL_04, DL_05, DL_PR,

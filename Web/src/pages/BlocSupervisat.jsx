@@ -186,6 +186,9 @@ export default function BlocSupervisat() {
           <QuadernCard codi="ML_00" color={C}>
             <Chivato f={chivatos.ML_00} />
           </QuadernCard>
+          <QuadernCard codi="MA_01b" color="violet" etiqueta="matemàtiques: com aprèn un model">
+            <Chivato f={chivatos.MA_01b} />
+          </QuadernCard>
           <QuadernCard codi="ML_01" color={C}>
             <Chivato f={chivatos.ML_01} />
           </QuadernCard>
