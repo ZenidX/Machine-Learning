@@ -727,12 +727,60 @@ plt.show()
 cells.append(md(r"""
 ## Pràctica
 
+Tres exercicis. Les cel·les de codi estan buides a propòsit: el comentari diu què cal fer.
+Abans de cada una hi ha un dibuix amb **dades inventades** que ensenya la idea; els números
+de debò els heu de treure vosaltres amb Iris.
+
+Teniu disponibles `iris`, `x`, `y` i les funcions de les cel·les anteriors.
+"""))
+
+cells.append(md(r"""
 ### Exercici 1. El teu propi descens, amb una altra parella de columnes
 
 Fes servir la **llargada del sèpal** (`iris.data[:, 0]`) per predir la **llargada del pètal**
 (`iris.data[:, 2]`). Escriu tu la funció d'error, el gradient i el bucle (pots copiar l'estructura
 dels apartats 3, 6 i 7). Comprova el gradient contra el numèric en un punt qualsevol abans
 d'entrenar. Troba una $\eta$ que convergeixi i compara el resultat amb `LinearRegression`.
+"""))
+
+cells.append(md(r"""
+Abans de començar, la idea en un dibuix: vint punts inventats i el que ha de fer el vostre
+bucle. A l'esquerra, la recta en cinc moments de l'entrenament, cada cop més fosca; a la
+dreta, la corba d'error que us hauria de sortir: baixa i s'aplana. Si la vostra puja, la
+$\eta$ és massa gran.
+"""))
+
+cells.append(code(r"""
+rng = np.random.default_rng(7)
+x_il = rng.uniform(0, 10, 20)                          # vint punts inventats
+y_il = 1.5 * x_il + 4 + rng.normal(0, 2, 20)
+
+w_il, b_il, eta_il = 0.0, 0.0, 0.002
+rectes, errors_il = {}, []
+for it in range(3001):
+    residu_il = w_il * x_il + b_il - y_il
+    errors_il.append(np.mean(residu_il ** 2))
+    if it in (0, 1, 3, 10, 3000):
+        rectes[it] = (w_il, b_il)
+    w_il -= eta_il * 2 * np.mean(residu_il * x_il)
+    b_il -= eta_il * 2 * np.mean(residu_il)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5))
+ax1.scatter(x_il, y_il, color="tab:blue", edgecolor="k", s=40, zorder=3)
+xs_il = np.array([0, 10])
+for k, (it, (w_k, b_k)) in enumerate(rectes.items()):
+    ax1.plot(xs_il, w_k * xs_il + b_k, color="tab:red", alpha=0.2 + 0.2 * k,
+             linewidth=2, label=f"iteració {it}")
+ax1.set_title("Dades inventades: la recta aprenent")
+ax1.legend()
+ax1.grid(alpha=0.3)
+ax2.semilogx(np.arange(1, len(errors_il)), errors_il[1:], linewidth=2)
+ax2.set_xlabel("iteració (escala log)")
+ax2.set_ylabel("MSE")
+ax2.set_title("La corba que hauria de sortir: baixa i s'aplana")
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
 """))
 
 cells.append(code(r"""
@@ -755,6 +803,36 @@ quedi a menys d'un 1 % del mínim. Explica en dues frases per què surt el que s
 com es desfà el canvi per comparar-los amb `LinearRegression`.
 """))
 
+cells.append(md(r"""
+Abans de començar, la idea en un dibuix: com es mesura «quantes iteracions calen». Dues
+corbes d'error inventades, una que baixa de pressa i una que s'hi arrossega. La línia
+discontínua és l'1 % per sobre del mínim; el número que us demanem és **la primera iteració
+on cada corba queda per sota d'aquesta línia** (els punts).
+"""))
+
+cells.append(code(r"""
+its = np.arange(0, 500)
+minim_il = 1.0
+rapida = minim_il + 4.0 * np.exp(-its / 12)            # corbes inventades, no són d'Iris
+lenta = minim_il + 4.0 * np.exp(-its / 60)
+llindar = 1.01 * minim_il
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+for corba, nom, color in [(rapida, "baixa de pressa", "tab:green"),
+                          (lenta, "s'hi arrossega", "tab:orange")]:
+    primera = int(np.argmax(corba < llindar))          # primer índex on es compleix
+    ax.plot(its, corba, color=color, linewidth=2, label=f"{nom}: iteració {primera}")
+    ax.scatter([primera], [corba[primera]], color=color, s=70, edgecolor="k", zorder=3)
+ax.axhline(llindar, color="black", linestyle="--", linewidth=1, label="1 % per sobre del mínim")
+ax.set_ylim(0.9, 1.6)
+ax.set_xlabel("iteració")
+ax.set_ylabel("MSE")
+ax.set_title("Dades inventades: com es compten les iteracions")
+ax.legend()
+ax.grid(alpha=0.3)
+plt.show()
+"""))
+
 cells.append(code(r"""
 # Exercici 2
 # 1. xs1_std = (xs1 - xs1.mean()) / xs1.std()
@@ -771,6 +849,38 @@ Predeix l'amplada del pètal fent servir **dues** columnes: la llargada del pèt
 del sèpal. Ara $w$ és un vector de 2 components i la predicció és `X @ w + b`, com a `MA_01`.
 Fes servir la fórmula amb la transposada de l'apartat 6 per al gradient. Estandarditza les dues
 columnes abans. Compara amb `LinearRegression` i digues si afegir el sèpal ha baixat l'error.
+"""))
+
+cells.append(md(r"""
+Abans de començar, la idea en un dibuix: amb una columna el model és una recta; amb dues és
+un **pla**. Cada punt és una mostra inventada, a terra les dues columnes i en alçada el que
+volem predir. Les línies verticals són els residus, com a l'apartat 2: el descens fa
+exactament el mateix, només que ara mou un pla en lloc d'una recta.
+"""))
+
+cells.append(code(r"""
+rng = np.random.default_rng(3)
+X_il = rng.uniform(0, 5, size=(40, 2))                 # 40 mostres inventades, 2 columnes
+w_pla = np.array([1.5, -1.0])
+y_il3 = X_il @ w_pla + 2 + rng.normal(0, 0.4, 40)
+
+g1, g2 = np.meshgrid(np.linspace(0, 5, 20), np.linspace(0, 5, 20))
+pla = w_pla[0] * g1 + w_pla[1] * g2 + 2
+
+fig = plt.figure(figsize=(8, 6))
+ax = fig.add_subplot(projection="3d")
+ax.plot_surface(g1, g2, pla, color="tab:red", alpha=0.25)
+pred_il = X_il @ w_pla + 2
+for (a1, a2), yy, pp in zip(X_il, y_il3, pred_il):
+    ax.plot([a1, a1], [a2, a2], [yy, pp], color="gray", linewidth=0.8)
+ax.scatter(X_il[:, 0], X_il[:, 1], y_il3, color="tab:blue", edgecolor="k", s=30, depthshade=False)
+ax.set_xlabel("columna 1")
+ax.set_ylabel("columna 2")
+ax.set_zlabel("el que es prediu")
+ax.set_box_aspect(None, zoom=0.85)
+ax.view_init(elev=12, azim=-25)
+ax.set_title("Dades inventades: amb dues columnes, un pla")
+plt.show()
 """))
 
 cells.append(code(r"""
