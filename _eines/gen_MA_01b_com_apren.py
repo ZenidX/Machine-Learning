@@ -52,6 +52,10 @@ El pla:
 10. Comparació amb scikit-learn.
 11. El parany de les escales.
 
+**Executeu-ho tot abans de començar** (a Colab, *Entorn d'execució → Executa-ho tot*). Els
+controls lliscants i els gràfics que es giren només apareixen i responen amb el quadern en
+marxa.
+
 Hi ha gràfics en 3D que es poden girar amb el ratolí (apartats 4 i 8). Fan servir Plotly, que
 a Colab ja hi és; en local, `pip install plotly`.
 """))
@@ -104,6 +108,8 @@ deixi més petit.**
 """))
 
 cells.append(code(r"""
+# Els controls apareixen quan s'executa la cel·la (abans, cal haver executat les d'adalt:
+# a Colab, «Executa-ho tot» o Ctrl+F9). El primer cop poden trigar uns segons.
 from ipywidgets import interact, FloatSlider
 
 def mse(w, b):
@@ -509,6 +515,8 @@ Si ho preferiu sense animació, aquí podeu anar a qualsevol iteració:
 """))
 
 cells.append(code(r"""
+# Els controls apareixen quan s'executa la cel·la (abans, cal haver executat les d'adalt:
+# a Colab, «Executa-ho tot» o Ctrl+F9). El primer cop poden trigar uns segons.
 from ipywidgets import IntSlider
 
 def mostra_iteracio(it=0):
@@ -570,6 +578,8 @@ passos:
 """))
 
 cells.append(code(r"""
+# Els controls apareixen quan s'executa la cel·la (abans, cal haver executat les d'adalt:
+# a Colab, «Executa-ho tot» o Ctrl+F9). El primer cop poden trigar uns segons.
 def prova_eta(eta=0.02):
     h_eta = entrena(eta=eta, iteracions=60)
     fig, (axp, axe) = plt.subplots(1, 2, figsize=(11, 4))
