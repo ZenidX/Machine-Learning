@@ -119,7 +119,7 @@ export const quaderns = {
     descarrega: true,
     mates: true,
     descripcio:
-      "La continuació de MA_01: d'on surten els pesos. Una recta sobre els pètals d'Iris entrenada per descens de gradient, iteració a iteració: l'error quadràtic mitjà, la derivada, el gradient i el bucle. Amb controls lliscants i una animació de la recta aprenent, la taxa d'aprenentatge que convergeix o explota, i per què escalar les dades passa de 1.000 iteracions a 50.",
+      "La continuació de MA_01: d'on surten els pesos. Una recta sobre els pètals d'Iris entrenada per descens de gradient, iteració a iteració: l'error quadràtic mitjà, la derivada, el gradient i el bucle. Amb controls lliscants, una animació de la recta aprenent i la vall de l'error en 3D per girar amb el ratolí, la taxa d'aprenentatge que convergeix o explota, i per què escalar les dades passa de 1.000 iteracions a 50.",
   },
   MA_02: {
     fitxer: "MA_02_descens_gradient.ipynb",

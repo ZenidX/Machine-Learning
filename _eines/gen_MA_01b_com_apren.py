@@ -51,6 +51,9 @@ El pla:
 9. La taxa d'aprenentatge: massa poc, bé, massa.
 10. Comparació amb scikit-learn.
 11. El parany de les escales.
+
+Hi ha gràfics en 3D que es poden girar amb el ratolí (apartats 4 i 8). Fan servir Plotly, que
+a Colab ja hi és; en local, `pip install plotly`.
 """))
 
 cells.append(code(r"""
@@ -192,6 +195,56 @@ plt.title("El paisatge del MSE")
 plt.legend()
 plt.grid(alpha=0.2)
 plt.show()
+"""))
+
+cells.append(md(r"""
+El mateix paisatge en **3 dimensions**: a terra, $w$ i $b$; en alçada, l'error. Ara sí que es
+veu que és una vall. Hem tallat les parets per sobre de MSE = 3 perquè, si no, pugen tant que
+el fons no es veuria.
+"""))
+
+cells.append(code(r"""
+E_tallat = np.where(E <= 3, E, np.nan)      # tallem les parets altes per veure el fons
+
+fig = plt.figure(figsize=(9, 6))
+ax = fig.add_subplot(projection="3d")
+ax.plot_surface(W, B, E_tallat, cmap="viridis", rstride=4, cstride=4,
+                linewidth=0, antialiased=True, alpha=0.9)
+ax.scatter([W[i_min, j_min]], [B[i_min, j_min]], [E[i_min, j_min]],
+           color="tab:red", s=80, depthshade=False)
+ax.set_xlabel("w (pendent)")
+ax.set_ylabel("b (on talla l'eix)")
+ax.set_zlabel("MSE")
+ax.set_zlim(0, 3)
+ax.set_box_aspect(None, zoom=0.85)
+ax.view_init(elev=28, azim=-60)
+ax.set_title("El paisatge del MSE en 3D")
+plt.show()
+"""))
+
+cells.append(md(r"""
+I ara una versió que **es pot girar amb el ratolí** (arrossegar per girar, roda per apropar).
+Feu servir la llibreria Plotly: a Colab ja hi és; en local, si no la teniu, `pip install plotly`.
+Mireu-la des de dalt (us sortirà el mapa de corbes d'abans) i després arran de terra, mirant
+al llarg de la vall: veureu com n'és d'estreta.
+"""))
+
+cells.append(code(r"""
+import plotly.graph_objects as go
+
+# una de cada 3 files i columnes: es veu igual i el quadern pesa molt menys
+Wp, Bp, Ep = W[::3, ::3], B[::3, ::3], E_tallat[::3, ::3]
+
+fig3d = go.Figure(go.Surface(x=Wp, y=Bp, z=Ep, colorscale="Viridis",
+                             showscale=False, opacity=0.95))
+fig3d.add_trace(go.Scatter3d(x=[W[i_min, j_min]], y=[B[i_min, j_min]], z=[E[i_min, j_min]],
+                             mode="markers", marker=dict(size=6, color="red"),
+                             name="el fons de la vall"))
+fig3d.update_layout(scene=dict(xaxis_title="w", yaxis_title="b", zaxis_title="MSE",
+                               zaxis=dict(range=[0, 3])),
+                    width=800, height=600, margin=dict(l=0, r=0, t=40, b=0),
+                    title="Gira'm: el paisatge del MSE")
+fig3d.show()
 """))
 
 cells.append(md(r"""
@@ -478,6 +531,31 @@ def mostra_iteracio(it=0):
 interact(mostra_iteracio, it=IntSlider(min=0, max=2000, step=1, value=0, description="iteració"));
 """))
 
+cells.append(md(r"""
+I el mateix camí **dins de la vall en 3D**, per girar-lo. Cada punt vermell és una iteració.
+Les primeres cauen gairebé verticals per la paret; les últimes s'arrosseguen pel fons. Si el
+mireu des de dalt, és el panell del mig de l'animació.
+"""))
+
+cells.append(code(r"""
+cami = hist[np.unique(np.geomspace(1, 1000, 120).astype(int))]
+cami = np.vstack([hist[:1], cami])
+fig_cami = go.Figure(go.Surface(x=Wp, y=Bp, z=Ep, colorscale="Viridis",
+                                showscale=False, opacity=0.75))
+fig_cami.add_trace(go.Scatter3d(x=cami[:, 0], y=cami[:, 1], z=cami[:, 2] + 0.01,
+                                mode="lines+markers", line=dict(color="red", width=5),
+                                marker=dict(size=2.5, color="red"),
+                                name="descens (η = 0,02)"))
+fig_cami.add_trace(go.Scatter3d(x=[cami[0, 0]], y=[cami[0, 1]], z=[cami[0, 2]],
+                                mode="markers+text", text=["sortida"],
+                                marker=dict(size=7, color="black"), name="sortida"))
+fig_cami.update_layout(scene=dict(xaxis_title="w", yaxis_title="b", zaxis_title="MSE",
+                                  zaxis=dict(range=[0, 3])),
+                       width=800, height=600, margin=dict(l=0, r=0, t=40, b=0),
+                       title="El descens de gradient baixant per la vall")
+fig_cami.show()
+"""))
+
 # ---------------------------------------------------------------- 9
 cells.append(md(r"""
 ## 9. La taxa d'aprenentatge: massa poc, bé, massa
@@ -608,6 +686,41 @@ es pot fer servir una $\eta$ més gran sense que exploti.
 Això no és un detall d'aquest quadern. Les escales tornaran a ser un parany a **k veïns** (on la
 columna més gran decideix tota sola la distància) i a les **xarxes neuronals** (on les dades
 sense escalar fan que l'entrenament no arrenqui). Recordeu el número: de 1.000 a 50.
+"""))
+
+cells.append(md(r"""
+Les dues valls, una al costat de l'altra i amb la mateixa escala: a cada eix, 1,5 unitats a
+banda i banda del mínim. A l'esquerra, amb la $x$ en cm; a la dreta, escalada. La de la dreta
+és **un bol perfectament rodó**: des de qualsevol punt, la baixada més forta apunta directa
+al fons.
+"""))
+
+cells.append(code(r"""
+def paisatge(xx, w_c, b_c, mig=1.5, n=400):
+    ws_ = np.linspace(w_c - mig, w_c + mig, n)
+    bs_ = np.linspace(b_c - mig, b_c + mig, n)
+    Wg, Bg = np.meshgrid(ws_, bs_)
+    Eg = np.mean((Wg * xx[:, None, None] + Bg - y[:, None, None]) ** 2, axis=0)
+    return Wg - w_c, Bg - b_c, np.where(Eg <= 2, Eg, np.nan)
+
+w_cm_opt, b_cm_opt = hist[-1, 0], hist[-1, 1]
+w_std_opt, b_std_opt = h_std[-1, 0], h_std[-1, 1]
+
+fig = plt.figure(figsize=(12, 5))
+for k, (xx, wc, bc, titol) in enumerate([(x_cm, w_cm_opt, b_cm_opt, "x en cm: vall estreta"),
+                                         (x_std, w_std_opt, b_std_opt, "x escalada: bol rodó")]):
+    ax = fig.add_subplot(1, 2, k + 1, projection="3d")
+    dW, dB, Eg = paisatge(xx, wc, bc)
+    ax.plot_surface(dW, dB, Eg, cmap="viridis", rstride=2, cstride=2, linewidth=0)
+    ax.set_box_aspect(None, zoom=0.85)
+    ax.set_zlim(0, 2)
+    ax.set_xlabel("w − w mínim")
+    ax.set_ylabel("b − b mínim")
+    ax.set_zlabel("MSE")
+    ax.view_init(elev=30, azim=-55)
+    ax.set_title(titol)
+plt.tight_layout()
+plt.show()
 """))
 
 # ---------------------------------------------------------------- pràctica
