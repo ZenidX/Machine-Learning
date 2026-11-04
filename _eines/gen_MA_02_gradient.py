@@ -385,7 +385,7 @@ $$x \leftarrow x - \eta \, f'(x)$$
 
 La fletxa vol dir «substitueix el valor de $x$ pel que hi ha a la dreta». El número
 $\eta$ (la lletra grega *eta*) es diu **taxa d'aprenentatge** i diu com de llarga és la
-passa. El signe menys és la conclusió de la secció 2.4: ens movem contra el signe de la
+passa. El signe menys és la conclusió de la secció 2.5: ens movem contra el signe de la
 derivada.
 
 Provem-ho sobre $f(x) = x^2$, sortint de $x_0 = 3$, amb $\eta = 0{,}1$. La derivada la
@@ -738,6 +738,70 @@ print(f"\nPerdua amb clip:  {amb_clip:.4f}")
 print(f"Perdua sense clip: {sense_clip}")
 '''))
 
+A(md(r"""
+### 5.3 El paisatge de la log-loss, al costat del de `MA_01b`
+
+A `MA_01b` el MSE de la recta sobre els pètals feia una vall amb **un sol fons**. La
+log-loss fa el mateix? Posem-les una al costat de l'altra:
+
+- A l'esquerra, el paisatge de `MA_01b`, recalculat aquí: el MSE de la recta
+  $\hat y = w\,x + b$ (llargada → amplada del pètal, 150 flors) en funció de $w$ i $b$.
+- A la dreta, la log-loss de les nostres flors en funció de $w_1$ i $w_2$, amb el biaix
+  fixat al de la secció 1. Amb tres paràmetres no es pot dibuixar, i així és el mateix
+  paisatge de ML_04 vist en una finestra més ampla.
+
+Les parets altes estan tallades (a 3) perquè es vegi el fons. El punt vermell és el més
+baix de cada graella.
+"""))
+
+A(code(r'''
+# Esquerra: el MSE de MA_01b. [..., None] combina cada punt de la graella amb totes les flors.
+x_01b = iris.data["petal length (cm)"].values
+y_01b = iris.data["petal width (cm)"].values
+Wm, Bm = np.meshgrid(np.linspace(-0.3, 1.0, 120), np.linspace(-1.6, 1.4, 120))
+E_mse = np.mean((Wm[..., None] * x_01b + Bm[..., None] - y_01b) ** 2, axis=2)
+
+# Dreta: la log-loss amb b fixat (b_fixat, de la seccio 1), la mateixa formula de log_loss
+W1p, W2p = np.meshgrid(np.linspace(-1, 6, 120), np.linspace(0, 10, 120))
+P_graella = sigmoide(W1p[..., None] * Xtr[:, 0] + W2p[..., None] * Xtr[:, 1] + b_fixat)
+P_graella = np.clip(P_graella, EPS, 1 - EPS)
+L_paisatge = -np.mean(ytr * np.log(P_graella) + (1 - ytr) * np.log(1 - P_graella), axis=2)
+
+fig = plt.figure(figsize=(13, 5.5))
+for k, (A1, A2, E, noms, titol) in enumerate([
+        (Wm, Bm, E_mse, ("w (pendent)", "b"), "MA_01b: MSE de la recta"),
+        (W1p, W2p, L_paisatge, ("$w_1$ (llargada)", "$w_2$ (amplada)"),
+         "Aquí: log-loss, amb $b$ fixat")]):
+    ax = fig.add_subplot(1, 2, k + 1, projection="3d")
+    ax.plot_surface(A1, A2, np.where(E <= 3, E, np.nan), cmap="viridis", rstride=3,
+                    cstride=3, linewidth=0, alpha=0.9)
+    m = np.unravel_index(np.argmin(E), E.shape)
+    ax.scatter([A1[m]], [A2[m]], [E[m]], color="tab:red", s=60, depthshade=False)
+    ax.set_xlabel(noms[0])
+    ax.set_ylabel(noms[1])
+    ax.set_zlabel("pèrdua")
+    ax.set_zlim(0, 3)
+    ax.view_init(elev=28, azim=-60)
+    ax.set_box_aspect(None, zoom=0.85)
+    ax.set_title(titol)
+plt.tight_layout()
+plt.show()
+
+m = np.unravel_index(np.argmin(L_paisatge), L_paisatge.shape)
+print(f"Fons de la log-loss a la graella: w1 = {W1p[m]:.2f}, w2 = {W2p[m]:.2f}, "
+      f"perdua = {L_paisatge[m]:.4f}")
+'''))
+
+A(md(r"""
+Les dues tenen la mateixa propietat important: **un sol fons**, i des de qualsevol punt,
+baixant sempre, s'hi arriba. Aquesta propietat es diu **convexitat**. No la demostrarem,
+però és la garantia que el descens de gradient trobarà el mínim en aquests dos problemes.
+
+La forma és diferent: la log-loss és una vall llarga i estreta en diagonal (moure $w_1$ i
+$w_2$ alhora en el sentit correcte gairebé no canvia la pèrdua). És el mal condicionament
+de la secció 4, i el veurem en acció a la secció 10.
+"""))
+
 # ---------------------------------------------------------------- 6
 A(md(r"""
 ## 6. La derivada de la log-loss
@@ -793,6 +857,30 @@ taula = pd.DataFrame({
 })
 print(taula.to_string(index=False, float_format=lambda v: f"{v:.10f}"))
 print(f"\nDiferencia maxima: {np.abs(sigma_prima_numerica - sigma_prima_formula).max():.2e}")
+'''))
+
+A(md(r"""
+En un dibuix: la sigmoide i la seva derivada. La derivada és màxima a $z = 0$, on val
+$0{,}5 \cdot 0{,}5 = 0{,}25$, i s'apaga a banda i banda, allà on la sigmoide ja s'ha
+aplanat. Retingueu aquesta forma de campana: a la secció 6.3 és el motiu pel qual el MSE
+no serveix per classificar.
+"""))
+
+A(code(r'''
+zs_d = np.linspace(-8, 8, 400)
+
+plt.figure(figsize=(8, 4.5))
+plt.plot(zs_d, sigmoide(zs_d), color="tab:blue", linewidth=2, label=r"$\sigma(z)$")
+plt.plot(zs_d, sigmoide(zs_d) * (1 - sigmoide(zs_d)), color="tab:red", linewidth=2,
+         label=r"$\sigma'(z) = \sigma(z)\,(1 - \sigma(z))$")
+plt.scatter([0], [0.25], color="tab:red", edgecolor="k", zorder=5)
+plt.annotate("màxim: 0,25", (0, 0.25), xytext=(1.2, 0.33),
+             arrowprops=dict(arrowstyle="->", color="gray"))
+plt.xlabel("$z$")
+plt.title("La sigmoide i la seva derivada")
+plt.legend(loc="center right")
+plt.grid(alpha=0.3)
+plt.show()
 '''))
 
 A(md(r"""
@@ -875,6 +963,50 @@ prop de 0 o de 1, de manera que una flor de la qual el model està **molt segur 
 equivocat** no generaria gairebé cap gradient i el model no aprendria d'ella. La log-loss
 és l'única pèrdua que fa desaparèixer aquest factor. No és casualitat que sigui la que es
 fa servir.
+
+Ho dibuixem per a una sola flor virginica ($y = 1$), en funció de la probabilitat $p$ que
+el model li dona. A l'esquerra, la pèrdua; a la dreta, la força amb què aquella flor
+empeny els pesos, $\left|\partial \ell / \partial z\right|$:
+
+- log-loss: $\;|p - 1|$, el resultat del pas 4.
+- MSE: $\;2\,|p - 1|\; p\,(1 - p)$, amb el factor de la sigmoide sobrevivint.
+"""))
+
+A(code(r'''
+ps_c = np.linspace(0.001, 0.999, 400)       # probabilitat donada a la classe correcta
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5))
+ax1.plot(ps_c, -np.log(ps_c), color="tab:blue", linewidth=2, label=r"log-loss: $-\log p$")
+ax1.plot(ps_c, (1 - ps_c) ** 2, color="tab:orange", linewidth=2, label=r"MSE: $(1 - p)^2$")
+ax1.set_ylim(0, 4)
+ax1.set_title("La pèrdua d'una flor amb $y = 1$")
+
+empenta_log = 1 - ps_c
+empenta_mse = 2 * (1 - ps_c) * ps_c * (1 - ps_c)
+ax2.plot(ps_c, empenta_log, color="tab:blue", linewidth=2, label="log-loss")
+ax2.plot(ps_c, empenta_mse, color="tab:orange", linewidth=2, label="MSE")
+ax2.scatter([0.01, 0.01], [1 - 0.01, 2 * 0.99 * 0.01 * 0.99], color=["tab:blue", "tab:orange"],
+            edgecolor="k", zorder=5)
+ax2.set_title(r"La força amb què empeny els pesos, $|\partial \ell / \partial z|$")
+
+for ax in (ax1, ax2):
+    ax.axvspan(0, 0.1, color="tab:red", alpha=0.08, label="molt segur i equivocat")
+    ax.set_xlabel("$p$, probabilitat que el model dona a la classe correcta")
+    ax.legend()
+    ax.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+print(f"Flor amb p = 0,01:  empenta log-loss = {1 - 0.01:.4f}   "
+      f"empenta MSE = {2 * 0.99 * 0.01 * 0.99:.4f}")
+'''))
+
+A(md(r"""
+A l'esquerra el MSE ja es veu curt: per molt equivocat que vagi el model, la pèrdua d'una
+flor no passa d'1. A la dreta hi ha tot l'argument. La flor de la franja vermella, a la
+qual el model dona $p = 0{,}01$ quan és virginica, empeny amb 0,99 amb la log-loss i amb
+0,0196 amb el MSE: cinquanta vegades menys. **Amb el MSE, la flor que més hauria
+d'ensenyar és la que menys empeny.**
 """))
 
 A(code(r'''
@@ -952,7 +1084,42 @@ error de la derivació. Amb això ja podem confiar en `gradient()`.
 El criteri habitual és exigir una diferència per sota de $10^{-7}$. Si surt de l'ordre de
 $10^{-2}$, la derivació té un error de debò; si surt de l'ordre de $10^{-5}$, mireu-vos
 primer la $h$.
+
+La mateixa comprovació en un dibuix. Tallem la pèrdua al llarg d'**un sol** paràmetre,
+deixant els altres dos quiets al punt de prova, i hi dibuixem la recta que té per pendent
+el gradient **de la fórmula**. Si la fórmula és bona, aquesta recta és la tangent de la
+secció 2.3: toca la corba al punt i la segueix al voltant. En gris, el que sortiria amb
+un error de signe a la derivació.
 """))
+
+A(code(r'''
+params = {"w1": (0, grad_w_analitic[0]), "w2": (1, grad_w_analitic[1]), "b": (2, grad_b_analitic)}
+punt_test = np.array([w_test[0], w_test[1], b_test])
+L_test = log_loss(w_test, b_test, Xtr, ytr)
+
+fig, eixos = plt.subplots(1, 3, figsize=(14, 4))
+for ax, (nom, (j, pendent)) in zip(eixos, params.items()):
+    ts = np.linspace(-1.0, 1.0, 101)                  # quant movem el parametre j
+    corba = []
+    for t in ts:
+        v = punt_test.copy()
+        v[j] += t
+        corba.append(log_loss(v[:2], v[2], Xtr, ytr))
+    tram = np.linspace(-0.4, 0.4, 2)
+    ax.plot(punt_test[j] + ts, corba, color="tab:blue", linewidth=2, label="pèrdua")
+    ax.plot(punt_test[j] + tram, L_test + pendent * tram, color="tab:red", linewidth=2,
+            label=f"pendent de la fórmula: {pendent:+.3f}")
+    ax.plot(punt_test[j] + tram, L_test - pendent * tram, color="gray", linestyle="--",
+            label="amb el signe canviat")
+    ax.scatter([punt_test[j]], [L_test], color="black", zorder=5)
+    ax.set_xlabel(f"{nom} (els altres dos quiets)")
+    ax.set_title(f"Tallant per {nom}")
+    ax.legend(fontsize=8)
+    ax.grid(alpha=0.3)
+eixos[0].set_ylabel("log-loss")
+plt.tight_layout()
+plt.show()
+'''))
 
 # ---------------------------------------------------------------- 8
 A(md(r"""
@@ -1042,6 +1209,60 @@ El primer gràfic té un problema de lectura: la pèrdua cau tant a les primeres
 que la resta de la corba sembla plana i no s'hi veu res. El segon és el mateix amb l'eix
 horitzontal logarítmic, i ara sí que es veu que continua baixant fins al final. Aquesta és
 la manera habitual de mirar una corba de pèrdua i val la pena agafar el costum.
+
+I què ha passat a les flors mentre la pèrdua baixava? Quatre fotografies del mateix
+entrenament, com la recta aprenent de `MA_01b`. El color és la probabilitat de virginica
+que dona el model a cada punt del pla (taronja, versicolor; verd, virginica; blanc, 0,5),
+i la línia negra és on val exactament 0,5: la **frontera de decisió**, la recta
+$w_1 x_1 + w_2 x_2 + b = 0$.
+"""))
+
+A(code(r'''
+from matplotlib.colors import LinearSegmentedColormap
+
+cmap_bi = LinearSegmentedColormap.from_list("bi", ["tab:orange", "white", "tab:green"])
+fotos = [5, 200, 1000, 20000]
+
+# El mateix bucle d'entrena(), guardant els pesos a les iteracions de les fotos
+w_f, b_f = np.zeros(2), 0.0
+estats = {}
+for it in range(1, 20001):
+    gw_f, gb_f = gradient(w_f, b_f, Xtr, ytr)
+    w_f, b_f = w_f - 0.5 * gw_f, b_f - 0.5 * gb_f
+    if it in fotos:
+        estats[it] = (w_f.copy(), b_f)
+
+G1, G2 = np.meshgrid(np.linspace(2.8, 7.2, 200), np.linspace(0.9, 2.7, 200))
+graella_pla = np.column_stack([G1.ravel(), G2.ravel()])
+
+fig, eixos = plt.subplots(1, 4, figsize=(16, 4), sharey=True)
+for ax, it in zip(eixos, fotos):
+    w_it, b_it = estats[it]
+    P_pla = sigmoide(graella_pla @ w_it + b_it).reshape(G1.shape)
+    cf = ax.contourf(G1, G2, P_pla, levels=np.linspace(0, 1, 11), cmap=cmap_bi)
+    ax.contour(G1, G2, P_pla, levels=[0.5], colors="black", linewidths=2)
+    ax.scatter(Xtr[:, 0], Xtr[:, 1], c=np.where(ytr == 1, "tab:green", "tab:orange"),
+               edgecolor="k", linewidth=0.5, s=25)
+    ax.set_title(f"iteració {it}: pèrdua {log_loss(w_it, b_it, Xtr, ytr):.3f}")
+    ax.set_xlabel("Llargada del pètal (cm)")
+eixos[0].set_ylabel("Amplada del pètal (cm)")
+fig.colorbar(cf, ax=eixos, label="probabilitat de virginica", shrink=0.9)
+plt.show()
+'''))
+
+A(md(r"""
+Tres fases, i cap no l'hem programada:
+
+- **Les primeres iteracions van a cops.** A la 5 la pèrdua (1,87) és més alta que a la
+  sortida (0,69): amb $\eta = 0{,}5$ les primeres passes es passen de llarg i el model
+  salta d'una banda a l'altra. És el pic que es veu a l'esquerra del primer gràfic de
+  pèrdua. Al cap d'unes desenes d'iteracions s'assenta.
+- **Cap a la 1.000 la frontera és gairebé horitzontal**: el model ha après que l'amplada
+  del pètal separa i encara no fa servir la llargada.
+- **De la 1.000 a la 20.000 la frontera gira a poc a poc** fins a quedar en diagonal, i
+  els colors s'enfosqueixen (pesos més grans, probabilitats més a prop de 0 i 1). És el
+  descens avançant arran del fons de la vall llarga de la secció 5.3, i per això calen
+  tantes iteracions.
 """))
 
 # ---------------------------------------------------------------- 9
@@ -1114,6 +1335,44 @@ print(f"\nDiferencia relativa maxima als pesos: "
 print(f"Iteracions que ha fet scikit-learn: {model_Cgran.n_iter_[0]}")
 print(f"Iteracions que hem fet nosaltres:   200000")
 '''))
+
+A(md(r"""
+El mateix en un dibuix: les corbes d'error dels nostres dos bucles contra el resultat de
+scikit-learn. Les línies horitzontals són la log-loss a l'entrenament dels dos models de
+scikit-learn; no tenen corba perquè d'ells només en veiem el resultat final. El gràfic
+comença a la iteració 300: abans, les dues corbes nostres van a cops (amb $\eta = 2$
+encara més que amb $\eta = 0{,}5$) i taparien la resta.
+"""))
+
+A(code(r'''
+L_sk_gran = log_loss(model_Cgran.coef_[0], model_Cgran.intercept_[0], Xtr, ytr)
+L_sk_C1 = log_loss(model_C1.coef_[0], model_C1.intercept_[0], Xtr, ytr)
+
+plt.figure(figsize=(9, 5))
+plt.semilogx(np.arange(1, len(hist_llarg) + 1), hist_llarg, color="tab:blue", linewidth=2,
+             label=r"nostre, $\eta = 2$, 200000 it.")
+plt.semilogx(np.arange(1, len(historial) + 1), historial, color="tab:orange", linewidth=2,
+             label=r"nostre, $\eta = 0{,}5$, 20000 it.")
+plt.axhline(L_sk_gran, color="tab:red", linestyle="--", linewidth=1.5,
+            label=f"scikit-learn $C = 10^6$: {L_sk_gran:.4f}")
+plt.axhline(L_sk_C1, color="tab:purple", linestyle=":", linewidth=2,
+            label=f"scikit-learn $C = 1$: {L_sk_C1:.4f}")
+plt.xlim(300, 3e5)          # les primeres iteracions van a cops (secció 8): les deixem fora
+plt.ylim(0.04, 0.3)
+plt.xlabel("iteració (escala logarítmica, des de la 300)")
+plt.ylabel("log-loss a l'entrenament")
+plt.title("El nostre bucle contra scikit-learn")
+plt.legend()
+plt.grid(alpha=0.3, which="both")
+plt.show()
+'''))
+
+A(md(r"""
+La corba blava acaba enganxada a la línia vermella: el nostre bucle i scikit-learn sense
+regularització arriben a la mateixa pèrdua. I totes dues corbes nostres passen per sota
+de la línia lila abans de la iteració 1.000: el model per defecte de scikit-learn s'atura més amunt **a
+propòsit**: és el fre de la regularització que acabem de veure.
+"""))
 
 A(md(r"""
 Ara sí. Els pesos coincideixen amb una diferència relativa de l'ordre del 0,1 % i la
@@ -1369,7 +1628,58 @@ sol producte de matrius. El cost del gradient creix linealment amb el nombre de 
 de la força bruta, exponencialment. Aquesta és tota la diferència, i és la raó per la qual
 es pot entrenar un model de mil milions de pesos i no se'n pot entrenar cap de trenta per
 força bruta.
+
+### 10.1 El camí, en 3D
+
+El mateix camí vermell posat sobre el paisatge en 3D de la secció 5.3. Les dues primeres
+passes no es veuen: surten de l'origen, on amb aquest biaix la pèrdua val gairebé 8 (molt
+per sobre del tall), i salten de cop fins a la vall. Tota la resta del camí, 20.000
+iteracions, és el tram que es veu: **avançar arran del fons**, a poc a poc, al llarg de la
+vall. És el mateix que fa el punt de l'animació de `MA_01b`.
 """))
+
+A(code(r'''
+L_cami = np.array([log_loss(c, b_fixat, Xtr, ytr) for c in cami[::50]])
+L_cami_tallat = np.where(L_cami <= 3, L_cami, np.nan)    # fora els punts per sobre del tall
+LA_tallat = np.where(LA <= 3, LA, np.nan)
+
+fig = plt.figure(figsize=(9, 6.5))
+ax = fig.add_subplot(projection="3d")
+ax.plot_surface(WA1, WA2, LA_tallat, cmap="viridis", rstride=3, cstride=3,
+                linewidth=0, alpha=0.6)
+ax.plot(cami[::50, 0], cami[::50, 1], L_cami_tallat, color="tab:red", linewidth=2.5,
+        zorder=10, label="camí del descens")
+ax.scatter([cami[-1, 0]], [cami[-1, 1]], [L_cami[-1]], color="tab:red", s=60,
+           edgecolor="k", depthshade=False, label="on arriba a la iteració 20000")
+ax.set_xlabel("$w_1$")
+ax.set_ylabel("$w_2$")
+ax.set_zlabel("log-loss")
+ax.set_zlim(0, 3)
+ax.view_init(elev=30, azim=-60)
+ax.set_box_aspect(None, zoom=0.85)
+ax.set_title("El descens sobre la log-loss ($b$ fixat)")
+ax.legend(loc="upper left")
+plt.show()
+'''))
+
+A(md(r"""
+I una versió que **es pot girar amb el ratolí** (arrossegar per girar, roda per apropar).
+Fa servir Plotly, com a `MA_01b`: a Colab ja hi és; en local, `pip install plotly`.
+"""))
+
+A(code(r'''
+import plotly.graph_objects as go
+
+fig3d = go.Figure(go.Surface(x=WA1[::2, ::2], y=WA2[::2, ::2], z=LA_tallat[::2, ::2],
+                             colorscale="Viridis", showscale=False, opacity=0.9))
+fig3d.add_trace(go.Scatter3d(x=cami[::50, 0], y=cami[::50, 1], z=L_cami_tallat, mode="lines",
+                             line=dict(color="red", width=6), name="camí del descens"))
+fig3d.update_layout(scene=dict(xaxis_title="w1", yaxis_title="w2", zaxis_title="log-loss",
+                               zaxis=dict(range=[0, 3])),
+                    width=800, height=600, margin=dict(l=0, r=0, t=40, b=0),
+                    title="Gira'm: el descens sobre la log-loss")
+fig3d.show()
+'''))
 
 # ---------------------------------------------------------------- practica
 A(md(r"""
@@ -1386,6 +1696,36 @@ trajectòria sobre la corba.
 tenir $x \approx 2{,}99996$ i $f(x) \approx 2{,}0000$. Si $x$ se'n va cap a l'infinit,
 t'has deixat el signe menys de la regla.
 """))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: com hauria de ser el vostre gràfic, sobre una
+altra paràbola inventada, $f(x) = 0{,}5\,(x + 1)^2 + 1$, sortint de $x_0 = 4$. La corba, la
+trajectòria a sobre amb un punt per passa, i la línia de punts on hi ha el mínim.
+"""))
+
+A(code(r'''
+f_il = lambda x: 0.5 * (x + 1) ** 2 + 1          # una funcio inventada, no la de l'exercici
+x_il = 4.0
+traj_il = [x_il]
+for _ in range(12):
+    x_il = x_il - 0.3 * (x_il + 1)               # derivada de f_il: (x + 1)
+    traj_il.append(x_il)
+traj_il = np.array(traj_il)
+
+xs_il = np.linspace(-4, 5, 200)
+plt.figure(figsize=(7, 4.5))
+plt.plot(xs_il, f_il(xs_il), color="tab:blue", linewidth=2, label="la funció")
+plt.plot(traj_il, f_il(traj_il), "o-", color="tab:red", markersize=5, linewidth=1,
+         label="trajectòria (un punt per passa)")
+plt.scatter([traj_il[0]], [f_il(traj_il[0])], color="black", s=70, zorder=5, label="sortida")
+plt.axvline(-1, color="gray", linestyle=":", label="on és el mínim")
+plt.xlabel("$x$")
+plt.ylabel("$f(x)$")
+plt.title("Funció inventada: la forma del gràfic que us ha de sortir")
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
+'''))
 
 A(code(r'''
 # Exercici 1
@@ -1404,10 +1744,44 @@ $\eta \in \{0{,}01,\ 0{,}1,\ 1{,}0\}$ i dibuixa les tres corbes de pèrdua al ma
 amb l'eix horitzontal logarítmic. Quina arriba més avall en 2.000 iteracions? Prova també
 $\eta = 3$ i mira si la corba encara baixa sempre o si fa dents de serra.
 
-**Com saps que ho has fet bé:** a la iteració 2.000 la pèrdua hauria de ser
-aproximadament 0,53 amb $\eta = 0{,}01$, 0,24 amb $\eta = 0{,}1$ i 0,095 amb
-$\eta = 1{,}0$. Les tres corbes han de començar totes a 0,6931.
+**Com saps que ho has fet bé:** les tres corbes han de començar totes a 0,6931, que és
+la log-loss de $w = 0$ i $b = 0$: amb $p = 0{,}5$ per a tothom, $-\log 0{,}5 = 0{,}6931$.
+Amb $\eta = 0{,}01$ i amb $\eta = 0{,}1$ l'historial ha de baixar a cada iteració
+(`all(np.diff(historial) <= 0)`); mira amb quines de les altres taxes això deixa de ser
+cert. Si les tres corbes et surten iguals, la taxa no s'aplica de veritat dins del bucle.
 """))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: com es comprova si una corba «baixa sempre».
+`np.diff(corba)` resta cada valor de l'anterior; on el resultat és positiu, la corba ha
+pujat en aquell pas. La corba és inventada (no surt de cap entrenament): a l'esquerra, amb
+els passos que pugen marcats en vermell; a la dreta, el `np.diff` mateix.
+"""))
+
+A(code(r'''
+its_il = np.arange(150)
+corba_il = 0.2 + 0.5 * np.exp(-its_il / 25) + 0.04 * np.sin(its_il / 2) * np.exp(-its_il / 40)
+dif_il = np.diff(corba_il)          # dif_il[k] = corba_il[k+1] - corba_il[k]
+puja = dif_il > 0
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.2))
+ax1.plot(its_il, corba_il, color="tab:blue", linewidth=1.5)
+ax1.scatter(its_il[1:][puja], corba_il[1:][puja], color="tab:red", s=14, zorder=3,
+            label=f"passos que pugen: {puja.sum()}")
+ax1.set_xlabel("iteració")
+ax1.set_ylabel("pèrdua (inventada)")
+ax1.set_title("Una corba inventada")
+ax1.legend()
+ax2.bar(its_il[1:], dif_il, color=np.where(puja, "tab:red", "tab:blue"), width=1.0)
+ax2.axhline(0, color="black", linewidth=0.8)
+ax2.set_xlabel("iteració")
+ax2.set_ylabel("np.diff(corba)")
+ax2.set_title(f"all(np.diff(corba) <= 0) → {bool(np.all(dif_il <= 0))}")
+for ax in (ax1, ax2):
+    ax.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+'''))
 
 A(code(r'''
 # Exercici 2
@@ -1427,11 +1801,47 @@ Fes servir `entrena_regularitzat()` amb $\lambda \in \{0,\ 0{,}001,\ 0{,}01,\ 0{
 $\|w\| = \sqrt{w_1^2 + w_2^2}$ (`np.linalg.norm(w)`) de cada cas. Dibuixa la norma en
 funció de $\lambda$.
 
-**Com saps que ho has fet bé:** amb $\lambda = 0$ la norma val ≈ 11,81; amb
-$\lambda = 0{,}01$ baixa a ≈ 2,93 amb pesos $w \approx (2{,}22,\ 1{,}91)$, molt a prop dels
-de scikit-learn per defecte; amb $\lambda = 0{,}1$ cau a ≈ 0,97. La norma ha de baixar
-sempre que $\lambda$ pugi.
+**Com saps que ho has fet bé:** amb $\lambda = 0$, `entrena_regularitzat()` ha de donar
+exactament els mateixos pesos que `entrena()` amb la mateixa $\eta$ i les mateixes
+iteracions, fins a l'últim bit: si no coincideixen, el terme $2\lambda w$ no està ben
+posat. Un cop tens la taula, la norma ha de baixar cada vegada que puja $\lambda$
+(`all(np.diff(normes) < 0)`); si les quatre files et surten iguals, el terme nou no entra
+al gradient.
 """))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: què mesura la norma. $\|w\|$ és la llargada de
+la fletxa que va de l'origen al punt $w$, el Pitàgores de `MA_01`. Tres vectors
+inventats; cada cercle passa per tots els punts que tenen la mateixa norma que el seu
+vector.
+"""))
+
+A(code(r'''
+vectors_il = {"a": np.array([3.0, 4.0]), "b": np.array([-2.0, 1.5]), "c": np.array([1.2, -0.5])}
+colors_il = {"a": "tab:blue", "b": "tab:orange", "c": "tab:green"}
+
+fig, ax = plt.subplots(figsize=(6, 6))
+angles = np.linspace(0, 2 * np.pi, 200)
+for nom, v in vectors_il.items():
+    r = np.linalg.norm(v)
+    ax.plot(r * np.cos(angles), r * np.sin(angles), color=colors_il[nom], linestyle=":",
+            linewidth=1)
+    ax.annotate("", xy=v, xytext=(0, 0),
+                arrowprops=dict(arrowstyle="->", color=colors_il[nom], linewidth=2))
+    ax.text(v[0] + 0.25 * np.sign(v[0]), v[1], f"{nom} = ({v[0]:g}, {v[1]:g})\n‖{nom}‖ = {r:.2f}",
+            color=colors_il[nom], fontsize=9, va="center",
+            ha="left" if v[0] > 0 else "right")
+ax.axhline(0, color="gray", linewidth=0.8)
+ax.axvline(0, color="gray", linewidth=0.8)
+ax.set_xlim(-6, 6)
+ax.set_ylim(-6, 6)
+ax.set_aspect("equal")
+ax.set_xlabel("$w_1$")
+ax.set_ylabel("$w_2$")
+ax.set_title("Vectors inventats: la norma és la llargada")
+ax.grid(alpha=0.3)
+plt.show()
+'''))
 
 A(code(r'''
 # Exercici 3
@@ -1455,10 +1865,41 @@ Fixa't que no has de canviar ni `gradient()` ni `entrena()`: la fórmula
 $\frac1n X^\top (p - y)$ ja funciona amb qualsevol nombre de columnes.
 
 **Com saps que ho has fet bé:** el *gradient checking* ha de donar una diferència màxima
-per sota de $10^{-8}$ a les quatre components. Amb $\eta = 0{,}5$ i 20.000 iteracions la
-pèrdua d'entrenament hauria de baixar fins a ≈ 0,066 i la precisió a l'examen hauria de
-ser del 93,3 % (28 de 30), millor que el 86,7 % que fèiem amb dues columnes.
+per sota de $10^{-8}$ a les quatre components. Un cop entrenat, comprova que la precisió
+a l'examen supera la d'un `DummyClassifier(strategy="most_frequent")` de `sklearn.dummy`
+entrenat sobre la mateixa divisió, que amb 15 i 15 flors al test encerta el 50 %: si no la
+supera, el model no ha après res i no té sentit comparar-lo amb el de dues columnes.
 """))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: com es llegeix un *gradient checking* amb més
+d'una component. Una barra per component amb la diferència entre el gradient de la
+fórmula i el numèric, en escala logarítmica, i la línia del llindar: totes les barres han
+de quedar per sota. Les dades són inventades (40 files i 4 columnes a l'atzar), no les
+d'Iris; les funcions, `gradient()` i `log_loss()`, són les de la secció 6.
+"""))
+
+A(code(r'''
+rng = np.random.default_rng(11)
+X_il = rng.normal(size=(40, 4))                      # dades inventades
+y_il = (rng.uniform(size=40) < 0.5).astype(int)
+w_il, b_il = np.array([0.3, -0.2, 0.5, 0.1]), 0.1
+
+gw_il, _ = gradient(w_il, b_il, X_il, y_il)
+gw_num_il = gradient_numeric(lambda v: log_loss(v, b_il, X_il, y_il), w_il, h=1e-6)
+dif_il = np.abs(gw_il - gw_num_il)
+
+plt.figure(figsize=(7, 4.2))
+plt.bar([f"$w_{j + 1}$" for j in range(4)], dif_il, color="tab:blue")
+plt.axhline(1e-8, color="tab:red", linestyle="--", label="llindar: $10^{-8}$")
+plt.yscale("log")
+plt.ylim(1e-14, 1e-6)
+plt.ylabel("|fórmula − numèric|")
+plt.title("Dades inventades: una barra per component")
+plt.legend()
+plt.grid(alpha=0.3, axis="y")
+plt.show()
+'''))
 
 A(code(r'''
 # Exercici 4
