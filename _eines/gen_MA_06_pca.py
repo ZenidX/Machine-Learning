@@ -119,6 +119,30 @@ plt.show()
 """))
 
 A(md(r"""
+La ràtio resumeix tot l'experiment en un sol número. Es veu més clar mirant **totes** les
+distàncies de cop: un histograma de les $\binom{200}{2} = 19900$ distàncies, cadascuna dividida
+per la més gran, en tres dimensions diferents. En dimensió 2 n'hi ha de tots els tamanys; en
+dimensió 500 s'amunteguen en una franja estreta. Que totes les barres quedin juntes vol dir
+exactament això: tots els punts estan més o menys a la mateixa distància de tots.
+"""))
+
+A(code("""
+rng_hist = np.random.default_rng(0)
+
+fig, axs = plt.subplots(1, 3, figsize=(13, 3.8), sharey=True)
+for ax, d_h in zip(axs, [2, 20, 500]):
+    dists_h = pdist(rng_hist.random((n_punts, d_h)))
+    ax.hist(dists_h / dists_h.max(), bins=40, range=(0, 1), color="tab:blue", alpha=0.8)
+    ax.set_title(f"dimensió {d_h}")
+    ax.set_xlabel("distància / distància màxima")
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("parells de punts")
+fig.suptitle("Les distàncies s'amunteguen quan creix la dimensió", y=1.02)
+plt.tight_layout()
+plt.show()
+"""))
+
+A(md(r"""
 ### Què implica això
 
 El k-NN que vau implementar fa una sola cosa: ordena les mostres per distància i es queda
@@ -157,6 +181,30 @@ def fraccio_esfera(d):
 
 for d in [1, 2, 3, 5, 10, 20, 30, 50]:
     print(f"dim {d:3d}   fracció del cub que ocupa l'esfera: {fraccio_esfera(d):.3e}")
+"""))
+
+A(code("""
+dims_esf = np.arange(1, 51)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.2))
+ax1.add_patch(plt.Rectangle((0, 0), 1, 1, color="tab:red", alpha=0.25, label="racons"))
+ax1.add_patch(plt.Circle((0.5, 0.5), 0.5, color="tab:blue", alpha=0.6, label="esfera inscrita"))
+ax1.plot([0, 1, 1, 0, 0], [0, 0, 1, 1, 0], color="black")
+ax1.legend(loc="upper center", ncol=2, fontsize=9)
+ax1.set_aspect("equal")
+ax1.set_xlim(-0.05, 1.05)
+ax1.set_ylim(-0.05, 1.3)
+ax1.set_title(f"Dimensió 2: el cercle ocupa el {100 * fraccio_esfera(2):.1f} % del quadrat")
+ax1.grid(alpha=0.3)
+
+ax2.semilogy(dims_esf, [fraccio_esfera(d_e) for d_e in dims_esf], "o-", color="tab:blue",
+             markersize=3)
+ax2.set_xlabel("Dimensió")
+ax2.set_ylabel("Fracció del cub dins l'esfera (escala log)")
+ax2.set_title("En dimensió alta, gairebé tot és als racons")
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
 """))
 
 A(md(r"""
@@ -585,6 +633,39 @@ de provar 3601 direccions, i `eigh` dóna el valor exacte sense provar-ne cap.
 Al dibuix, cada fletxa de color continu i la seva versió puntejada estan **sobre la mateixa
 línia**: la matriu les ha estirat per un factor de 1.382 i de 3.618 respectivament, sense
 moure-les de direcció.
+
+### La mateixa idea, amb tota la circumferència
+
+Setze fletxes són una mostra. Apliquem $A$ a **tots** els punts de la circumferència de radi 1:
+el cercle es converteix en una **el·lipse**. I els eixos de l'el·lipse (el més llarg i el més
+curt) cauen exactament sobre els dos vectors propis, amb llargades $\lambda_1$ i $\lambda_2$.
+Per això els vectors propis són les direccions «naturals» d'una matriu simètrica: són els eixos
+de la deformació que fa.
+"""))
+
+A(code("""
+th = np.linspace(0, 2 * np.pi, 400)
+cercle = np.stack([np.cos(th), np.sin(th)])        # 2 x 400, punts de la circumferència
+elipse = A_demo @ cercle                           # la matriu aplicada a tots alhora
+
+fig, axs = plt.subplots(1, 2, figsize=(12, 5.5), sharex=True, sharey=True)
+for ax, corba, titol, escales in [(axs[0], cercle, "Abans: la circumferència de radi 1", [1, 1]),
+                                  (axs[1], elipse, "Després d'aplicar A: una el·lipse", vaps)]:
+    ax.plot(corba[0], corba[1], color="tab:blue", linewidth=2)
+    for i, color in enumerate(["tab:red", "tab:green"]):
+        v = veps[:, i] * escales[i]
+        ax.arrow(0, 0, v[0], v[1], color=color, width=0.03, length_includes_head=True,
+                 head_width=0.15)
+    ax.set_aspect("equal")
+    ax.set_title(titol)
+    ax.grid(alpha=0.3)
+axs[1].plot([], [], color="tab:red", linewidth=3, label=f"$\\\\lambda_1 v_1$, $\\\\lambda_1$ = {vaps[0]:.3f}")
+axs[1].plot([], [], color="tab:green", linewidth=3, label=f"$\\\\lambda_2 v_2$, $\\\\lambda_2$ = {vaps[1]:.3f}")
+axs[1].legend(loc="upper left")
+axs[0].set_xlim(-4, 4)
+axs[0].set_ylim(-4, 4)
+plt.tight_layout()
+plt.show()
 """))
 
 # ---------------------------------------------------------------- 5
@@ -778,6 +859,77 @@ A(md(r"""
 La línia vermella és la direcció on el núvol és més llarg; la verda, perpendicular, és on és
 més estret. Les llargades del dibuix són proporcionals a $\sqrt{\lambda_i}$, és a dir a la
 desviació típica en cada direcció.
+
+### Què vol dir projectar, en un dibuix
+
+Projectar una flor sobre una recta és deixar-la caure perpendicularment fins a la recta: el
+punt on toca és $t_i v$, i el número que ens quedem és $t_i = x_i^\top v$. A l'esquerra
+projectem sobre el primer vector propi; a la dreta, sobre el segon. Les línies grises són el que
+es perd en cada cas. A l'esquerra les projeccions queden escampades al llarg de la recta (molta
+variància conservada); a la dreta queden amuntegades al voltant del zero.
+"""))
+
+A(code("""
+fig, axs = plt.subplots(1, 2, figsize=(12, 5.2), sharex=True, sharey=True)
+for ax, i, color in [(axs[0], 0, "tab:red"), (axs[1], 1, "tab:green")]:
+    v = veps2[:, i]
+    t_proj = X2_c @ v                       # un número per flor
+    punts_recta = np.outer(t_proj, v)       # on cau cada flor, en el pla: t_i * v
+    for orig, proj in zip(X2_c, punts_recta):
+        ax.plot([orig[0], proj[0]], [orig[1], proj[1]], color="gray", linewidth=0.5, alpha=0.6)
+    ax.plot([-4 * v[0], 4 * v[0]], [-4 * v[1], 4 * v[1]], color=color, linewidth=1.5)
+    ax.scatter(X2_c[:, 0], X2_c[:, 1], s=14, color="tab:blue", alpha=0.5, label="flors")
+    ax.scatter(punts_recta[:, 0], punts_recta[:, 1], s=14, color=color, label="projeccions")
+    ax.set_title(f"Sobre el vector propi {i+1}: variància {t_proj.var():.3f}")
+    ax.set_aspect("equal")
+    ax.set_xlabel("petal_llarg centrada (cm)")
+    ax.legend(loc="upper left")
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("petal_ample centrada (cm)")
+axs[0].set_xlim(-3.5, 3.5)
+axs[0].set_ylim(-2.2, 2.2)
+plt.tight_layout()
+plt.show()
+"""))
+
+A(md(r"""
+### Els vectors propis com a eixos nous
+
+Si projectem sobre **els dos** vectors propis alhora, $Z = X_c V$, no perdem res: només hem
+**girat els eixos** perquè apuntin cap on el núvol és més llarg i més estret. I en aquests eixos
+nous passa una cosa notable: la matriu de covariància de $Z$ és **diagonal**. A la diagonal hi
+ha els valors propis, i fora, zeros. Dit d'una altra manera: les dues columnes noves ja no
+tenen cap covariància entre elles. El núvol inclinat s'ha convertit en un núvol recte.
+"""))
+
+A(code("""
+Z2 = X2_c @ veps2                           # les dues components: només un gir
+C_Z2 = Z2.T @ Z2 / len(Z2)
+print("Covariància de Z (els eixos nous):")
+print(C_Z2)
+print("Valors propis:", vaps2)
+
+fig, axs = plt.subplots(1, 2, figsize=(12, 4.6))
+axs[0].scatter(X2_c[:, 0], X2_c[:, 1], s=14, color="tab:blue", alpha=0.6)
+for i, color in enumerate(["tab:red", "tab:green"]):
+    v = veps2[:, i] * 2.5 * np.sqrt(vaps2[i])
+    axs[0].plot([-v[0], v[0]], [-v[1], v[1]], color=color, linewidth=2.5)
+axs[0].set_title(f"Eixos originals: cov = {C2[0, 1]:.3f} fora de la diagonal")
+axs[0].set_xlabel("petal_llarg centrada")
+axs[0].set_ylabel("petal_ample centrada")
+axs[1].scatter(Z2[:, 0], Z2[:, 1], s=14, color="tab:blue", alpha=0.6)
+axs[1].axhline(0, color="tab:red", linewidth=2.5)
+axs[1].axvline(0, color="tab:green", linewidth=2.5)
+axs[1].set_title(f"Eixos propis: cov = {C_Z2[0, 1]:.0e} fora de la diagonal")
+axs[1].set_xlabel("1a component")
+axs[1].set_ylabel("2a component")
+for ax in axs:
+    ax.set_aspect("equal")
+    ax.set_xlim(-3.5, 3.5)
+    ax.set_ylim(-2, 2)
+    ax.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
 """))
 
 # ---------------------------------------------------------------- 6
@@ -975,6 +1127,29 @@ nosaltres tenim 4.2001 i 0.2411, i scikit-learn 4.2282 i 0.2427. El factor entre
 exactament **1.006711**, que és $n/(n-1) = 150/149$: `sklearn` fa servir el denominador
 $n-1$ a `explained_variance_`, com `np.cov`. A la ràtio el factor se'n va perquè apareix al
 numerador i al denominador. Un altre lloc on `ddof` es cola.
+
+En un dibuix, el repartiment de la variància d'Iris entre les quatre components: cada barra és
+un $r_i$, i la línia és la suma acumulada. És el pressupost de la traça de la secció 3,
+repartit de més gran a més petit.
+"""))
+
+A(code("""
+ratio_tots = vaps_iris / vaps_iris.sum()
+comps = np.arange(1, len(ratio_tots) + 1)
+
+plt.figure(figsize=(7, 4.2))
+plt.bar(comps, 100 * ratio_tots, color="tab:blue", alpha=0.8, label="cada component")
+plt.plot(comps, 100 * np.cumsum(ratio_tots), "o-", color="tab:orange", label="acumulada")
+for c_i, r_i in zip(comps, ratio_tots):
+    plt.text(c_i, 100 * r_i + 2, f"{100 * r_i:.1f} %", ha="center")
+plt.xticks(comps)
+plt.ylim(0, 110)
+plt.xlabel("Component principal")
+plt.ylabel("Variància explicada (%)")
+plt.title("Iris: com es reparteix la variància total")
+plt.legend(loc="center right")
+plt.grid(alpha=0.3)
+plt.show()
 """))
 
 # ---------------------------------------------------------------- 8
@@ -1352,6 +1527,33 @@ la variància no es poden fer miracles.
 `StandardScaler`.
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix: 300 punts **inventats** de 10 columnes, repartits en
+quatre grups. `pca_a_ma` no sap res dels grups; els colors (i la barra de colors de la dreta,
+que diu quin color és cada grup) es posen **després** de projectar, només per mirar. Amb els
+dígits passarà el mateix, però amb deu grups i molt més solapament.
+"""))
+
+A(code("""
+rng = np.random.default_rng(5)
+centres_il = rng.normal(0, 3, size=(4, 10))                 # 4 grups inventats, 10 columnes
+grup_il = rng.integers(0, 4, 300)
+X_il = centres_il[grup_il] + rng.normal(0, 1.5, size=(300, 10))
+
+Z_il, _, vaps_il, _ = pca_a_ma(X_il, k=2)                   # el PCA no veu grup_il
+
+plt.figure(figsize=(7, 5.5))
+colors_il = plt.matplotlib.colors.ListedColormap(["tab:blue", "tab:orange", "tab:green", "tab:red"])
+plt.scatter(Z_il[:, 0], Z_il[:, 1], c=grup_il, cmap=colors_il, vmin=-0.5, vmax=3.5, s=18, alpha=0.8)
+plt.colorbar(ticks=range(4), label="grup (posat després, només per mirar)")
+plt.xlabel("Primera component principal")
+plt.ylabel("Segona component principal")
+plt.title(f"Dades inventades: 10 columnes vistes en 2 "
+          f"({100 * vaps_il[:2].sum() / vaps_il.sum():.0f} % de la variància)")
+plt.grid(alpha=0.3)
+plt.show()
+"""))
+
 A(code("""
 from sklearn.datasets import load_digits
 
@@ -1385,6 +1587,36 @@ $k=10$, de **2.22**; amb $k=30$, de **0.88**. La variància acumulada correspone
 $k = 64$ (totes les components) l'error és pràcticament zero ($10^{-14}$).
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix: 40 punts **inventats** de 2 columnes, reduïts a
+$k = 1$ i reconstruïts. Cada punt reconstruït cau sobre la recta del primer vector propi; el
+segment gris que l'uneix amb l'original és el que s'ha perdut, i l'RMSE és (l'arrel de) la
+mitjana d'aquests segments al quadrat. Amb els dígits és el mateix en 64 dimensions, on no es
+pot dibuixar.
+"""))
+
+A(code("""
+rng = np.random.default_rng(11)
+X_il2 = rng.multivariate_normal([3, 2], [[2.0, 1.2], [1.2, 1.0]], size=40)   # inventades
+
+mitjana_il2 = X_il2.mean(axis=0)
+_, veps_il2 = np.linalg.eigh(np.cov(X_il2.T, ddof=0))
+v_il2 = veps_il2[:, -1]                                     # el de valor propi més gran
+X_rec_il2 = mitjana_il2 + np.outer((X_il2 - mitjana_il2) @ v_il2, v_il2)
+rmse_il2 = np.sqrt(np.mean((X_il2 - X_rec_il2) ** 2))
+
+plt.figure(figsize=(7, 5.5))
+for a, b in zip(X_il2, X_rec_il2):
+    plt.plot([a[0], b[0]], [a[1], b[1]], color="gray", linewidth=0.8)
+plt.scatter(X_il2[:, 0], X_il2[:, 1], color="tab:blue", edgecolor="k", s=30, label="originals")
+plt.scatter(X_rec_il2[:, 0], X_rec_il2[:, 1], color="tab:red", s=20, label="reconstruïts amb k = 1")
+plt.gca().set_aspect("equal")
+plt.title(f"Dades inventades: el que es perd en reconstruir (RMSE = {rmse_il2:.2f})")
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
+"""))
+
 A(code("""
 # Recorda que pca_a_ma retorna (Z, veps_k, vaps_tots, mitjana)
 #
@@ -1416,6 +1648,33 @@ Comproveu també que $V V^\top = I$ i penseu per què això també ha de ser cer
 quadrada (i per què **no** ho seria si us quedéssiu només amb $k$ columnes).
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix: què hi ha dins de $V^\top V$. La casella $(i, j)$ és el
+producte escalar de la columna $i$ amb la columna $j$. Aquí ho fem amb una matriu simètrica
+**inventada** de $5 \times 5$: la diagonal és la norma al quadrat de cada vector propi i la resta
+són els productes entre vectors diferents. Amb els dígits la graella serà de $64 \times 64$.
+"""))
+
+A(code("""
+rng = np.random.default_rng(4)
+B_il = rng.normal(size=(5, 5))
+S_il = B_il.T @ B_il                               # simètrica per construcció
+_, V_il = np.linalg.eigh(S_il)
+G_il = V_il.T @ V_il                               # tots els productes escalars d'un cop
+
+fig, ax = plt.subplots(figsize=(5.5, 4.8))
+im = ax.imshow(G_il, cmap="Blues", vmin=0, vmax=1)
+for i in range(5):
+    for j in range(5):
+        ax.text(j, i, f"{round(G_il[i, j], 2) + 0.0:.2f}", ha="center", va="center",
+                color="white" if G_il[i, j] > 0.5 else "black")
+ax.set_xticks(range(5), [f"$v_{j+1}$" for j in range(5)])
+ax.set_yticks(range(5), [f"$v_{i+1}$" for i in range(5)])
+ax.set_title("Dades inventades: $V^T V$, casella a casella")
+fig.colorbar(im)
+plt.show()
+"""))
+
 A(code("""
 # Pista: per obtenir els 64 vectors propis, crida pca_a_ma amb k = X_dig.shape[1]
 #
@@ -1437,6 +1696,35 @@ taula (feu servir el mateix `train_test_split` de la secció 8).
 **7**. Fixeu-vos en el que això vol dir: passar del 95 % al 99 % de variància costa **7
 components més**, gairebé el doble, i després compareu-ho amb el que guanyeu en precisió.
 Escriviu una frase dient quin dels tres talls triaríeu i per què.
+"""))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: com es llegeix un llindar sobre la corba acumulada.
+La corba és **inventada** (20 components que expliquen cada cop menys). Per a cada llindar,
+la $k$ és **la primera component on la corba toca o passa la línia**: és el que calcula
+`np.argmax(acumulada >= llindar) + 1`. Fixeu-vos com s'eixamplen els salts a dalt de tot.
+"""))
+
+A(code("""
+ratio_il = 0.75 ** np.arange(20)
+acumulada_il = np.cumsum(ratio_il / ratio_il.sum())      # variància acumulada inventada
+comps_il = np.arange(1, 21)
+
+plt.figure(figsize=(8, 4.5))
+plt.plot(comps_il, 100 * acumulada_il, "o-", color="tab:blue", markersize=4)
+for llindar_il, color in [(0.90, "tab:green"), (0.95, "tab:orange"), (0.99, "tab:red")]:
+    k_il = int(np.argmax(acumulada_il >= llindar_il) + 1)
+    plt.axhline(100 * llindar_il, color=color, linestyle="--", linewidth=1)
+    plt.scatter([k_il], [100 * acumulada_il[k_il - 1]], color=color, s=80, edgecolor="k",
+                zorder=3, label=f"llindar {100 * llindar_il:.0f} %: k = {k_il}")
+plt.ylim(20, 102)
+plt.xticks(comps_il)
+plt.xlabel("Nombre de components")
+plt.ylabel("Variància acumulada (%)")
+plt.title("Dades inventades: on talla cada llindar")
+plt.legend(loc="lower right")
+plt.grid(alpha=0.3)
+plt.show()
 """))
 
 A(code("""

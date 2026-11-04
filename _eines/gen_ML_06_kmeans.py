@@ -144,6 +144,32 @@ A(md(r"""
 Fixa't en `M[etiquetes]` a la funció `inercia`: és indexar un array **amb un altre array**.
 Si `etiquetes` és `[2, 0, 0, 1, ...]`, `M[etiquetes]` és una matriu de $n$ files on la fila $i$
 és el centre del grup del punt $i$. Una línia, i és exactament el $\mu_{c(i)}$ de la fórmula.
+
+### La inèrcia, en un dibuix
+
+Cada punt, unit amb un segment al centre del seu grup (el més proper). La inèrcia és la suma
+dels quadrats de les llargades d'aquests segments. A l'esquerra, els tres centres de prova
+d'abans, posats a l'atzar; a la dreta, tres centres posats on toca (aquí fem trampa i els
+calculem amb `y_veritat`, només per tenir una referència). Segments curts, $J$ petita.
+"""))
+
+A(code("""
+M_trampa = np.array([X[y_veritat == j].mean(axis=0) for j in range(3)])   # només per dibuixar
+
+fig, axs = plt.subplots(1, 2, figsize=(12, 5), sharex=True, sharey=True)
+for ax, M_, titol in [(axs[0], M_prova, "Centres de prova"),
+                      (axs[1], M_trampa, "Centres ben posats")]:
+    et_ = distancies2(X, M_).argmin(axis=1)
+    for x_i, c_i in zip(X, et_):
+        ax.plot([x_i[0], M_[c_i, 0]], [x_i[1], M_[c_i, 1]], color="gray", linewidth=0.4, alpha=0.5)
+    ax.scatter(X[:, 0], X[:, 1], c=et_, cmap="tab10", vmin=0, vmax=9, s=12, alpha=0.8)
+    ax.scatter(M_[:, 0], M_[:, 1], c="black", marker="X", s=180, edgecolor="white")
+    ax.set_title(f"{titol}: J = {inercia(X, et_, M_):.0f}")
+    ax.set_xlabel("$x_1$")
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("$x_2$")
+plt.tight_layout()
+plt.show()
 """))
 
 # ---------------------------------------------------------------- 3
@@ -191,6 +217,33 @@ print("Són la mateixa?", np.array_equal(millor_c, c_proper))
 A(md(r"""
 De les 256 assignacions, la millor és exactament la del centre més proper, amb el mateix $J$.
 La força bruta convenç; la deducció explica per què no calia provar-les.
+
+### Cada centre es queda una regió del pla
+
+La regla «al centre més proper» no s'aplica només als punts que tenim: es pot aplicar a
+**qualsevol** punt del pla. Si pintem cada racó del pla del color del centre que li toca, el pla
+queda partit en regions, una per centre. Les fronteres són **rectes**: la frontera entre dos
+centres és la mediatriu del segment que els uneix, perquè és on la distància a tots dos és la
+mateixa. Recordeu-ho a la secció 10.
+"""))
+
+A(code("""
+g1, g2 = np.meshgrid(np.linspace(X[:, 0].min() - 1, X[:, 0].max() + 1, 300),
+                     np.linspace(X[:, 1].min() - 1, X[:, 1].max() + 1, 300))
+graella = np.column_stack([g1.ravel(), g2.ravel()])          # 90000 punts del pla
+regio = distancies2(graella, M_prova).argmin(axis=1).reshape(g1.shape)
+
+plt.figure(figsize=(6.5, 5.5))
+plt.contourf(g1, g2, regio, levels=[-0.5, 0.5, 1.5, 2.5], cmap="tab10", vmin=0, vmax=9, alpha=0.25)
+plt.scatter(X[:, 0], X[:, 1], c=distancies2(X, M_prova).argmin(axis=1), cmap="tab10",
+            vmin=0, vmax=9, s=12)
+plt.scatter(M_prova[:, 0], M_prova[:, 1], c="black", marker="X", s=180, edgecolor="white")
+plt.xlabel("$x_1$")
+plt.ylabel("$x_2$")
+plt.title("Regions del centre més proper (centres de prova)")
+plt.gca().set_aspect("equal")
+plt.grid(alpha=0.3)
+plt.show()
 """))
 
 # ---------------------------------------------------------------- 4
@@ -225,7 +278,7 @@ pitjor.** Comprovem la igualtat amb punts i centres a l'atzar.
 """))
 
 A(code("""
-G = X[:40]                      # un grup qualsevol de 40 punts
+G = X[y_veritat == 0][:40]     # 40 punts d'un sol núvol (y_veritat només serveix per triar-los)
 m = len(G)
 mitjana = G.mean(axis=0)
 
@@ -244,6 +297,32 @@ for _ in range(5):
     esquerra = f(mu)
     dreta = f(mitjana) + m * ((mitjana - mu) ** 2).sum()
     print(f"mu = {mu}   f(mu) = {esquerra:12.6f}   f(mitjana) + m||mitjana-mu||^2 = {dreta:12.6f}")
+"""))
+
+A(md(r"""
+La igualtat diu quina forma té $f$: un **bol rodó** amb el fons a la mitjana. Si dibuixem $f(\mu)$
+per a tots els $\mu$ d'una zona del pla, les corbes de nivell (els punts on $f$ val el mateix) són
+cercles concèntrics al voltant de $\bar{x}$, perquè $f$ només depèn de la distància
+$\|\bar{x} - \mu\|$. Mogueu el centre cap a on vulgueu: com més lluny de la mitjana, més car.
+"""))
+
+A(code("""
+mu1, mu2 = np.meshgrid(np.linspace(G[:, 0].min() - 1, G[:, 0].max() + 1, 150),
+                       np.linspace(G[:, 1].min() - 1, G[:, 1].max() + 1, 150))
+mus = np.column_stack([mu1.ravel(), mu2.ravel()])
+f_graella = distancies2(mus, G).sum(axis=1).reshape(mu1.shape)   # f(mu) per a cada mu de la graella
+
+plt.figure(figsize=(6.5, 5.5))
+cs = plt.contourf(mu1, mu2, f_graella, levels=20, cmap="Blues")
+plt.colorbar(cs, label="$f(\\\\mu)$")
+plt.scatter(G[:, 0], G[:, 1], s=14, color="tab:orange", edgecolor="k", label="els 40 punts del grup")
+plt.scatter(*mitjana, color="tab:red", marker="X", s=200, edgecolor="white", label="la mitjana")
+plt.gca().set_aspect("equal")
+plt.xlabel("$\\\\mu_1$")
+plt.ylabel("$\\\\mu_2$")
+plt.title("$f(\\\\mu)$ és un bol rodó amb el fons a la mitjana")
+plt.legend(loc="upper left", fontsize=8)
+plt.show()
 """))
 
 A(md(r"""
@@ -366,6 +445,43 @@ plt.xlabel("Mig pas (assignar, actualitzar, assignar...)")
 plt.ylabel("Inèrcia $J$ (escala log)")
 plt.title("La inèrcia no puja mai")
 plt.grid(alpha=0.3)
+plt.show()
+"""))
+
+A(md(r"""
+Abans de mirar l'evolució sencera, **la primera ronda a càmera lenta**, en quatre fotos: els
+centres de sortida sobre els punts sense color; el pas d'assignar (cada punt pren el color del
+centre més proper); el pas de moure (cada centre salta a la mitjana dels seus punts, la fletxa);
+i la nova assignació amb els centres ja moguts, que és on comença la ronda següent.
+"""))
+
+A(code("""
+M_1 = hist_M[1]                                     # centres després de la primera actualització
+et_0 = distancies2(X, M0).argmin(axis=1)
+et_1 = distancies2(X, M_1).argmin(axis=1)
+
+fig, axs = plt.subplots(1, 4, figsize=(17, 4.4), sharex=True, sharey=True)
+axs[0].scatter(X[:, 0], X[:, 1], color="gray", s=12, alpha=0.6)
+axs[0].scatter(M0[:, 0], M0[:, 1], c="black", marker="X", s=180, edgecolor="white")
+axs[0].set_title("0. Centres de sortida")
+
+axs[1].scatter(X[:, 0], X[:, 1], c=et_0, cmap="tab10", vmin=0, vmax=9, s=12, alpha=0.6)
+axs[1].scatter(M0[:, 0], M0[:, 1], c="black", marker="X", s=180, edgecolor="white")
+axs[1].set_title(f"1. Assignar: J = {inercia(X, et_0, M0):.0f}")
+
+axs[2].scatter(X[:, 0], X[:, 1], c=et_0, cmap="tab10", vmin=0, vmax=9, s=12, alpha=0.3)
+for a, b in zip(M0, M_1):
+    axs[2].annotate("", xy=b, xytext=a, arrowprops=dict(arrowstyle="->", lw=2, color="black"))
+axs[2].scatter(M0[:, 0], M0[:, 1], c="white", marker="X", s=180, edgecolor="black")
+axs[2].scatter(M_1[:, 0], M_1[:, 1], c="black", marker="X", s=180, edgecolor="white")
+axs[2].set_title(f"2. Moure a la mitjana: J = {inercia(X, et_0, M_1):.0f}")
+
+axs[3].scatter(X[:, 0], X[:, 1], c=et_1, cmap="tab10", vmin=0, vmax=9, s=12, alpha=0.6)
+axs[3].scatter(M_1[:, 0], M_1[:, 1], c="black", marker="X", s=180, edgecolor="white")
+axs[3].set_title(f"3. Tornar a assignar: J = {inercia(X, et_1, M_1):.0f}")
+for ax in axs:
+    ax.grid(alpha=0.3)
+plt.tight_layout()
 plt.show()
 """))
 
@@ -615,6 +731,49 @@ i $b(i)$ cau.
 
 Una convenció: si un punt està sol al seu grup, $a(i)$ no es pot calcular i scikit-learn hi
 posa $s(i)=0$. Amb $k=1$ no hi ha grup veí i la silueta no està definida.
+
+En un dibuix, per a un punt concret (el cercle negre): els segments blaus són les distàncies que
+fan la mitjana $a(i)$, cap als companys del seu grup; els taronges, les que fan $b(i)$, cap al
+grup veí més proper. El tercer grup no compta per a aquest punt. Comparem el punt amb la silueta
+més alta (ben endins del seu grup) amb el de la silueta més baixa (el més allunyat dels seus).
+"""))
+
+A(code("""
+et3 = KMeans(n_clusters=3, n_init=10, random_state=42).fit_predict(X)
+D_tots = np.sqrt(distancies2(X, X))
+
+
+def a_i_b_i(i):
+    \"\"\"a(i), b(i) i el grup veí més proper del punt i.\"\"\"
+    meu = (et3 == et3[i]) & (np.arange(n) != i)
+    altres = [g for g in range(3) if g != et3[i]]
+    mitjanes = [D_tots[i, et3 == g].mean() for g in altres]
+    return D_tots[i, meu].mean(), min(mitjanes), altres[int(np.argmin(mitjanes))]
+
+
+# el punt de silueta màxima i el de mínima
+s_tots = []
+for i in range(n):
+    a_, b_, _ = a_i_b_i(i)
+    s_tots.append((b_ - a_) / max(a_, b_))
+quins_punts = [int(np.argmax(s_tots)), int(np.argmin(s_tots))]
+
+fig, axs = plt.subplots(1, 2, figsize=(12, 5), sharex=True, sharey=True)
+for ax, i in zip(axs, quins_punts):
+    a_, b_, vei = a_i_b_i(i)
+    for j in np.where(et3 == et3[i])[0]:
+        ax.plot([X[i, 0], X[j, 0]], [X[i, 1], X[j, 1]], color="tab:blue", linewidth=0.3, alpha=0.5)
+    for j in np.where(et3 == vei)[0]:
+        ax.plot([X[i, 0], X[j, 0]], [X[i, 1], X[j, 1]], color="tab:orange", linewidth=0.3, alpha=0.5)
+    ax.scatter(X[:, 0], X[:, 1], color="lightgray", s=10)
+    ax.scatter(*X[i], color="black", s=120, zorder=3)
+    ax.set_title(f"a = {a_:.2f}   b = {b_:.2f}   s = {(b_ - a_) / max(a_, b_):.2f}")
+    ax.grid(alpha=0.3)
+axs[0].plot([], [], color="tab:blue", label="cap al seu grup: $a(i)$")
+axs[0].plot([], [], color="tab:orange", label="cap al grup veí: $b(i)$")
+axs[0].legend(loc="upper right")
+plt.tight_layout()
+plt.show()
 """))
 
 A(code("""

@@ -134,6 +134,44 @@ logaritme de la raresa, no com la raresa: passar d'1 entre mil a 1 entre un mili
 multiplica la improbabilitat per mil i la informació només per dos.
 """))
 
+A(md(r"""
+Dibuixem la funció sencera. A l'esquerra, $s(p)$ amb l'eix de $p$ normal: val 0 a $p=1$ i
+s'enfila sense límit quan $p \to 0$. A la dreta, la mateixa funció amb l'eix de $p$ en
+escala logarítmica: es torna una **recta**, i cada vegada que un esdeveniment és mil
+vegades més rar la sorpresa puja uns 10 bits ($\log_2 1000 \approx 9{,}97$).
+"""))
+
+A(code(r'''
+sorpresa_corba = np.linspace(0.001, 1, 1000)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.8))
+
+ax1.plot(sorpresa_corba, sorpresa(sorpresa_corba), color="tab:blue", linewidth=2)
+for nom_curt, p_cas in [("moneda: cara", 1 / 2), ("dues cares", 1 / 4),
+                        ("dau de 6: un 6", 1 / 6), ("dau de 8: un valor", 1 / 8)]:
+    ax1.scatter([p_cas], [sorpresa(p_cas)], color="tab:red", zorder=3)
+    ax1.annotate(f"{nom_curt}: {sorpresa(p_cas):.2f} bits", (p_cas, sorpresa(p_cas)),
+                 xytext=(10, 0), textcoords="offset points", fontsize=9, va="center")
+ax1.set_xlim(0, 1)
+ax1.set_ylim(0, 8)
+ax1.set_xlabel("p (probabilitat de l'esdeveniment)")
+ax1.set_ylabel("sorpresa $s(p) = -\\log_2 p$ (bits)")
+ax1.set_title("Com més improbable, més sorpresa")
+ax1.grid(alpha=0.3)
+
+p_log = np.logspace(-6, 0, 400)
+ax2.semilogx(p_log, sorpresa(p_log), color="tab:blue", linewidth=2)
+for p_cas, nom_curt in [(1e-3, "1 entre mil"), (1e-6, "1 entre un milió")]:
+    ax2.scatter([p_cas], [sorpresa(p_cas)], color="tab:red", zorder=3)
+    ax2.annotate(f"{nom_curt}: {sorpresa(p_cas):.2f} bits", (p_cas, sorpresa(p_cas)),
+                 xytext=(12, 0), textcoords="offset points", fontsize=9, va="center")
+ax2.set_xlabel("p (escala logarítmica)")
+ax2.set_ylabel("sorpresa (bits)")
+ax2.set_title("En escala logarítmica, una recta")
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+'''))
+
 # ---------------------------------------------------------------- 2 entropia
 A(md(r"""
 ## 2. L'entropia és la sorpresa mitjana
@@ -268,6 +306,42 @@ amb dues opcions és no tenir-ne cap preferència.
 
 Fixeu-vos que els zeros dels extrems els calcula bé gràcies al conveni de la secció
 anterior: a $p = 0$ el primer terme és $0 \log_2 0$ i el segon $1 \log_2 1 = 0$.
+"""))
+
+A(md(r"""
+### L'entropia com a àrea
+
+La fórmula $H = \sum_i p_i\, s(p_i)$ té una lectura geomètrica directa: per a cada resultat,
+un rectangle d'**amplada** $p_i$ (quant passa) i **alçada** $s(p_i)$ (quanta sorpresa fa
+quan passa). L'entropia és l'**àrea total**. Comparem la moneda justa amb una de trucada
+al 90/10.
+"""))
+
+A(code(r'''
+fig, eixos = plt.subplots(1, 2, figsize=(12, 4.6), sharey=True)
+for ax, (nom, dist) in zip(eixos, [("Moneda justa", [0.5, 0.5]),
+                                   ("Moneda trucada 90/10", [0.9, 0.1])]):
+    dist = np.array(dist)
+    esquerra = np.concatenate([[0], np.cumsum(dist)[:-1]])
+    ax.bar(esquerra, sorpresa(dist), width=dist, align="edge",
+           color=["tab:blue", "tab:orange"], edgecolor="white")
+    for x0, p_i, s_i, eti in zip(esquerra, dist, sorpresa(dist), ["cara", "creu"]):
+        ax.text(min(x0 + p_i / 2, 0.88), s_i + 0.1, f"{eti}\np = {p_i:g}\ns = {s_i:.2f}",
+                ha="center", fontsize=9)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 4.6)
+    ax.set_xlabel("amplada de cada rectangle = $p_i$")
+    ax.set_title(f"{nom}: àrea = H = {entropia(dist):.3f} bits")
+    ax.grid(alpha=0.3, axis="y")
+eixos[0].set_ylabel("alçada = sorpresa $s(p_i)$ (bits)")
+plt.tight_layout()
+plt.show()
+'''))
+
+A(md(r"""
+La creu de la moneda trucada fa molta sorpresa (3,32 bits), però el seu rectangle és molt
+estret perquè passa poc. La cara gairebé no sorprèn. L'àrea total, 0,469 bits, és menys de
+la meitat que la de la moneda justa: és el punt $p = 0{,}9$ de la corba de dalt.
 """))
 
 # ---------------------------------------------------------------- 3 entropia vs gini
@@ -841,6 +915,28 @@ print("identitat verificada:",
 '''))
 
 A(md(r"""
+En un dibuix: la barra de l'entropia creuada fa exactament la mateixa alçada que la pila
+de $H(p)$ (el mínim inevitable) i $D_{KL}$ (el que es perd per creure $q$).
+"""))
+
+A(code(r'''
+fig, ax = plt.subplots(figsize=(7, 4.8))
+ax.bar(0, entropia_creuada(p1, q1), width=0.55, color="tab:purple", label="H(p, q)")
+ax.bar(1, entropia(p1), width=0.55, color="tab:blue", label="H(p): el mínim inevitable")
+ax.bar(1, kl(p1, q1), bottom=entropia(p1), width=0.55, color="tab:red",
+       label="D_KL(p || q): el sobrecost del model")
+for x, alcada in [(0, entropia_creuada(p1, q1)), (1, entropia(p1) + kl(p1, q1))]:
+    ax.text(x, alcada + 0.03, f"{alcada:.4f} bits", ha="center")
+ax.set_xticks([0, 1], ["entropia creuada", "H(p) + D_KL"])
+ax.set_ylim(0, 1.75)
+ax.set_ylabel("bits")
+ax.set_title("p = (0,7; 0,2; 0,1) i q = (0,5; 0,3; 0,2)")
+ax.legend(loc="upper left", fontsize=9)
+ax.grid(alpha=0.3, axis="y")
+plt.show()
+'''))
+
+A(md(r"""
 ### $D_{KL}$ és 0 si i només si les distribucions són iguals, i positiva sempre
 
 Aquesta propietat es diu desigualtat de Gibbs i es demostra amb la concavitat del
@@ -1081,6 +1177,56 @@ print("log-loss == KL mitjana:",
       np.isclose(kl_per_fila.mean(), valor_entropia_creuada, rtol=0, atol=1e-12))
 '''))
 
+A(md(r"""
+### La tesi en un dibuix
+
+A l'esquerra, cada punt és una fila de l'examen. A l'eix horitzontal, el seu terme de
+log-loss, $-[y\ln\hat y + (1-y)\ln(1-\hat y)]$; al vertical, el seu terme d'entropia creuada
+amb el one-hot, $-\sum_c p_c \ln q_c$. Tots cauen sobre la diagonal: no és que les mitjanes
+coincideixin, és que **fila a fila** són el mateix número. A la dreta, d'on surten: les
+dues branques de la pèrdua, $-\ln \hat y$ per a les files de classe 1 i $-\ln(1-\hat y)$ per
+a les de classe 0, amb cada fila col·locada a la seva.
+"""))
+
+A(code(r'''
+p_tall = np.clip(y_hat, EPSILON, 1 - EPSILON)
+terme_logloss = -(yc_te * np.log(p_tall) + (1 - yc_te) * np.log(1 - p_tall))
+one_hot = np.eye(2)[yc_te]
+terme_creuada = -(one_hot * np.log(np.clip(probes, EPSILON, 1 - EPSILON))).sum(axis=1)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
+ax1.loglog(terme_logloss, terme_creuada, "o", color="tab:blue", alpha=0.5, markersize=5)
+lim = [terme_logloss.min() / 2, terme_logloss.max() * 2]
+ax1.plot(lim, lim, color="tab:red", linestyle="--", label="diagonal: els dos valen igual")
+ax1.set_xlabel("terme de log-loss de la fila (nats)")
+ax1.set_ylabel("terme d'entropia creuada de la fila (nats)")
+ax1.set_title(f"Fila a fila. Mitjanes: {terme_logloss.mean():.6f} i {terme_creuada.mean():.6f}")
+ax1.legend(loc="upper left")
+ax1.grid(alpha=0.3)
+
+yh = np.linspace(0.001, 0.999, 500)
+ax2.plot(yh, -np.log(yh), color="tab:blue", label="classe certa 1: $-\\ln \\hat{y}$")
+ax2.plot(yh, -np.log(1 - yh), color="tab:red", label="classe certa 0: $-\\ln(1-\\hat{y})$")
+u = yc_te == 1
+ax2.scatter(y_hat[u], -np.log(p_tall[u]), color="tab:blue", edgecolor="k", s=22, zorder=3)
+ax2.scatter(y_hat[~u], -np.log(1 - p_tall[~u]), color="tab:red", edgecolor="k", s=22, zorder=3)
+ax2.set_ylim(0, 5)
+ax2.set_xlabel("$\\hat{y}$ = probabilitat de la classe 1 segons el model")
+ax2.set_ylabel("pèrdua de la fila (nats)")
+ax2.set_title("Les files d'examen sobre les dues branques")
+ax2.legend(loc="upper center")
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+'''))
+
+A(md(r"""
+Gairebé totes les files són a prop de zero: el model hi dona molta probabilitat a la classe
+certa. Les poques que pugen per les branques són les que s'equivoca, o encerta amb poca
+convicció, i són les que pesen a la mitjana. Això és el que fa la log-loss i el que no fa
+la precisió: castigar **quant** s'equivoca, no només **si** s'equivoca.
+"""))
+
 # ---------------------------------------------------------------- 8 MI
 A(md(r"""
 ## 8. Informació mútua com a eina pràctica
@@ -1196,6 +1342,9 @@ Quatre exercicis. Treballeu sobre el que ja hi ha en aquest quadern: `sorpresa`,
 `entropia`, `entropia_etiquetes`, `gini`, `guany_informacio`, `guany_multivia`,
 `informacio_del_tall`, `kl`, `entropia_creuada`, `llindars_candidats`, i les dades
 `X`, `y`, `X_amb_id`, `X_vi`, `y_vi`.
+
+Abans de cada exercici hi ha un dibuix amb **dades inventades** que ensenya la idea;
+els números de debò els heu de treure vosaltres.
 """))
 
 A(md(r"""
@@ -1220,6 +1369,46 @@ bits**. La mitjana ponderada de les sorpreses dona **2,160964**, que és exactam
 que retorna `entropia`. Al punt 5, la primera probabilitat que fa baixar $H$ de 1,5 bits
 és **0,73**, que dona $H = 1{,}468$ bits.
 """))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix, amb un **dau de 4 cares inventat**. A l'esquerra,
+l'entropia com a àrea: amplada $p_i$, alçada la sorpresa de cada cara. A la dreta, com es
+busca un llindar provant valors: l'entropia quan la primera cara s'emporta cada cop més
+probabilitat i les altres tres es reparteixen la resta, i el primer valor que baixa d'1 bit.
+El vostre dau té 6 cares i el llindar és 1,5 bits.
+"""))
+
+A(code(r'''
+dau4_il = np.array([0.4, 0.3, 0.2, 0.1])
+esq_il = np.concatenate([[0], np.cumsum(dau4_il)[:-1]])
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.6))
+ax1.bar(esq_il, sorpresa(dau4_il), width=dau4_il, align="edge", edgecolor="white",
+        color=["tab:blue", "tab:orange", "tab:green", "tab:red"])
+for x0, p_i in zip(esq_il, dau4_il):
+    ax1.text(x0 + p_i / 2, sorpresa(p_i) + 0.08, f"p = {p_i:g}", ha="center", fontsize=9)
+ax1.set_xlim(0, 1)
+ax1.set_ylim(0, 3.8)
+ax1.set_xlabel("amplada = $p_i$")
+ax1.set_ylabel("alçada = sorpresa (bits)")
+ax1.set_title(f"Dau de 4 cares inventat: àrea = H = {entropia(dau4_il):.3f} bits")
+ax1.grid(alpha=0.3, axis="y")
+
+p1_il = np.round(np.arange(0.25, 0.991, 0.01), 2)
+H_il = np.array([entropia([a] + [(1 - a) / 3] * 3) for a in p1_il])
+k_il = int(np.argmax(H_il < 1.0))
+ax2.plot(p1_il, H_il, color="tab:blue")
+ax2.axhline(1.0, color="gray", linestyle="--", label="llindar d'1 bit")
+ax2.scatter([p1_il[k_il]], [H_il[k_il]], color="tab:red", s=60, zorder=3,
+            label=f"primer per sota: p = {p1_il[k_il]:.2f}")
+ax2.set_xlabel("probabilitat de la primera cara")
+ax2.set_ylabel("H (bits)")
+ax2.set_title("Dau de 4 cares: l'entropia baixa quan una cara domina")
+ax2.legend()
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+'''))
 
 A(code(r'''
 # TODO 1: definiu p_trucat i comproveu que suma 1
@@ -1261,6 +1450,38 @@ que els 75 fills segueixen sent purs), però $SI = \log_2 75 = 6{,}229$ i per ta
 $GR = 0{,}2545$: prou per passar `id_fitxa`, no prou per passar cap dels dos pètals.
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix: columnes **inventades de soroll pur**, sense cap
+relació amb una etiqueta també inventada, amb cada cop més valors diferents. El guany
+d'informació multivia puja tot sol cap a $H(Y)$ només perquè hi ha més fills; la
+informació del tall també puja, com $\log_2$ del nombre de valors. La ràtio fa servir
+precisament que la segona creix més de pressa.
+"""))
+
+A(code(r'''
+rng = np.random.default_rng(8)
+y_il = rng.integers(0, 3, 150)
+ks_il = [2, 3, 5, 10, 20, 50, 100, 150]
+ig_il, si_il = [], []
+for k in ks_il:
+    col_il = rng.permutation(np.arange(150) % k)     # k valors, cap relacio amb y_il
+    ig_il.append(guany_multivia(col_il, y_il))
+    si_il.append(informacio_del_tall(col_il))
+
+fig, ax = plt.subplots(figsize=(8, 4.8))
+ax.plot(ks_il, ig_il, marker="o", color="tab:blue", label="IG multivia (columna de soroll)")
+ax.plot(ks_il, si_il, marker="s", color="tab:orange", label="informació del tall SI")
+ax.axhline(entropia_etiquetes(y_il), color="gray", linestyle="--", label="H(Y) de l'etiqueta inventada")
+ax.set_xscale("log")
+ax.set_xticks(ks_il, [str(k) for k in ks_il])
+ax.set_xlabel("valors diferents de la columna (escala logarítmica)")
+ax.set_ylabel("bits")
+ax.set_title("Dades inventades: el guany creix amb els valors, encara que sigui soroll")
+ax.legend()
+ax.grid(alpha=0.3)
+plt.show()
+'''))
+
 A(code(r'''
 def ratio_de_guany(columna, y):
     # TODO: IG / SI, fent servir guany_multivia i informacio_del_tall
@@ -1301,6 +1522,44 @@ $\epsilon$ es divideix per mil: el pes que $p$ dona al tercer resultat multiplic
 creixement del logaritme.
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix, amb dues distribucions **inventades** (no són les
+de l'exercici). A l'esquerra, on posa la massa cadascuna. A la dreta, el **terme** de cada
+resultat dins de cada divergència, $p_i\log_2(p_i/q_i)$ i $q_i\log_2(q_i/p_i)$: n'hi ha de
+negatius, però la suma (a la llegenda) mai no ho és, i les dues sumes no coincideixen.
+"""))
+
+A(code(r'''
+pa_il = np.array([0.7, 0.25, 0.05])
+qa_il = np.array([0.3, 0.3, 0.4])
+x_il = np.arange(3)
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.6))
+ax1.bar(x_il - 0.2, pa_il, width=0.4, color="tab:blue", label="p")
+ax1.bar(x_il + 0.2, qa_il, width=0.4, color="tab:orange", label="q")
+ax1.set_xticks(x_il, ["resultat 1", "resultat 2", "resultat 3"])
+ax1.set_ylabel("probabilitat")
+ax1.set_title("Dues distribucions inventades")
+ax1.legend()
+ax1.grid(alpha=0.3, axis="y")
+
+terme_pq = pa_il * np.log2(pa_il / qa_il)
+terme_qp = qa_il * np.log2(qa_il / pa_il)
+ax2.bar(x_il - 0.2, terme_pq, width=0.4, color="tab:blue",
+        label=f"terme de D_KL(p || q), suma = {terme_pq.sum():.3f}")
+ax2.bar(x_il + 0.2, terme_qp, width=0.4, color="tab:orange",
+        label=f"terme de D_KL(q || p), suma = {terme_qp.sum():.3f}")
+ax2.axhline(0, color="black", linewidth=0.8)
+ax2.set_xticks(x_il, ["resultat 1", "resultat 2", "resultat 3"])
+ax2.set_ylabel("bits")
+ax2.set_title("Cada resultat aporta a la divergència")
+ax2.set_ylim(-0.5, 1.65)
+ax2.legend(loc="upper left", fontsize=9)
+ax2.grid(alpha=0.3, axis="y")
+plt.tight_layout()
+plt.show()
+'''))
+
 A(code(r'''
 # TODO 1: definiu p3 i q3, i calculeu kl(p3, q3) i kl(q3, p3)
 
@@ -1334,6 +1593,48 @@ $H(Y) = 0{,}9526$ bits, un **95,3 %** del màxim; el classificador trivial encer
 el trivial encerta el **39,89 %** (71 vins de 178). A Iris, $H(Y) = 1{,}5850$ bits
 exactes i el trivial encerta el 33,33 %.
 """))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix. A l'esquerra, per a dues classes: quan una classe
+domina, $H(Y)$ baixa i la precisió del classificador que sempre diu la majoritària puja.
+A la dreta, un conjunt **inventat** amb un 95 % d'una classe i un 5 % de l'altra: el
+classificador trivial té una exactitud altíssima i no troba **cap** cas de la classe
+petita. Per això l'exactitud sola enganya.
+"""))
+
+A(code(r'''
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.8))
+p_maj = np.linspace(0.5, 1, 101)
+ax1.plot(p_maj, [entropia([a, 1 - a]) for a in p_maj], color="tab:blue", label="H(Y) (bits)")
+ax1.plot(p_maj, p_maj, color="tab:orange", label="precisió de dir sempre la majoritària")
+ax1.set_xlabel("proporció de la classe majoritària")
+ax1.set_title("Dues classes: menys entropia, més precisió trivial")
+ax1.legend()
+ax1.grid(alpha=0.3)
+
+y_il = np.array([1] * 10 + [0] * 190)                      # 5 % de la classe petita (1)
+trivial_il = np.zeros(200, dtype=int)                      # sempre la majoritaria
+model_il = np.array([1] * 7 + [0] * 3 + [1] * 8 + [0] * 182)   # un model inventat
+noms_metriques = ["exactitud", "precisió (classe 1)", "sensibilitat (classe 1)"]
+x_il = np.arange(3)
+for desp, (nom, pred, color) in zip([-0.2, 0.2], [("sempre la majoritària", trivial_il, "tab:gray"),
+                                                 ("un model inventat", model_il, "tab:green")]):
+    valors = [accuracy_score(y_il, pred),
+              precision_score(y_il, pred, zero_division=0),   # sense cap 1 predit: 0
+              recall_score(y_il, pred)]
+    ax2.bar(x_il + desp, valors, width=0.4, color=color, label=nom)
+    for xx, v in zip(x_il + desp, valors):
+        ax2.text(xx, v + 0.02, f"{v:.0%}", ha="center", fontsize=9)
+ax2.set_xticks(x_il, noms_metriques)
+ax2.set_ylim(0, 1.12)
+ax2.set_title("Dades inventades 95/5: l'exactitud sola enganya")
+ax2.legend(loc="upper right")
+ax2.grid(alpha=0.3, axis="y")
+plt.tight_layout()
+plt.show()
+'''))
 
 A(code(r'''
 # TODO 1: comptes i proporcions de les classes de yc
