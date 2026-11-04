@@ -328,7 +328,7 @@ plt.show()
 INSERCIONS.append(("### Exercici 4 — Altres columnes", marcades(md(r"""
 Abans de començar, la idea en un dibuix: dos gràfics costat a costat amb
 `plt.subplots(1, 2)`. A l'esquerra, el núvol de punts pintat per classe; a la dreta, el
-mateix núvol amb la frontera d'un `LogisticRegression` i la seva precisió al títol. Les
+mateix núvol amb la frontera d'un `LogisticRegression` i la seva exactitud al títol. Les
 dades són inventades; vosaltres ho feu amb les columnes del sèpal i ho poseu al costat del
 que ja teniu del pètal.
 """), code(r"""
@@ -350,7 +350,7 @@ x1_il = np.linspace(X_il[:, 0].min(), X_il[:, 0].max(), 50)
 ax2.plot(x1_il, -(a1 * x1_il + bb) / a2, "k--", linewidth=2, label="frontera")
 ax1.set_ylabel("columna 2 (inventada)")
 ax1.set_title("El núvol, pintat per classe")
-ax2.set_title(f"Amb la frontera: precisió {model_il.score(X_il, y_il):.1%}")
+ax2.set_title(f"Amb la frontera: exactitud {model_il.score(X_il, y_il):.1%}")
 ax2.set_ylim(X_il[:, 1].min() - 0.5, X_il[:, 1].max() + 0.5)   # que la recta no estiri l'eix
 ax1.legend(loc="upper left")
 ax2.legend(loc="lower right")

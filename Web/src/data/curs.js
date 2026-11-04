@@ -37,7 +37,7 @@ export const SESSIONS = [
   { s: "S13", data: "2026-11-03", bloc: 2, text: "k veïns i la distància. El parany de les escales", material: ["ML_01"], casa: ["EX_01"] },
   { s: "S14", data: "2026-11-09", bloc: 2, text: "Arbres de decisió: la impuresa i la tria del tall", material: ["ML_02"] },
   { s: "S15", data: "2026-11-10", bloc: 2, text: "Entropia i informació: per què Gini, el guany d'informació, i que la log-loss i l'entropia creuada són el mateix número", material: ["MA_04"], mates: true },
-  { s: "S16", data: "2026-11-16", bloc: 2, text: "Boscos aleatoris i mètriques: la precisió no serveix tota sola", material: ["ML_03"], casa: ["EX_02"] },
+  { s: "S16", data: "2026-11-16", bloc: 2, text: "Boscos aleatoris i mètriques: l'exactitud no serveix tota sola", material: ["ML_03"], casa: ["EX_02"] },
   { s: "S17", data: "2026-11-17", bloc: 2, text: "Regressió logística: la frontera, la sigmoide, i els pesos trobats per força bruta", material: ["ML_04"] },
   { s: "S18", data: "2026-11-23", bloc: 2, text: "Descens de gradient 1: què és una derivada, des de zero, i la derivada de la log-loss", material: ["MA_02"], mates: true },
   { s: "S19", data: "2026-11-24", bloc: 2, text: "Descens de gradient 2: la comprovació del gradient, l'entrenament amb bucle propi i la comparació amb scikit-learn", material: ["MA_02"], mates: true },

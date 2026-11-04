@@ -461,10 +461,10 @@ plt.show()
 """))
 
 A(md(r"""
-### 2.2 Per què la precisió global enganya
+### 2.2 Per què l'exactitud (*accuracy*) global enganya
 
 Això connecta directament amb el que vau veure a `EX_02_cancer.ipynb`, on un
-`DummyClassifier` que responia sempre la classe majoritària treia una precisió
+`DummyClassifier` que responia sempre la classe majoritària treia una exactitud
 que semblava decent. Ara en teniu la versió extrema.
 
 Calculem dues coses sobre el milió de persones: l'**exactitud global** de la
@@ -489,7 +489,7 @@ A(md(r"""
 El model que no fa res treu **99,9 %** i guanya la prova mèdica, que treu
 **99,0 %**. I no detecta ni un malalt.
 
-La precisió global és una mitjana ponderada pel nombre de casos de cada classe.
+L'exactitud global és una mitjana ponderada pel nombre de casos de cada classe.
 Quan una classe és el 99,9 % de les dades, la mitjana només parla d'aquella
 classe i la minoritària no hi deixa rastre. Per això a `EX_02_cancer.ipynb` vau
 haver de mirar la matriu de confusió i els falsos negatius, i no el percentatge
@@ -985,7 +985,7 @@ model_lr.fit(escalador.transform(X_tr), y_tr)
 p_te = model_lr.predict_proba(escalador.transform(X_te))[:, 1]
 
 print("files a l'examen      :", len(y_te))
-print("precisio del model    : %.4f" % model_lr.score(escalador.transform(X_te), y_te))
+print("exactitud del model    : %.4f" % model_lr.score(escalador.transform(X_te), y_te))
 print("p mes petita / gran   : %.3e / %.10f" % (p_te.min(), p_te.max()))
 """))
 
@@ -1028,7 +1028,7 @@ flotant. La nostra fórmula i la de scikit-learn són la mateixa fórmula.
 
 Val la pena mirar el càstig que rep una fila individual, que és
 $-\log(\text{probabilitat de l'etiqueta certa})$. La corba explica per què la
-log-loss no és la precisió.
+log-loss no és l'exactitud.
 """))
 
 A(code("""
@@ -1052,11 +1052,11 @@ plt.show()
 A(md(r"""
 La corba és asimètrica d'una manera que importa. Encertar amb $p = 0{,}99$
 costa 0,01; encertar amb $p = 0{,}51$ costa 0,67, seixanta vegades més, tot i
-que **la predicció és la mateixa i la precisió no ho nota**. I equivocar-se amb
+que **la predicció és la mateixa i l'exactitud no ho nota**. I equivocar-se amb
 seguretat costa el que sigui: a $p = 0{,}001$ amb $y = 1$, el càstig és 6,9, i
 sense el retall seria infinit.
 
-És la mateixa lliçó de la secció 2.2, portada a la funció de pèrdua. La precisió
+És la mateixa lliçó de la secció 2.2, portada a la funció de pèrdua. L'exactitud
 mira si l'etiqueta predita és correcta. La log-loss mira **si la probabilitat era
 honesta**. Un model que digui 0,99 quan no ho sap el paga car, i això és el que
 el fa calibrar-se.
@@ -1208,7 +1208,7 @@ print(np.round(punt_iris[:3], 3))
 print()
 print("classe guanyadora de cada una:", prediccio_meva[:3])
 print()
-print("precisio del meu Naive Bayes: %.4f (%d de %d)" % (
+print("exactitud del meu Naive Bayes: %.4f (%d de %d)" % (
     (prediccio_meva == y_i).mean(), (prediccio_meva == y_i).sum(), len(y_i)))
 """))
 
@@ -1220,7 +1220,7 @@ prediccio_sklearn = gnb.predict(X_i)
 
 coincidencia = (prediccio_meva == prediccio_sklearn).mean()
 
-print("precisio de GaussianNB      : %.4f" % (prediccio_sklearn == y_i).mean())
+print("exactitud de GaussianNB      : %.4f" % (prediccio_sklearn == y_i).mean())
 print("coincidencia amb la meva    : %.4f (%d de %d flors)" % (
     coincidencia, (prediccio_meva == prediccio_sklearn).sum(), len(y_i)))
 print()
@@ -1236,7 +1236,7 @@ A(md(r"""
 mitjanes surten idèntiques i les variàncies difereixen en $3{,}1 \times 10^{-9}$,
 cosa que té explicació i la veurem a la secció 7.
 
-La precisió és del **96 %**, 144 de 150, i les dues implementacions fallen
+L'exactitud és del **96 %**, 144 de 150, i les dues implementacions fallen
 exactament les mateixes 6 flors. No està mal per a un model que ha après quatre
 mitjanes i quatre variàncies per classe, i que no ha fet cap iteració
 d'optimització: **Naive Bayes no s'entrena, es calcula**. Amb una sola passada
@@ -1575,11 +1575,12 @@ A(code("""
 """))
 
 A(md(r"""
-**Com saps que ho has fet bé:** surt **9,02 %** per a 1/1.000, **50,00 %** exacte
-per a 1/100, **83,90 %** per a 1/20 i **91,67 %** per a 1/10. El 50 % rodó de la
-prevalença 1/100 no és casualitat: amb 10.000 persones hi ha 100 malalts i 99
-donen positiu, i dels 9.900 sans l'1 % en són 99 també. Els dos grups de
-positius tenen la mateixa mida.
+**Com saps que ho has fet bé:** amb 1 de cada 1.000 has de recuperar el **9,02 %**
+de la secció 2; si no, la funció no aplica Bayes com allà. Per a una altra prevalença,
+comprova-ho comptant persones, com al dibuix: amb 10.000 persones i prevalença 1/100,
+compta a mà quants malalts donen positiu i quants sans donen positiu, divideix, i
+`prob_malalt(0.01, 0.99, 0.99)` t'ha de donar exactament el mateix. I una propietat:
+amb la mateixa prova, la probabilitat ha de pujar sempre que puja la prevalença.
 """))
 
 A(md(r"""
@@ -1648,11 +1649,14 @@ A(code("""
 """))
 
 A(md(r"""
-**Com saps que ho has fet bé:** la mostra té mitjana **169,7204**, i el màxim de
-la graella cau a **169,7200**: els dos coincideixen fins allà on arriba el gra
-de la graella, que és 0,001. Fixa't que el màxim **no** cau a 170: la màxima
-versemblança dona el paràmetre que millor explica **la mostra que tens**, no el
-que va generar les dades. Amb 200 valors encara hi ha aquesta distància.
+**Com saps que ho has fet bé:** el gra de la graella és 0,001 (20 cm repartits en
+20.000 trams), així que el $\mu$ del màxim i `mostra.mean()` no poden quedar més
+lluny que això; si en queden més, la log-versemblança està mal sumada. La corba ha de
+tenir un sol màxim i ser simètrica al seu voltant: amb $\sigma$ fix, $\ell(\mu)$ és
+una paràbola cap avall. I ho pots contrastar amb scipy, que fa la màxima
+versemblança per tu: el primer número que torna `scipy.stats.norm.fit(mostra)` és
+el $\mu$ que la maximitza. Si el màxim cau exactament a 170 o no, i per què, ho
+expliques tu.
 """))
 
 A(md(r"""
@@ -1708,10 +1712,13 @@ A(code("""
 """))
 
 A(md(r"""
-**Com saps que ho has fet bé:** coincidència del **100 %** amb `GaussianNB` i una
-precisió del **98,88 %** (176 de 178 vins). Els *priors* **no** són iguals: surten
-0,3315, 0,3989 i 0,2697, perquè Wine té 59, 71 i 48 vins de cada classe. Amb 13
-columnes multiplicades, si ho haguessis fet sense logaritmes els números serien
+**Com saps que ho has fet bé:** el contrast és `GaussianNB`, entrenat amb les
+mateixes dades: les teves prediccions s'han de comparar fila a fila amb les seves
+(`(prediccio == prediccio_sklearn).mean()`), i si en falla alguna, la secció 7
+(`var_smoothing`) t'explica on mirar. Els teus *priors* han de sumar 1 i han de
+coincidir amb `class_prior_` del `GaussianNB` entrenat, i també amb
+`np.bincount(y_w) / len(y_w)`. Si són iguals entre ells o no, i per què, ho dius tu.
+Amb 13 columnes multiplicades, si ho haguessis fet sense logaritmes els números serien
 prou petits per haver de començar a preocupar-se.
 """))
 
@@ -1727,15 +1734,15 @@ falsos, que no venen de cap model:
   etiquetes amb el tall a 0,5, però sempre per un pèl.
 - `p_segur = np.where(y_te == 1, 0.99, 0.01)`: encerta totes i molt segur.
 
-Per a tots dos, i per a les `p_te` del model de veritat, calcula la precisió
+Per a tots dos, i per a les `p_te` del model de veritat, calcula l'exactitud
 (fracció d'etiquetes encertades, amb el tall a 0,5) i la log-loss. Després
-respon: quin dels tres triaries, i per què la precisió no t'ho diu?
+respon: quin dels tres triaries, i per què l'exactitud no t'ho diu?
 """))
 
 A(md(r"""
 Abans de començar, la idea en un dibuix: el que mira cada mesura. Deu files
 **inventades**: cada punt és la $p$ que dona un model, vermell si l'etiqueta real és 1 i
-blau si és 0. La **precisió** només mira a quin costat de la línia del 0,5 cau cada punt.
+blau si és 0. La **exactitud** només mira a quin costat de la línia del 0,5 cau cada punt.
 La **log-loss** mira la distància fins a la seva etiqueta (el segment gris) i la cobra
 amb $-\log$: el número de sota de cada punt.
 """))
@@ -1760,7 +1767,7 @@ ax.set_xticks(files_il)
 ax.set_xlabel("fila")
 ax.set_ylabel("$p$ que dona el model (classe 1)")
 ax.set_ylim(-0.08, 1.08)
-ax.set_title(("Dades inventades: precisió = %d/%d encerts; log-loss = mitjana dels castigs = %.3f"
+ax.set_title(("Dades inventades: exactitud = %d/%d encerts; log-loss = mitjana dels castigs = %.3f"
               % (encert_il.sum(), len(y_il), castig_il.mean())).replace(".", ","))
 ax.grid(alpha=0.3)
 plt.show()
@@ -1770,22 +1777,20 @@ A(code("""
 # Exercici 4
 # 1. construeix p_dubitatiu i p_segur amb np.where
 # 2. per cada un dels tres vectors de probabilitats (p_dubitatiu, p_segur, p_te):
-#    - precisio: (np.round(p) == y_te).mean()  o be (p > 0.5).astype(int) == y_te
+#    - exactitud: (np.round(p) == y_te).mean()  o be (p > 0.5).astype(int) == y_te
 #    - log-loss: log_loss(y_te, p)
 # 3. imprimeix-ho en una taula de tres files
 
 """))
 
 A(md(r"""
-**Com saps que ho has fet bé:** `p_dubitatiu` té precisió **1,0000** i log-loss
-**0,6733**. `p_segur` té la mateixa precisió **1,0000** i log-loss **0,0101**. El
-model de veritat té precisió **0,9883** (falla 2 de 171) i log-loss **0,0655**.
-
-Les tres columnes diuen coses diferents, i això és el resultat de l'exercici. La
-precisió no distingeix `p_dubitatiu` de `p_segur`, tot i que un dubta de tot i
-l'altre no. La log-loss els separa per un factor de 67. I el model de veritat,
-que **falla dues files**, treu una log-loss deu vegades millor que el que encerta
-totes: perquè quan encerta, encerta amb convicció.
+**Com saps que ho has fet bé:** comprova cada log-loss amb la definició de la secció 5:
+`-np.mean(y_te * np.log(p) + (1 - y_te) * np.log(1 - p))` ha de donar el mateix que
+`log_loss(y_te, p)`. Per construcció, `p_dubitatiu` i `p_segur` posen totes les files al
+costat bo del 0,5, així que totes dues han d'encertar el 100 %; si no, revisa els
+`np.where`. I les seves log-loss les pots calcular de cap: quan totes les files donen la
+mateixa probabilitat $q$ a la classe correcta, la log-loss és exactament $-\ln q$. Què
+diuen les tres columnes, i quin model triaries, és la teva resposta.
 """))
 
 # ---------------------------------------------------- resum
@@ -1813,7 +1818,7 @@ Què s'ha demostrat en aquest quadern, amb números:
   `sklearn.metrics.log_loss` coincideixen amb una diferència de $1{,}4\times10^{-17}$.
 - Un **Naive Bayes gaussià sencer** cap en mitja pàgina de NumPy, no té cap
   iteració d'entrenament, i dona el **100 %** de coincidència amb `GaussianNB`
-  sobre les 150 flors d'Iris (96 % de precisió, 144 de 150). La seva suposició
+  sobre les 150 flors d'Iris (96 % d'exactitud, 144 de 150). La seva suposició
   d'independència és falsa: dins de versicolor, la correlació entre llargada i
   amplada del pètal és +0,787 (i +0,963 sobre el conjunt sencer, número que
   exagera perquè hi barreja les diferències entre espècies).

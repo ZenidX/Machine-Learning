@@ -849,7 +849,7 @@ recuperat les espècies perfectament, cada fila tindria un sol número diferent 
 Abans de llegir la taula, un parany que ja vas veure al PCA amb el signe dels vectors propis.
 **Els grups 0, 1 i 2 no tenen cap relació amb les espècies 0, 1 i 2.** k-means numera els grups
 segons l'ordre en què li han sortit, i amb una altra llavor els mateixos grups poden sortir amb
-els números permutats. Per això no té sentit calcular una «precisió» comparant `labels_` amb
+els números permutats. Per això no té sentit calcular una «exactitud» comparant `labels_` amb
 `target` directament.
 
 La mesura que s'usa és l'**índex de Rand ajustat** (`adjusted_rand_score`): mira **parelles de

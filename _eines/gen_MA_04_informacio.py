@@ -461,7 +461,7 @@ primera i segona en informació mútua), però la discrepància és real i està
 al primer tall del segon dataset que hem provat. Qui digui que els dos criteris «donen
 el mateix» ja ha fallat aquí.
 
-Ara els arbres sencers. Comparem els **talls node a node**, no només la precisió, per
+Ara els arbres sencers. Comparem els **talls node a node**, no només l'exactitud (*accuracy*), per
 veure si la divergència de l'arrel es propaga.
 """))
 
@@ -499,15 +499,15 @@ mesura raonable hi troba el mateix; Wine té 13 columnes correlacionades i molts
 gairebé empatats, així que qualsevol diferència d'escala entre les dues mesures decideix
 el desempat.
 
-Llavors, en quin sentit són «gairebé iguals»? En el que compta: **en la precisió**. Un
+Llavors, en quin sentit són «gairebé iguals»? En el que compta: **en l'exactitud**. Un
 sol `train_test_split` no serveix per contestar-ho, perquè amb 45 flors d'examen la
 diferència entre un criteri i l'altre queda enterrada sota el soroll de quines flors han
 caigut a l'examen. Cal repetir-ho amb moltes particions i mirar la mitjana.
 """))
 
 A(code(r'''
-def precisio_mitjana(Xd, yd, criteri, n_repeticions=40, **kwargs):
-    """Precisio d'examen mitjana sobre n particions diferents."""
+def exactitud_mitjana(Xd, yd, criteri, n_repeticions=40, **kwargs):
+    """Exactitud d'examen mitjana sobre n particions diferents."""
     puntuacions = []
     for llavor in range(n_repeticions):
         Xtr, Xte, ytr, yte = train_test_split(
@@ -522,8 +522,8 @@ files = []
 for nom, Xd, yd in (("Iris", X, y), ("Wine", X_vi, y_vi)):
     for limit in ({"max_depth": 3}, {}):
         etiqueta = "max_depth=3" if limit else "sense límit"
-        mg, sg = precisio_mitjana(Xd, yd, "gini", **limit)
-        me, se = precisio_mitjana(Xd, yd, "entropy", **limit)
+        mg, sg = exactitud_mitjana(Xd, yd, "gini", **limit)
+        me, se = exactitud_mitjana(Xd, yd, "entropy", **limit)
         files.append({
             "dataset": nom, "profunditat": etiqueta,
             "gini": f"{mg:.4f} ± {sg:.4f}",
@@ -535,7 +535,7 @@ pd.DataFrame(files)
 '''))
 
 A(md(r"""
-Aquí es veu en quin sentit són «gairebé iguals», i el sentit és aquest: **en precisió**,
+Aquí es veu en quin sentit són «gairebé iguals», i el sentit és aquest: **en exactitud**,
 malgrat que els arbres de Wine no s'assemblin gens.
 
 - A **Iris** la diferència és de **0,0017** (amb `max_depth=3`) i **0,0022** (sense
@@ -543,7 +543,7 @@ malgrat que els arbres de Wine no s'assemblin gens.
 - A **Wine** l'entropia guanya per **0,0222** i **0,0167**, és a dir, entre un punt i
   mig i dos punts i mig. No és zero.
 
-Ara, comparem-ho amb la columna de la desviació típica, que és el que varia la precisió
+Ara, comparem-ho amb la columna de la desviació típica, que és el que varia l'exactitud
 només per canviar quines files cauen a l'examen: **0,031** a Iris i **0,040-0,049** a
 Wine. La diferència entre criteris és, en tots quatre casos, **més petita que el soroll
 de la partició**. Amb 40 particions no en podem concloure que l'entropia sigui millor a
@@ -551,7 +551,7 @@ Wine: el que podem concloure és que si hi ha un efecte, és petit.
 
 La conclusió pràctica és que triar `criterion` és una de les decisions menys importants
 que prendreu sobre un arbre. `max_depth`, `min_samples_leaf` o passar a un bosc mouen la
-precisió molt més que això. I la conclusió teòrica és la que interessa en aquest
+exactitud molt més que això. I la conclusió teòrica és la que interessa en aquest
 quadern: dues fórmules amb els mateixos zeros, el mateix màxim i la mateixa concavitat
 mesuren **essencialment la mateixa cosa**, encara que els arbres que en surtin es vegin
 diferents.
@@ -743,7 +743,7 @@ amb identificador 150, l'arbre no té cap branca on posar-la.
 `EX_05_dades_brutes`. La columna funciona en el laboratori per un motiu que no té res a
 veure amb el fenomen que voleu modelar: en aquest cas, perquè el dataset Iris ve ordenat
 per espècie i l'identificador codifica aquest ordre. La manera de detectar-ho no és
-mirar la precisió (que és perfecta) sinó preguntar-se **d'on surt la columna**.
+mirar l'exactitud (que és perfecta) sinó preguntar-se **d'on surt la columna**.
 
 ### La ràtio de guany
 
@@ -817,7 +817,7 @@ arbre_fuita.fit(Xtr, ytr)
 
 importancies = pd.Series(arbre_fuita.feature_importances_,
                          index=X_amb_id.columns).sort_values(ascending=False)
-print("precisió d'examen amb la columna id_fitxa:",
+print("exactitud d'examen amb la columna id_fitxa:",
       f"{arbre_fuita.score(Xte, yte):.4f}")
 print("arrel:", X_amb_id.columns[arbre_fuita.tree_.feature[0]],
       "<=", round(float(arbre_fuita.tree_.threshold[0]), 3))
@@ -834,8 +834,8 @@ l'identificador i guanya el desempat. Però a partir del segon nivell sí que fa
 `petal_ample`. Les altres tres columnes es queden a zero: l'arbre les ha descartat totes
 a favor del número de fitxa.
 
-I la precisió d'examen és del **100 %**. Aquí hi ha el punt de la secció: la fuita no
-empitjora la precisió, la **millora**. El `train_test_split` reparteix files del mateix
+I l'exactitud d'examen és del **100 %**. Aquí hi ha el punt de la secció: la fuita no
+empitjora l'exactitud, la **millora**. El `train_test_split` reparteix files del mateix
 dataset ordenat, així que l'examen conté identificadors intercalats amb els
 d'entrenament i confirma la fuita en lloc de delatar-la. Cap mètrica d'aquest quadern us
 avisarà de res. El que us ha d'avisar és saber **d'on surt la columna**: davant d'una
@@ -1064,7 +1064,7 @@ probes = model.predict_proba(Xc_te)      # forma (n, 2): [P(classe 0), P(classe 
 y_hat = probes[:, 1]                     # probabilitat de la classe 1
 
 print("files d'examen:", len(yc_te))
-print("precisió:", f"{model.score(Xc_te, yc_te):.4f}")
+print("exactitud:", f"{model.score(Xc_te, yc_te):.4f}")
 print("probes.shape:", probes.shape, " suma per fila:", np.unique(probes.sum(axis=1).round(10)))
 '''))
 
@@ -1224,7 +1224,7 @@ A(md(r"""
 Gairebé totes les files són a prop de zero: el model hi dona molta probabilitat a la classe
 certa. Les poques que pugen per les branques són les que s'equivoca, o encerta amb poca
 convicció, i són les que pesen a la mitjana. Això és el que fa la log-loss i el que no fa
-la precisió: castigar **quant** s'equivoca, no només **si** s'equivoca.
+l'exactitud: castigar **quant** s'equivoca, no només **si** s'equivoca.
 """))
 
 # ---------------------------------------------------------------- 8 MI
@@ -1308,7 +1308,7 @@ for k in (1, 2, 3, 5, 8, 13):
         bosc = RandomForestClassifier(n_estimators=200, random_state=42)
         bosc.fit(Xa, ya)
         puntuacions.append(bosc.score(Xb, yb))
-    print(f"k={k:2d}  precisió mitjana = {np.mean(puntuacions):.4f}  "
+    print(f"k={k:2d}  exactitud mitjana = {np.mean(puntuacions):.4f}  "
           f"± {np.std(puntuacions):.4f}   {triades if k <= 5 else ''}")
 '''))
 
@@ -1364,10 +1364,15 @@ $$p = (0{,}5,\; 0{,}1,\; 0{,}1,\; 0{,}1,\; 0{,}1,\; 0{,}1)$$
 5. Trobeu, provant valors, quina probabilitat de la primera cara fa que l'entropia
    baixi per sota d'1,5 bits, mantenint les altres cinc repartides a parts iguals.
 
-**Com saps que ho has fet bé:** el dau trucat dona **2,161 bits** i el just **2,585
-bits**. La mitjana ponderada de les sorpreses dona **2,160964**, que és exactament el
-que retorna `entropia`. Al punt 5, la primera probabilitat que fa baixar $H$ de 1,5 bits
-és **0,73**, que dona $H = 1{,}468$ bits.
+**Com saps que ho has fet bé:** l'entropia del dau just ha de ser exactament
+$\log_2 6$ (`np.log2(6)`), perquè amb $n$ cares equiprobables $H = \log_2 n$; si no et
+surt, `entropia` no està ben cridada. La del trucat ha de quedar per sobre de 0 i **per
+sota** de la del just: cap dau de 6 cares passa de $\log_2 6$. La mitjana ponderada de les
+sorpreses ha de coincidir amb el que retorna `entropia` fins als últims decimals
+(`np.isclose`); si no coincideix, no has pesat amb les $p_i$. Al punt 5, a cada valor que
+provis les sis probabilitats han de sumar 1, i a partir de $1/6$ l'entropia ha de baixar
+cada vegada que puges la primera: si et puja, has repartit malament la resta. El valor
+que trobis és la teva resposta.
 """))
 
 A(md(r"""
@@ -1442,12 +1447,14 @@ vosaltres com una funció, i feu-la servir per mesurar la columna d'identificado
    l'$IG$ surt com surt: penseu què conté cada fill de 2 flors, tenint en compte que
    Iris ve ordenat per espècie.
 
-**Com saps que ho has fet bé:** `id_fitxa` té $IG = 1{,}585$ bits, $SI = 7{,}229$ bits i
-$GR = 0{,}2193$. `petal_ample` guanya per ràtio de guany amb $GR = 0{,}3546$, seguida de
-`petal_llarg` amb $0{,}2873$. La columna `id_parell` té **exactament el mateix** $IG$ que
-`id_fitxa`, $1{,}585$ bits (cada parella de flors consecutives és de la mateixa espècie, així
-que els 75 fills segueixen sent purs), però $SI = \log_2 75 = 6{,}229$ i per tant
-$GR = 0{,}2545$: prou per passar `id_fitxa`, no prou per passar cap dels dos pètals.
+**Com saps que ho has fet bé:** per a les columnes de `X_amb_id`, la teva funció ha de
+reproduir, columna per columna, la columna «ràtio de guany» de `taula_ig` de la secció 5
+(fins al quart decimal, que és com està arrodonida). Si no hi coincideix, `ratio_de_guany`
+no crida bé `guany_multivia` o `informacio_del_tall`. Per a `id_parell` no hi ha taula,
+però sí dues comprovacions de cap: com que té 75 valors amb 2 flors cadascun, el seu $SI$ ha
+de ser exactament $\log_2 75$ (`np.log2(75)`), i el seu $IG$ no pot passar de $H(Y)$
+d'Iris, $\log_2 3$. Quin $IG$ li surt, per què, i on queda al rànquing, és la teva
+resposta.
 """))
 
 A(md(r"""
@@ -1511,15 +1518,15 @@ $$p = (0{,}8,\; 0{,}15,\; 0{,}05) \qquad\qquad q = (0{,}2,\; 0{,}4,\; 0{,}4)$$
    $D_{KL}(p\|q_\epsilon)$. Expliqueu per què creix sense límit, i relacioneu-ho amb el
    retall a $[\varepsilon, 1-\varepsilon]$ que hem fet a la secció 7.
 
-**Com saps que ho has fet bé:** $D_{KL}(p\|q) = 1{,}2377$ bits i
-$D_{KL}(q\|p) = 1{,}3660$ bits, i la segona és la més gran. Les dues identitats del punt
-2 es compleixen fins als últims decimals: $H(p,q) = 2{,}121928$ i
-$H(q,p) = 2{,}887943$ bits. Al punt 4, $D_{KL}(p\|q_\epsilon)$ creix sense límit: surt
-**1,2166** per a $\epsilon = 10^{-1}$, **1,5202** per a $10^{-3}$, **2,0182** per a
-$10^{-6}$ i **3,0148** bits per a $10^{-12}$. El creixement és de
-$p_3 \cdot \log_2 1000 = 0{,}05 \cdot 9{,}97 \approx 0{,}5$ bits cada vegada que
-$\epsilon$ es divideix per mil: el pes que $p$ dona al tercer resultat multiplicat pel
-creixement del logaritme.
+**Com saps que ho has fet bé:** les dues divergències han de ser positives (la KL mai
+és negativa) i diferents entre elles; si et surten iguals, has passat les dues
+distribucions en el mateix ordre. Pots validar `kl` amb scipy:
+`scipy.stats.entropy(p, q, base=2)` calcula exactament $D_{KL}(p\|q)$. Les identitats del
+punt 2 són la comprovació forta: calcula els dos costats per separat i han de coincidir
+fins als últims decimals (`np.isclose`). Al punt 4, mira la diferència entre cada
+$D_{KL}(p\|q_\epsilon)$ i l'anterior: com que els $\epsilon$ es divideixen sempre per mil,
+aquestes diferències s'han d'anar acostant a un valor fix. Quin és i d'on surt forma part
+de l'explicació que et demanem.
 """))
 
 A(md(r"""
@@ -1579,27 +1586,31 @@ Carregueu `load_breast_cancer` (ja el teniu a `cancer`, `yc`).
 2. Calculeu $H(Y)$ en bits amb `entropia_etiquetes`.
 3. Compareu-la amb 1 bit, que és el màxim per a dues classes, i digueu quin percentatge
    del màxim és. Aquest percentatge és una manera de quantificar el desequilibri.
-4. Calculeu quina precisió obtindria un classificador que sempre digués la classe
+4. Calculeu quina exactitud obtindria un classificador que sempre digués la classe
    majoritària, sense mirar cap columna. Relacioneu els dos números: com més baixa és
-   $H(Y)$, més alta és aquesta precisió trivial, i menys informativa és la precisió com
+   $H(Y)$, més alta és aquesta exactitud trivial, i menys informativa és l'exactitud com
    a mètrica.
 5. Repetiu els punts 1-4 amb `y_vi` (Wine, 3 classes) i amb `y` (Iris, 3 classes). A
    Iris les tres classes estan perfectament equilibrades: comproveu que $H(Y)$ dona
    exactament $\log_2 3$.
 
-**Com saps que ho has fet bé:** a càncer hi ha **212 malignes i 357 benignes**, amb
-$H(Y) = 0{,}9526$ bits, un **95,3 %** del màxim; el classificador trivial encerta el
-**62,74 %**. A Wine, $H(Y) = 1{,}5668$ bits contra un màxim de $\log_2 3 = 1{,}5850$, i
-el trivial encerta el **39,89 %** (71 vins de 178). A Iris, $H(Y) = 1{,}5850$ bits
-exactes i el trivial encerta el 33,33 %.
+**Com saps que ho has fet bé:** els recomptes de cada dataset han de sumar el total de
+files (569 a càncer, 178 a Wine, 150 a Iris) i les proporcions, 1. Cap $H(Y)$ de dues
+classes pot passar d'1 bit, ni cap de tres classes de $\log_2 3$. L'exactitud del
+classificador trivial ha de ser exactament la proporció de la classe majoritària, i la
+pots contrastar amb un `DummyClassifier(strategy="most_frequent")` de `sklearn.dummy`
+entrenat i avaluat sobre les mateixes etiquetes: han de coincidir. A Iris, $H(Y)$ ha de
+donar `np.log2(3)` i el trivial, $1/3$. Els números de càncer i de Wine, i la relació
+entre tots dos, són la teva resposta.
 """))
 
 A(md(r"""
 Abans de començar, la idea en un dibuix. A l'esquerra, per a dues classes: quan una classe
-domina, $H(Y)$ baixa i la precisió del classificador que sempre diu la majoritària puja.
+domina, $H(Y)$ baixa i l'exactitud del classificador que sempre diu la majoritària puja.
 A la dreta, un conjunt **inventat** amb un 95 % d'una classe i un 5 % de l'altra: el
 classificador trivial té una exactitud altíssima i no troba **cap** cas de la classe
-petita. Per això l'exactitud sola enganya.
+petita. Per això l'exactitud sola enganya. Al costat hi ha la **precisió** (*precision*)
+i la sensibilitat de la classe petita, que la miren a ella sola (les tens a `EX_00`, §7).
 """))
 
 A(code(r'''
@@ -1608,9 +1619,9 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.8))
 p_maj = np.linspace(0.5, 1, 101)
 ax1.plot(p_maj, [entropia([a, 1 - a]) for a in p_maj], color="tab:blue", label="H(Y) (bits)")
-ax1.plot(p_maj, p_maj, color="tab:orange", label="precisió de dir sempre la majoritària")
+ax1.plot(p_maj, p_maj, color="tab:orange", label="exactitud de dir sempre la majoritària")
 ax1.set_xlabel("proporció de la classe majoritària")
-ax1.set_title("Dues classes: menys entropia, més precisió trivial")
+ax1.set_title("Dues classes: menys entropia, més exactitud trivial")
 ax1.legend()
 ax1.grid(alpha=0.3)
 
@@ -1644,7 +1655,7 @@ A(code(r'''
 
 # TODO 3: percentatge respecte a 1 bit
 
-# TODO 4: precisio del classificador que sempre diu la classe majoritaria
+# TODO 4: exactitud del classificador que sempre diu la classe majoritaria
 
 # TODO 5: el mateix amb y_vi i amb y, comparant contra log2(3)
 '''))
@@ -1663,9 +1674,9 @@ Què s'ha demostrat en aquest quadern, amb codi:
 - El conveni $0\log 0 = 0$ és l'única extensió contínua de la fórmula, no un pegat:
   $\lim_{p\to 0^+} p\log p = 0$, comprovat numèricament.
 - Entropia i Gini comparteixen zeros, màxim i concavitat, i per això **no** donen els
-  mateixos arbres però sí la mateixa precisió: a l'arrel d'Iris trien el mateix tall, a
+  mateixos arbres però sí la mateixa exactitud: a l'arrel d'Iris trien el mateix tall, a
   l'arrel de Wine ja discrepen, els arbres sencers divergeixen als nodes petits, i les
-  precisions mitjanes sobre 40 particions es diferencien en **0,002** a Iris i **0,017-
+  exactituds mitjanes sobre 40 particions es diferencien en **0,002** a Iris i **0,017-
   0,022** a Wine, en tots dos casos per sota de la desviació típica entre particions
   (0,031 i 0,040-0,049). Els arbres sencers d'Iris surten idèntics tall a tall; els de
   Wine no comparteixen ni un tall.
@@ -1674,7 +1685,7 @@ Què s'ha demostrat en aquest quadern, amb codi:
   `DecisionTreeClassifier(max_depth=1, criterion="entropy")`.
 - Amb una columna d'identificadors 0…149, el guany d'informació multivia la tria per
   damunt dels pètals (**1,585** bits contra 1,446 i 1,436) i produeix un model
-  inservible. És una **fuita d'informació**, i la precisió d'examen no la delata: puja
+  inservible. És una **fuita d'informació**, i l'exactitud d'examen no la delata: puja
   al 100 %. La ràtio de guany, dividint pel *split information* $\log_2 150 = 7{,}229$,
   la baixa a 0,2193 i deixa els pètals al davant.
 - $H(p,q) = H(p) + D_{KL}(p\|q)$ es compleix fins als últims decimals; $D_{KL}$ és 0 en

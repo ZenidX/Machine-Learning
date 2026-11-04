@@ -217,7 +217,7 @@ columnes $(x_1, x_2, x_3)$. Si en 3D hi ha un pla que separa, l'ha de trobar.
 X3 = np.column_stack([Xc, x3])
 model_3d = SVC(kernel="linear", C=10).fit(X3, yc)
 w3, b3 = model_3d.coef_[0], model_3d.intercept_[0]
-print(f"Precisió de l'SVM lineal en 3D: {model_3d.score(X3, yc):.1%}")
+print(f"Exactitud de l'SVM lineal en 3D: {model_3d.score(X3, yc):.1%}")
 print(f"El pla: {w3[0]:.2f}·x1 {w3[1]:+.2f}·x2 {w3[2]:+.2f}·x3 {b3:+.2f} = 0")
 """),
     M(r"""
@@ -413,10 +413,10 @@ plt.show()
 
 INSERCIONS.append(("### Exercici 3 — Compara kernels", [
     M(r"""
-Abans de començar, la idea en un dibuix: com es mesura la **precisió de test** que
+Abans de començar, la idea en un dibuix: com es mesura la **exactitud de test** que
 posareu a la taula. Dades inventades i un sol model: s'entrena amb els punts petits
 (entrenament) i es puntua amb els grans (test). Les creus negres són els punts de test
-on el model s'equivoca; la precisió és la fracció de punts de test sense creu.
+on el model s'equivoca; l'exactitud és la fracció de punts de test sense creu.
 """),
     C(r"""
 rng = np.random.default_rng(31)
@@ -435,7 +435,7 @@ ax.scatter(Xi_te[:, 0], Xi_te[:, 1], c=yi_te, cmap="coolwarm", s=70, edgecolors=
 ax.scatter(Xi_te[mal_il, 0], Xi_te[mal_il, 1], marker="x", color="black", s=120, linewidths=2,
            label="errors de test")
 ax.set_title(f"Dades inventades: {mal_il.sum()} errors de {len(yi_te)} -> "
-             f"precisió de test = {m_il.score(Xi_te, yi_te):.1%}")
+             f"exactitud de test = {m_il.score(Xi_te, yi_te):.1%}")
 ax.legend(loc="upper left")
 ax.grid(alpha=0.3)
 plt.show()
@@ -471,7 +471,7 @@ ax.set_yticks(range(len(Cs_il)), [str(c) for c in Cs_il])
 ax.set_xlabel("gamma")
 ax.set_ylabel("C")
 ax.set_title("Números inventats: la casella vermella seria best_params_")
-fig.colorbar(im, ax=ax, label="precisió mitjana (validació creuada)")
+fig.colorbar(im, ax=ax, label="exactitud mitjana (validació creuada)")
 plt.show()
 """),
 ]))

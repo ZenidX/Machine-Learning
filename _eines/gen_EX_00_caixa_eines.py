@@ -155,7 +155,8 @@ beca (Elena i Irina) han caigut totes dues a l'entrenament.
 Això no és un error del codi, és l'atzar fent el que fa: amb només dos casos
 positius de deu, hi ha una probabilitat alta que tots dos acabin al mateix costat.
 I el dany és greu: un examen sense cap beca **no pot dir res** sobre si el model
-sap detectar beques. Podries tenir un 100 % de precisió i no haver mesurat res.
+sap detectar beques. Podries tenir un 100 % d'exactitud (*accuracy*, la proporció
+d'encerts) i no haver mesurat res.
 
 `stratify=y` ho impedeix: reparteix cada classe proporcionalment entre els dos
 costats.
@@ -924,12 +925,13 @@ cells.append(md(r"""
 
 ---
 
-## 7. Mesurar un model, i no només amb la precisió
+## 7. Mesurar un model, i no només amb l'exactitud
 
 Aquesta és la secció que més et farà falta, i la que no surt a cap quadern de teoria.
 
-Fins ara has mesurat els models amb un sol número: el percentatge d'encerts. Aquest
-número amaga una cosa que gairebé sempre importa: **quins** errors comet el model. I
+Fins ara has mesurat els models amb un sol número: el percentatge d'encerts, l'**exactitud**
+(*accuracy*). Compte amb els noms: la **precisió** (*precision*) que veuràs més avall és
+una altra mesura, que només mira una classe. Aquest número amaga una cosa que gairebé sempre importa: **quins** errors comet el model. I
 en molts problemes els dos errors possibles no valen el mateix.
 
 Farem tota la secció amb **deu correus** ja classificats, perquè els puguis comptar
@@ -962,18 +964,18 @@ Compta-ho tu abans de continuar. Dels deu correus:
 
 Set encerts i tres errors. Ara veurem com cada funció diu una part d'aquests números.
 
-### `accuracy_score` — la precisió
+### `accuracy_score` — l'exactitud
 
 **Què fa.** Compta quina fracció de les prediccions són correctes.
 
-$$\text{precisió} = \frac{\text{encerts}}{\text{total}}$$
+$$\text{exactitud} = \frac{\text{encerts}}{\text{total}}$$
 
 **Què li has de donar i què et torna.** `accuracy_score(y_real, y_predit)`, en aquest
 ordre. Et torna **un sol número** entre 0 i 1.
 
 **Què compta.** Tots els encerts, siguin de la classe que siguin.
 **Què no compta.** Res sobre com es reparteixen els errors. Els tres errors d'aquest
-model no són intercanviables, i la precisió els tracta com si ho fossin.
+model no són intercanviables, i l'exactitud els tracta com si ho fossin.
 """))
 
 cells.append(code(r"""
@@ -1040,7 +1042,7 @@ print("falsos negatius  (era brossa, ha dit legitim): ", fn, " -> n'havies compt
 print("encerts positius (era brossa, ha dit brossa): ", vp, " -> n'havies comptat 2")
 print()
 print("la diagonal son els encerts:", vn + vp, "=", int(matriu.trace()))
-print("i la precisio es la diagonal dividida pel total:", matriu.trace() / matriu.sum())
+print("i l'exactitud es la diagonal dividida pel total:", matriu.trace() / matriu.sum())
 """))
 
 cells.append(md(r"""
@@ -1158,7 +1160,7 @@ cells.append(md(r"""
 Tot el que has comptat a mà, en una taula: `brossa` té precision 0,67, recall 0,50 i
 support 4 (els quatre correus de brossa que hi havia).
 
-Un avís sobre les tres últimes línies: `accuracy` és la precisió global; `macro avg`
+Un avís sobre les tres últimes línies: `accuracy` és l'exactitud global; `macro avg`
 és la mitjana simple de les classes (tracta totes les classes igual, encara que una
 tingui quatre casos i l'altra mil); `weighted avg` les pondera pel `support`. Si el
 conjunt està desequilibrat, `macro avg` i `weighted avg` diuen coses molt diferents, i
@@ -1189,7 +1191,7 @@ cells.append(md(r"""
 **Què fa.** Un «model» que no mira les dades. Amb `strategy="most_frequent"` respon
 sempre la classe més freqüent de l'entrenament, sigui quina sigui l'entrada.
 
-**Per què existeix.** Perquè un número sol no vol dir res. Un 85 % de precisió pot ser
+**Per què existeix.** Perquè un número sol no vol dir res. Un 85 % d'exactitud pot ser
 excel·lent o pot ser vergonyós, i l'única manera de saber-ho és comparar-lo amb el que
 s'aconsegueix sense fer res.
 
@@ -1224,13 +1226,13 @@ tonto = DummyClassifier(strategy="most_frequent").fit(X_entrena, y_entrena)
 print("el que hi havia a l'examen:", y_examen.to_numpy())
 print("el que respon el model tonto:", tonto.predict(X_examen))
 print()
-print("precisio del model tonto:", tonto.score(X_examen, y_examen))
+print("exactitud del model tonto:", tonto.score(X_examen, y_examen))
 print("recall del model tonto sobre la classe 1:",
       recall_score(y_examen, tonto.predict(X_examen), zero_division=0))
 """))
 
 cells.append(md(r"""
-Aquí està tot el problema en dos números: **un 75 % de precisió i un recall de 0**.
+Aquí està tot el problema en dos números: **un 75 % d'exactitud i un recall de 0**.
 
 El model tonto no ha encertat ni un sol cas de la classe 1 —no en pot encertar cap, no
 mira les dades— i tot i així treu un 75 %, perquè tres de les quatre files de l'examen
@@ -1702,7 +1704,7 @@ error al codi. Afinar paràmetres no ho arreglarà.
 
 ### 3. Mira si el número que et surt té sentit
 
-Una precisió és **una fracció d'enters**: encerts partit per mostres de l'examen. Amb
+Una exactitud és **una fracció d'enters**: encerts partit per mostres de l'examen. Amb
 $n$ mostres, els únics valors possibles són $0/n, 1/n, \dots, n/n$. No n'hi ha cap
 entremig.
 
@@ -1711,14 +1713,14 @@ Per tant, davant de qualsevol número, la pregunta és: **quantes mostres té el
 
 cells.append(code(r"""
 def valors_possibles(n):
-    '''Els unics valors que pot prendre una precisio amb n mostres d'examen.'''
+    '''Els unics valors que pot prendre una exactitud amb n mostres d'examen.'''
     return np.arange(n + 1) / n
 
 
 n = 38
 possibles = valors_possibles(n)
 
-print(f"amb {n} mostres d'examen, la precisio puja de {1/n:.4f} en {1/n:.4f}")
+print(f"amb {n} mostres d'examen, l'exactitud puja de {1/n:.4f} en {1/n:.4f}")
 print("els valors mes alts possibles:", np.round(possibles[-4:], 4))
 print()
 for candidat in [0.9500, 0.9474, 0.9737, 0.8000]:
@@ -1738,10 +1740,10 @@ número no pot venir d'un examen de 38 mostres**. Els veïns que sí que existei
 Quan un número no encaixa en la graella, sempre és una d'aquestes tres coses: has
 mesurat sobre un conjunt diferent del que et pensaves, has barrejat les prediccions
 d'un model amb les etiquetes d'un altre, o el número que estàs comparant no és una
-precisió.
+exactitud.
 
 El cas extrem d'això és un examen petit. Amb 10 mostres, l'única cosa que pots dir és
-la precisió en salts del 10 %, i un model que en encerta 9 i un que n'encerta 8 no es
+l'exactitud en salts del 10 %, i un model que en encerta 9 i un que n'encerta 8 no es
 poden distingir. **Un examen petit no mesura**, i mirar-ne la mida és el primer que has
 de fer abans de creure't una diferència.
 

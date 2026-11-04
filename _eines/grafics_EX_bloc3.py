@@ -137,7 +137,7 @@ plt.show()
 
     ("## Exercici 3", [
         idea(r"""
-com es llegeixen les dues columnes de precisió (entrenament i examen) per a uns models
+com es llegeixen les dues columnes d'exactitud (entrenament i examen) per a uns models
 **inventats**, A, B, C i D. El que interessa és la **distància** entre les dues barres de cada
 model: el que treu gairebé un 100 % a l'entrenament i força menys a l'examen està memoritzant.
 Quin dels vostres cinc ho fa és la vostra troballa.
@@ -156,7 +156,7 @@ for xi, a, b in zip(x_il, entrena_il, examen_il):
                  arrowprops=dict(arrowstyle="<->", color="tab:red"))
 plt.xticks(x_il, [f"model {m}" for m in models_il])
 plt.ylim(0.7, 1.03)
-plt.ylabel("precisió")
+plt.ylabel("exactitud")
 plt.title("Dades inventades: la fletxa vermella és el que es perd a l'examen")
 plt.legend(loc="lower right")
 plt.grid(alpha=0.3, axis="y")
@@ -382,7 +382,7 @@ plt.show()
 per què la mitjana i la mediana no omplen igual. Una columna **inventada** amb uns quants valors
 molt grans (cua a la dreta). La mitjana (vermell) s'estira cap a la cua; la mediana (verd) es
 queda al mig de la majoria. Si una columna és així, omplir amb una o amb l'altra no és el mateix.
-Com són les columnes del vi, i si es nota a la precisió, és cosa vostra.
+Com són les columnes del vi, i si es nota a l'exactitud, és cosa vostra.
 """),
         code(r"""
 rng = np.random.default_rng(2)
@@ -499,9 +499,9 @@ plt.show()
 
     ("## Exercici 7", [
         idea(r"""
-quant pesa una sola fila a l'examen. Amb $n$ files d'examen, la precisió només pot valer
+quant pesa una sola fila a l'examen. Amb $n$ files d'examen, l'exactitud només pot valer
 $0/n, 1/n, \dots, n/n$: cada ratlla és un valor possible. Amb 50 files **inventades**, d'una
-ratlla a la següent hi ha 2 punts de precisió, i dos resultats que es diferencien en una ratlla
+ratlla a la següent hi ha 2 punts d'exactitud, i dos resultats que es diferencien en una ratlla
 són una sola fila mal classificada.
 """),
         code(r"""
@@ -514,8 +514,8 @@ ax.scatter([47 / 50, 48 / 50], [1, 1], s=120, color="tab:red", zorder=3,
            label="dos resultats inventats: 47/50 i 48/50")
 ax.set_yticks([0, 1], ["40 files d'examen", "50 files d'examen"])
 ax.set_ylim(-0.6, 1.6)
-ax.set_xlabel("precisió possible")
-ax.set_title("Dades inventades: la precisió va a salts d'una fila")
+ax.set_xlabel("exactitud possible")
+ax.set_title("Dades inventades: l'exactitud va a salts d'una fila")
 ax.legend(loc="lower left", fontsize=9)
 ax.grid(alpha=0.3, axis="x")
 plt.show()

@@ -214,7 +214,7 @@ plt.show()
 INSERCIONS.append(("## Exercici 6 — Fabricar un problema a mida", [
     M(r"""
 Abans de començar, la idea en un dibuix: per què cal repetir amb diversos
-`random_state`. Cada punt és la diferència de precisió *model A − model B* en una
+`random_state`. Cada punt és la diferència d'exactitud *model A − model B* en una
 partició diferent. Els números són **inventats** i els models no tenen nom a propòsit. A
 l'esquerra, la diferència canvia de signe segons la partició: no se'n pot concloure
 res. A la dreta, totes les particions donen el mateix signe: aquí sí.
@@ -235,7 +235,7 @@ for ax, dif_il, titol in [(axs[0], dif_dubtosa_il, "canvia de signe: no és una 
     ax.set_xlabel("random_state del train_test_split")
     ax.set_title(titol)
     ax.grid(alpha=0.3, axis="y")
-axs[0].set_ylabel("precisió A − precisió B")
+axs[0].set_ylabel("exactitud A − exactitud B")
 fig.suptitle("Números inventats: la mateixa comparació repetida amb vuit particions")
 plt.tight_layout()
 plt.show()
@@ -245,7 +245,7 @@ plt.show()
 INSERCIONS.append(("## Exercici 7 — Tancament", [
     M(r"""
 Abans de començar, la idea en un dibuix: com es decideix si una aposta és un encert.
-Precisions **inventades** de tres models inventats en dos conjunts inventats. La línia
+Exactituds **inventades** de tres models inventats en dos conjunts inventats. La línia
 és el llindar de 0,85; el triangle amunt és una aposta «bé» i l'avall, «malament». Verd
 si l'aposta i el costat de la línia coincideixen, vermell si no.
 """),
@@ -265,8 +265,8 @@ for k, (conjunt, model_nom, aposta, prec) in enumerate(casos_il):
 ax.axhline(LLINDAR_il, color="black", linestyle="--", label="llindar 0,85")
 ax.set_xticks(range(len(casos_il)), [f"{c}\n{m}" for c, m, _, _ in casos_il])
 ax.set_ylim(0.5, 1.05)
-ax.set_ylabel("precisió real")
-ax.set_title("Números inventats: aposta (triangle) contra precisió real (alçada)")
+ax.set_ylabel("exactitud real")
+ax.set_title("Números inventats: aposta (triangle) contra exactitud real (alçada)")
 ax.legend(loc="lower left")
 ax.grid(alpha=0.3, axis="y")
 plt.tight_layout()

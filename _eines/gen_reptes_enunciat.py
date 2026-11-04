@@ -485,13 +485,13 @@ errors és el perillós, i quants en fa el model que portaries a l'app?""",
         ],
         pistes=[
             "Si et surt un 100 %, no és necessàriament un error de codi. Però «zero errors al test» no és «zero errors al bosc».",
-            "Una precisió molt alta pot amagar uns quants errors del tipus que no et pots permetre: compta'ls per separat.",
+            "Una exactitud molt alta pot amagar uns quants errors del tipus que no et pots permetre: compta'ls per separat.",
         ],
         exemples=[
             f"{ML00} i {EX00} §1: separar entrenament i test.",
             f"{ML01} §2-§4 (k veïns i distància) i {ML02} §2, §3 i §6 (Gini, el tall i la profunditat).",
             f"{EX00} §4 (columnes de text i `OneHotEncoder`) i §7 (matriu de confusió i *recall*).",
-            f"{EX02}: per què la precisió sola no serveix quan un error és més greu que l'altre.",
+            f"{EX02}: per què l'exactitud sola no serveix quan un error és més greu que l'altre.",
         ],
         xavi=[
             "Em surt un 100 %. Això és creïble, o m'he equivocat?",
@@ -529,9 +529,9 @@ i com arriba el model a la probabilitat d'una sessió concreta?""",
 - Les mètriques de Google Analytics es calculen sobre totes les visites del web, no només sobre
   aquesta sessió.""",
         investigar="""Construeix el model que demana màrqueting i explica'l. Abans, fixa la **línia de sortida**:
-quina precisió té un model que mai no diu «compra»? Decideix quines columnes són números de
+quina exactitud té un model que mai no diu «compra»? Decideix quines columnes són números de
 debò i quines són codis. Entrena una **regressió logística** amb les numèriques escalades, compara
-la precisió amb la línia de sortida, i llegeix-ne els pesos: quines variables empenyen cap a la
+l'exactitud amb la línia de sortida, i llegeix-ne els pesos: quines variables empenyen cap a la
 compra, quines en contra, i quant (tradueix el pes més gran a *odds*).
 
 La teoria ha d'aterrar al codi: calcula **a mà** la probabilitat de compra de totes les sessions
@@ -545,13 +545,13 @@ probabilitat.""",
         ],
         pistes=[
             "Si una sola variable fa gairebé tota la feina, abans de celebrar-ho pregunta't quan es coneix el seu valor.",
-            "La precisió i la log-loss poden no anar juntes. Si el model amb prou feines supera la línia de sortida en precisió, mira l'altra mesura abans de dir que no serveix.",
+            "L'exactitud i la log-loss poden no anar juntes. Si el model amb prou feines supera la línia de sortida en exactitud, mira l'altra mesura abans de dir que no serveix.",
         ],
         exemples=[
             f"{ML04} §2-§4: la regressió logística, la sigmoide i els pesos.",
             f"{MA01} §7 (un model és un vector i una multiplicació) i {MA02} §5 (la log-loss).",
             f"{EX00} §2 (`StandardScaler` i `fit` contra `transform`), §4, §6 i §7 (`OneHotEncoder`, `ColumnTransformer`, `DummyClassifier`).",
-            f"{EX02}: la precisió que enganya.",
+            f"{EX02}: l'exactitud que enganya.",
         ],
         xavi=[
             "El pes més gran és tan gran que em fa sospitar. Puc fer-me'l meu?",
@@ -592,9 +592,9 @@ el llindar per decidir si truques o no?""",
   durant la campanya; aquí n'hi ha una fila amb el resultat final.
 - `unknown` apareix a diverses columnes de text, però no vol dir el mateix a totes.""",
         investigar="""Prepara la recomanació per a la directora. Comença per la línia de base: què fa un model que no
-truca mai, segons la precisió, la *precision* i el *recall*? Entrena una **regressió logística** i
+truca mai, segons l'exactitud (*accuracy*), la precisió (*precision*) i el *recall*? Entrena una **regressió logística** i
 un **bosc aleatori** amb un `ColumnTransformer` i compara'ls. Decideix amb quina mesura els
-jutges, i explica per què la precisió no serveix.
+jutges, i explica per què l'exactitud no serveix.
 
 La teoria ha d'aterrar al codi: escriu una funció que, a partir **només** de les quatre caselles
 d'una matriu de confusió, calculi *accuracy*, *precision*, *recall* i F1, i comprova-les contra
@@ -772,20 +772,20 @@ traiem `sex` i `race` de les dades, el problema desapareix?""",
         investigar="""Fes l'auditoria. Abans de cap model, mira si les dades ja són desiguals (proporció de `>50K` per
 sexe i per grup, i quanta gent hi ha a cada grup). Decideix quines columnes entren al model i per
 què. Entrena el model que s'auditarà (una **regressió logística** dins d'un `Pipeline`), i
-compara'n la precisió global amb la d'un `DummyClassifier`.
+compara'n l'exactitud global amb la d'un `DummyClassifier`.
 
 La teoria ha d'aterrar al codi: escriu una funció que, per a cada grup d'una columna, calculi
-**des de la seva matriu de confusió** el nombre de persones, la precisió, la **taxa de selecció**,
+**des de la seva matriu de confusió** el nombre de persones, l'exactitud, la **taxa de selecció**,
 la **TPR** i la **FPR**, i comprova la TPR de cada grup amb `recall_score`. Aplica-la per sexe i
 per grup ètnic. Després, torna a entrenar **sense** `sex` ni `race` i repeteix l'auditoria: la
 diferència desapareix?""",
         obertes=[
             "Es pot predir el sexe a partir de les altres columnes? Què vol dir això per a la pregunta de treure `sex`?",
-            "Un llindar diferent per a cada grup que iguali la TPR: quant canvia la precisió global? És una solució justa? Qui hi guanya i qui hi perd?",
+            "Un llindar diferent per a cada grup que iguali la TPR: quant canvia l'exactitud global? És una solució justa? Qui hi guanya i qui hi perd?",
             "`capital-gain` té un valor que es repeteix molt al màxim. Què és? I unes dades del 1994, serveixen avui?",
         ],
         pistes=[
-            "Una precisió més alta en un grup no vol dir que el model el tracti millor: mira quina proporció de les persones que sí que guanyen més de 50K troba en cada grup.",
+            "Una exactitud més alta en un grup no vol dir que el model el tracti millor: mira quina proporció de les persones que sí que guanyen més de 50K troba en cada grup.",
             "Treure una columna no treu la informació si altres columnes la porten a dins.",
             "Una mesura calculada sobre una dotzena de persones es mou molt amb un sol cas: posa la mida del grup al costat de cada número.",
         ],

@@ -218,7 +218,7 @@ export default function Calendari() {
             const textos = {
               Pp1: "Pots manejar dades? Sense això, tot el bloc següent es fa a cegues.",
               Pp2: "Pots entrenar, mesurar i verificar? Qui no hi arribi, al gener no entendrà què fa una xarxa.",
-              Pp3: "Pots treballar sense enganyar-te? Aquí no es mesura la precisió, es mesura si el número és honest.",
+              Pp3: "Pots treballar sense enganyar-te? Aquí no es mesura l'exactitud, es mesura si el número és honest.",
               Pp4: "L'agent que has entrenat, i saber explicar per què l'has fet així.",
             };
             const dates = { Pp1: "27 d'octubre", Pp2: "1 de desembre", Pp3: "21 de desembre", Pp4: "2 de febrer" };

@@ -115,7 +115,7 @@ export default function BlocSupervisat() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   <tr><td className="px-3 py-2 font-medium">Exactitud (accuracy)</td><td className="px-3 py-2 text-gray-600">Percentatge total d'encerts.</td></tr>
-                  <tr><td className="px-3 py-2 font-medium">Precisió</td><td className="px-3 py-2 text-gray-600">De tot el que el model diu que és positiu, quant n'encerta.</td></tr>
+                  <tr><td className="px-3 py-2 font-medium">Precisió (precision)</td><td className="px-3 py-2 text-gray-600">De tot el que el model diu que és positiu, quant n'encerta.</td></tr>
                   <tr><td className="px-3 py-2 font-medium">Record (recall)</td><td className="px-3 py-2 text-gray-600">De tots els casos positius reals, quants en detecta.</td></tr>
                   <tr><td className="px-3 py-2 font-medium">Matriu de confusió</td><td className="px-3 py-2 text-gray-600">Taula amb encerts i errors desglossats per classe.</td></tr>
                 </tbody>

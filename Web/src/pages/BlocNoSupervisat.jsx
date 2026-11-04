@@ -133,7 +133,7 @@ export default function BlocNoSupervisat() {
       </Seccio>
 
       {/* ---------- 4 · Prova ---------- */}
-      <Pas id="prova" num={4} titol="Prova" color={C} subtitol="A la Pp3 no es mesura la precisió: es mesura si el número que dones és honest." />
+      <Pas id="prova" num={4} titol="Prova" color={C} subtitol="A la Pp3 no es mesura l'exactitud: es mesura si el número que dones és honest." />
       <Seccio icona={ClipboardCheck} color={C}>
         <ProvaBloc bloc={3} color={C} />
         <div className="mt-4">

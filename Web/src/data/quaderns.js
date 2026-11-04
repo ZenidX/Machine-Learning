@@ -31,7 +31,7 @@ export const quaderns = {
     titol: "NumPy",
     descarrega: true,
     descripcio:
-      "Per què no n'hi ha prou amb les llistes de Python, amb la comparació de temps executada. L'array, shape i dtype, indexació i llesques, i el parany de la llesca contra la còpia. Operacions vectoritzades, màscares booleanes, i les agregacions amb el concepte d'eix. Acaba ensenyant que la distància euclidiana i la precisió d'un model són una línia de NumPy cadascuna.",
+      "Per què no n'hi ha prou amb les llistes de Python, amb la comparació de temps executada. L'array, shape i dtype, indexació i llesques, i el parany de la llesca contra la còpia. Operacions vectoritzades, màscares booleanes, i les agregacions amb el concepte d'eix. Acaba ensenyant que la distància euclidiana i l'exactitud d'un model són una línia de NumPy cadascuna.",
   },
   FO_02: {
     fitxer: "FO_02_pandas.ipynb",
@@ -73,7 +73,7 @@ export const quaderns = {
     titol: "Boscos aleatoris i mètriques",
     descarrega: true,
     descripcio:
-      "Un arbre prou profund memoritza l'entrenament. La solució és fer-ne molts alhora i que votin. I les mètriques: per què la precisió tota sola no serveix.",
+      "Un arbre prou profund memoritza l'entrenament. La solució és fer-ne molts alhora i que votin. I les mètriques: per què l'exactitud tota sola no serveix.",
   },
   ML_04: {
     fitxer: "ML_04_regressio_logistica.ipynb",

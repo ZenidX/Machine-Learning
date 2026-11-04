@@ -91,7 +91,7 @@ vegada canviant les unitats i mirant com cau el resultat.
 
 **El sobreajust.** Un model que encerta el 100 % a l'entrenament i falla a l'examen no ha
 après: ha memoritzat. Es veu de la manera més nítida al quadern dels arbres, amb la corba
-de precisió segons la profunditat.
+d'exactitud segons la profunditat.
 
 ## Verificar els quaderns
 

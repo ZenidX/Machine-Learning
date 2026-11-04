@@ -1453,7 +1453,7 @@ for nom, altra in [("scikit-learn C=1", pred_C1), ("scikit-learn C=1e6", pred_Cg
 coincid = (pred_llarg == pred_Cgran).sum()
 print(f"nostre (200000 it.) contra scikit-learn C=1e6 : {coincid}/100 = {coincid / 100:.1%}")
 
-print("\nPrecisio sobre les 30 flors de l'examen:")
+print("\nExactitud sobre les 30 flors de l'examen:")
 print(f"  nostre (20000 it.):    {(prediu(w_gd, b_gd, Xte) == yte).mean():.1%}")
 print(f"  nostre (200000 it.):   {(prediu(w_llarg, b_llarg, Xte) == yte).mean():.1%}")
 print(f"  scikit-learn C=1:      {model_C1.score(Xte, yte):.1%}")
@@ -1466,7 +1466,7 @@ Amb els pesos de 20.000 iteracions coincidim amb scikit-learn per defecte en **9
 98. I els nostres pesos de 200.000 iteracions coincideixen amb els de $C=10^6$ en les 100
 flors, cosa que ja esperàvem perquè són pràcticament el mateix vector.
 
-La precisió a l'examen diu una altra cosa que val la pena no amagar: nosaltres fem 86,7 %
+L'exactitud a l'examen diu una altra cosa que val la pena no amagar: nosaltres fem 86,7 %
 i scikit-learn amb $C=1$ fa 93,3 %. Els nostres pesos donen menys pèrdua a l'entrenament i
 alhora encerten menys a l'examen. Això és **sobreajustament**, i és exactament el que la
 regularització serveix per evitar. Dit d'una altra manera: minimitzar la pèrdua
@@ -1865,7 +1865,7 @@ Fixa't que no has de canviar ni `gradient()` ni `entrena()`: la fórmula
 $\frac1n X^\top (p - y)$ ja funciona amb qualsevol nombre de columnes.
 
 **Com saps que ho has fet bé:** el *gradient checking* ha de donar una diferència màxima
-per sota de $10^{-8}$ a les quatre components. Un cop entrenat, comprova que la precisió
+per sota de $10^{-8}$ a les quatre components. Un cop entrenat, comprova que l'exactitud
 a l'examen supera la d'un `DummyClassifier(strategy="most_frequent")` de `sklearn.dummy`
 entrenat sobre la mateixa divisió, que amb 15 i 15 flors al test encerta el 50 %: si no la
 supera, el model no ha après res i no té sentit comparar-lo amb el de dues columnes.
@@ -1909,7 +1909,7 @@ A(code(r'''
 # 3. Gradient checking amb un w de 4 components (per exemple np.array([0.5, -0.5, 0.5, -0.5])):
 #    compara gradient(...) amb el numeric component a component, com a la seccio 7.
 # 4. w4, b4, hist4 = entrena(X4tr, y4tr, eta=0.5, iteracions=20000)
-# 5. Imprimeix els pesos, la perdua final i la precisio a l'examen amb prediu(w4, b4, X4te).
+# 5. Imprimeix els pesos, la perdua final i l'exactitud a l'examen amb prediu(w4, b4, X4te).
 '''))
 
 # ---------------------------------------------------------------- resum

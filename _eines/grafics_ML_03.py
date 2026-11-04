@@ -30,7 +30,7 @@ def marca(c):
 INSERCIONS = []
 
 # --- teoria 1: tres mostres bootstrap, fila a fila
-INSERCIONS.append(("\\\nSurt gairebé exactament $1/e", [
+INSERCIONS.append(("Surt gairebé exactament $1/e", [
     md(r"""
 Vegem-ho fila a fila. Tres mostres bootstrap de **20 files**: cada barra diu quantes
 vegades ha sortit aquella fila a la mostra. Les creus vermelles són les files que aquell
@@ -123,7 +123,7 @@ plt.show()
 # --- teoria 3: error segons el nombre d'arbres, al problema dificil
 INSERCIONS.append(("Amb 20 columnes, soroll i relacions", [
     md(r"""
-Quants arbres calen perquè el bosc guanyi? Dibuixem l'**error** d'examen (1 − precisió)
+Quants arbres calen perquè el bosc guanyi? Dibuixem l'**error** d'examen (1 − exactitud)
 en aquest mateix problema difícil, afegint arbres d'un en un al principi i de molts en
 molts després. La línia grisa és l'arbre sol.
 """),
@@ -137,7 +137,7 @@ for n in n_arbres_corba:
 
 plt.figure(figsize=(8, 5))
 plt.plot(n_arbres_corba, error_corba, marker="o", color="tab:blue", label="bosc aleatori")
-plt.axhline(1 - precisio_arbre_dificil, color="gray", linestyle="--", label="un sol arbre")
+plt.axhline(1 - exactitud_arbre_dificil, color="gray", linestyle="--", label="un sol arbre")
 plt.xscale("log")
 plt.xticks(n_arbres_corba, [str(n) for n in n_arbres_corba])
 plt.xlabel("Nombre d'arbres (escala logarítmica)")
@@ -196,8 +196,8 @@ el bosc, no **què causa** l'etiqueta.
 # --- exercici 7.1: com es mesura "deixa de valer la pena"
 INSERCIONS.append(("### 7.1 Quants arbres calen?", [
     md(r"""
-Abans de començar, la idea en un dibuix: una corba de precisió **inventada** i una manera
-de mesurar «deixa de valer la pena». La banda grisa és ±1 punt al voltant de la precisió
+Abans de començar, la idea en un dibuix: una corba d'exactitud **inventada** i una manera
+de mesurar «deixa de valer la pena». La banda grisa és ±1 punt al voltant de l'exactitud
 amb el nombre d'arbres més gran; el punt vermell és el primer nombre d'arbres a partir
 del qual la corba ja no en surt. Amb les vostres dades la corba pot tenir una forma ben
 diferent (fins i tot plana).
@@ -212,14 +212,14 @@ primer_il = next(i for i in range(len(n_il)) if dins_il[i:].all())
 
 fig, ax = plt.subplots(figsize=(8, 4.5))
 ax.axhspan(final_il - 0.01, final_il + 0.01, color="gray", alpha=0.2, label="±1 punt del valor final")
-ax.plot(n_il, prec_il, marker="o", color="tab:blue", label="precisió (inventada)")
+ax.plot(n_il, prec_il, marker="o", color="tab:blue", label="exactitud (inventada)")
 ax.scatter([n_il[primer_il]], [prec_il[primer_il]], s=150, facecolor="none",
            edgecolor="tab:red", linewidth=2, zorder=3,
            label=f"a partir de {n_il[primer_il]} arbres ja no en surt")
 ax.set_xscale("log")
 ax.set_xticks(n_il, [str(n) for n in n_il])
 ax.set_xlabel("n_estimators (escala logarítmica)")
-ax.set_ylabel("Precisió a l'examen")
+ax.set_ylabel("Exactitud a l'examen")
 ax.set_title("Dades inventades: on s'aplana la corba")
 ax.legend(loc="lower right")
 ax.grid(alpha=0.3)
@@ -231,7 +231,7 @@ plt.show()
 INSERCIONS.append(("### 7.2 Arbre contra bosc amb Wine", [
     md(r"""
 Abans de començar, la idea en un dibuix: abans de dir qui guanya, mireu **quant es mou la
-precisió només canviant la partició**. Un sol arbre sobre dades inventades, avaluat amb 40
+exactitud només canviant la partició**. Un sol arbre sobre dades inventades, avaluat amb 40
 `random_state` diferents de `train_test_split`. La línia vermella és el que hauríeu vist
 amb una sola partició; l'amplada de l'histograma és el soroll que té qualsevol
 comparació feta així.
@@ -249,7 +249,7 @@ fig, ax = plt.subplots(figsize=(8, 4.5))
 ax.hist(prec_parts_il, bins=10, color="tab:blue", edgecolor="white")
 ax.axvline(prec_parts_il[0], color="tab:red", linestyle="--", linewidth=2,
            label=f"una sola partició (random_state=0): {prec_parts_il[0]:.1%}")
-ax.set_xlabel("Precisió a l'examen")
+ax.set_xlabel("Exactitud a l'examen")
 ax.set_ylabel("Nombre de particions")
 ax.set_title(f"Dades inventades: el mateix model, 40 particions "
              f"(de {min(prec_parts_il):.0%} a {max(prec_parts_il):.0%})")

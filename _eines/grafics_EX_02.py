@@ -66,7 +66,7 @@ GRAFICS[2] = (r"""
 Abans de començar, la idea en un dibuix: el que fa `train_test_split` i el que mesura
 `.score()`. A dalt, 100 files inventades partides 70/30: el model només veu les
 blaves. A sota, les 30 files d'examen, cada una verda si el model l'encerta i vermella
-si no. La precisió és comptar verds i dividir pel total, res més.
+si no. L'exactitud és comptar verds i dividir pel total, res més.
 """, r"""
 import numpy as np
 import matplotlib.pyplot as plt
@@ -95,7 +95,7 @@ for j, ok in enumerate(encert_il):
 ax2.set_xlim(0, n_examen_il)
 ax2.set_ylim(0, 1)
 ax2.axis("off")
-ax2.set_title(f"Les 30 files d'examen: precisió = {encert_il.sum()} encerts / 30 = "
+ax2.set_title(f"Les 30 files d'examen: exactitud = {encert_il.sum()} encerts / 30 = "
               f"{encert_il.mean():.2f}".replace(".", ","))
 plt.tight_layout()
 plt.show()
@@ -223,14 +223,14 @@ plt.show()
 
 GRAFICS[6] = (r"""
 Abans de començar, la idea en un dibuix: una taula amb dues mesures per model es pot
-llegir com un pla. Cada punt és un model **inventat**; ordenar per precisió és llegir-los
+llegir com un pla. Cada punt és un model **inventat**; ordenar per exactitud és llegir-los
 d'esquerra a dreta, i ordenar per sensibilitat, de baix a dalt. Feu la mateixa lectura
 amb la vostra taula.
 """, r"""
 import numpy as np
 import matplotlib.pyplot as plt
 
-models_il = {"model A": (0.95, 0.94), "model B": (0.93, 0.90),   # (precisió, sensibilitat)
+models_il = {"model A": (0.95, 0.94), "model B": (0.93, 0.90),   # (exactitud, sensibilitat)
              "model C": (0.91, 0.86), "model D": (0.88, 0.80)}   # valors inventats
 
 fig, ax = plt.subplots(figsize=(7.5, 5.5))
@@ -239,13 +239,13 @@ for nom, (acc, sens) in models_il.items():
     ax.annotate(nom, (acc, sens), textcoords="offset points", xytext=(8, 6))
 ax.annotate("", xy=(0.97, 0.775), xytext=(0.87, 0.775),
             arrowprops=dict(arrowstyle="->", color="tab:orange", linewidth=2))
-ax.text(0.92, 0.78, "ordre per precisió", color="tab:orange", ha="center")
+ax.text(0.92, 0.78, "ordre per exactitud", color="tab:orange", ha="center")
 ax.annotate("", xy=(0.865, 0.96), xytext=(0.865, 0.79),
             arrowprops=dict(arrowstyle="->", color="tab:red", linewidth=2))
 ax.text(0.868, 0.875, "ordre per\nsensibilitat", color="tab:red", va="center")
 ax.set_xlim(0.86, 0.98)
 ax.set_ylim(0.77, 0.97)
-ax.set_xlabel("precisió (accuracy)")
+ax.set_xlabel("exactitud (accuracy)")
 ax.set_ylabel("sensibilitat sobre la classe positiva")
 ax.set_title("Dades inventades: dues ordenacions de la mateixa taula")
 ax.grid(alpha=0.3)

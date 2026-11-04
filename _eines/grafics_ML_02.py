@@ -294,7 +294,7 @@ plt.show()
 # --- exercici 4: argmax dona una posicio, no un max_depth
 INSERCIONS.append(("### Exercici 4 — Trobeu la profunditat òptima", [
     md(r"""
-Abans de començar, la idea en un dibuix: una corba de precisió **inventada**. `np.argmax`
+Abans de començar, la idea en un dibuix: una corba d'exactitud **inventada**. `np.argmax`
 retorna la **posició** del màxim dins de la llista, i les posicions comencen a 0; el
 `max_depth` corresponent l'heu d'anar a buscar a la mateixa posició de `profunditats`.
 """),
@@ -312,7 +312,7 @@ ax.annotate(f"np.argmax → posició {pos_il}\nprofunditats[{pos_il}] → max_de
             arrowprops=dict(arrowstyle="->", color="tab:red"))
 ax.set_xticks(prof_il)
 ax.set_xlabel("max_depth")
-ax.set_ylabel("Precisió")
+ax.set_ylabel("Exactitud")
 ax.set_title("Dades inventades: la posició del màxim no és el max_depth")
 ax.legend(loc="lower right")
 ax.grid(alpha=0.3)

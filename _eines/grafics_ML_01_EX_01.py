@@ -129,7 +129,7 @@ plt.show()
 ]))
 
 # --- 5. frontera i corba entrenament / examen
-ML01_INSERCIONS.append(("El millor resultat surt amb `k=5`", [
+ML01_INSERCIONS.append(("Els dos extrems queden per sota dels valors del mig", [
     g(md(r"""
 ### Com es veu el sobreajust
 
@@ -171,7 +171,7 @@ plt.tight_layout()
 plt.show()
 """), "ml01_frontera"),
     g(md(r"""
-Ara la mateixa pregunta del principi de l'apartat, però mesurant **dues** precisions per a
+Ara la mateixa pregunta del principi de l'apartat, però mesurant **dues** exactituds per a
 cada $k$: la de les dades que el model ja ha vist (entrenament) i la de les que no ha vist
 mai (examen).
 """), "ml01_corba"),
@@ -194,8 +194,8 @@ ax.axvspan(200, 270, color="tab:green", alpha=0.08)
 ax.text(203, 0.62, "infraajust:\nho suavitza tot", color="tab:green")
 ax.set_ylim(0.6, 1.01)
 ax.set_xlabel("k (nombre de veïns)")
-ax.set_ylabel("Precisió")
-ax.set_title("Dades inventades: precisió a l'entrenament i a l'examen segons k")
+ax.set_ylabel("Exactitud")
+ax.set_title("Dades inventades: exactitud a l'entrenament i a l'examen segons k")
 ax.legend(loc="upper right")
 ax.grid(alpha=0.3)
 plt.show()
@@ -206,14 +206,14 @@ pitjor amb les que no ha vist. A `k=1` la corba blava toca el 100 %, i no vol di
 model ha memoritzat l'entrenament, no ha après la forma.
 
 I per això **es parteix el conjunt** en entrenament i examen. Si només mesuréssiu la
-precisió amb les dades d'entrenament, triaríeu sempre `k=1`, que és justament el pitjor
-per a dades noves. La precisió que val és la de l'examen, la de dades que el model no ha
+exactitud amb les dades d'entrenament, triaríeu sempre `k=1`, que és justament el pitjor
+per a dades noves. L'exactitud que val és la de l'examen, la de dades que el model no ha
 vist mai, perquè és la que tindrà quan el feu servir de veritat.
 """), "ml01_sobreajust"),
 ]))
 
 # --- 6. el parany de les escales
-ML01_INSERCIONS.append(("Amb `StandardScaler` la precisió puja", [
+ML01_INSERCIONS.append(("Amb `StandardScaler` l'exactitud puja", [
     g(md(r"""
 El parany en un dibuix. Agafem dues columnes, `petal_llarg` i `sepal_ample` ×100, i una
 flor concreta (l'estrella, una `virginica`). El cercle de línia discontínua són **tots els
@@ -298,7 +298,7 @@ plt.show()
 
 ML01_EXERCICIS.append(("# Exercici 2\n", [
     g(md(r"""
-Abans de començar, la idea en un dibuix: precisions inventades per a 30 valors de `k` i
+Abans de començar, la idea en un dibuix: exactituds inventades per a 30 valors de `k` i
 com les ha de llegir el vostre bucle. Compte amb el parany: `np.argmax` torna la
 **posició** a la llista, que comença a 0, mentre que `k` comença a 1.
 """), "ml01_il2"),
@@ -315,7 +315,7 @@ ax.annotate(f"argmax = posició {pos_il}\n→ k = {ks_il[pos_il]}", (ks_il[pos_i
             xytext=(ks_il[pos_il] - 12, prec_il[pos_il] - 0.03),
             arrowprops=dict(arrowstyle="->", color="tab:red"), color="tab:red")
 ax.set_xlabel("k")
-ax.set_ylabel("precisió (inventada)")
+ax.set_ylabel("exactitud (inventada)")
 ax.set_title("Dades inventades: el bucle es queda amb el màxim")
 ax.grid(alpha=0.3)
 plt.show()
@@ -323,40 +323,6 @@ plt.show()
 ]))
 
 ML01_EXERCICIS.append(("# Exercici 3\n", [
-    g(md(r"""
-Abans de començar, la idea en un dibuix: dues columnes inventades, una en centenars i una en
-unitats. Per a moltes parelles de files mirem quin tant per cent de la distància al quadrat
-aporta cada columna, abans i després d'escalar. És el que passarà amb Wine, però amb 13
-columnes en lloc de 2: quant canviarà la precisió ho heu de mesurar vosaltres.
-"""), "ml01_il3"),
-    g(code(r"""
-rng = np.random.default_rng(5)
-D_il = np.column_stack([rng.normal(700, 300, 200),      # columna en centenars
-                        rng.normal(2.0, 0.5, 200)])      # columna en unitats
-D_il_esc = (D_il - D_il.mean(axis=0)) / D_il.std(axis=0)
-
-def aportacio_il(M):
-    a, b = M[rng.integers(0, 200, 500)], M[rng.integers(0, 200, 500)]
-    q = (a - b) ** 2
-    return q.sum(axis=0) / q.sum() * 100
-
-abans_il, despres_il = aportacio_il(D_il), aportacio_il(D_il_esc)
-fig, ax = plt.subplots(figsize=(8, 3.5))
-for fila, (nom, ap) in enumerate([("sense escalar", abans_il), ("escalat", despres_il)]):
-    ax.barh(fila, ap[0], color="tab:orange", label="columna en centenars" if fila == 0 else None)
-    ax.barh(fila, ap[1], left=ap[0], color="tab:blue", label="columna en unitats" if fila == 0 else None)
-    ax.text(1, fila, f"{ap[0]:.1f} %", va="center", color="white")
-ax.set_yticks([0, 1], ["sense escalar", "escalat"])
-ax.set_xlabel("% de la distància al quadrat que aporta cada columna")
-ax.set_title("Dades inventades: qui decideix la distància")
-ax.set_xlim(0, 100)
-ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=2)
-ax.grid(alpha=0.3, axis="x")
-plt.show()
-"""), "ml01_il3"),
-]))
-
-ML01_EXERCICIS.append(("# Exercici 4\n", [
     g(md(r"""
 Abans de començar, la idea en un dibuix: el paràmetre `metric` canvia **qui** són els
 veïns, no com voten. El mateix punt nou (l'estrella) entre punts inventats, i els seus 5
@@ -457,7 +423,7 @@ EX01_EXERCICIS.append(("# Exercici 3\n", [
 Abans de començar, la idea en un dibuix: com es comprova que l'escalat s'ha fet bé. Tres
 columnes inventades, escalades amb un `StandardScaler` ajustat només amb l'entrenament. A
 l'entrenament les mitjanes surten 0 i les desviacions 1 exactes; a l'examen, a prop però
-no exactes. Si a l'entrenament no us surt així, no compareu cap precisió.
+no exactes. Si a l'entrenament no us surt així, no compareu cap exactitud.
 """), "ex01_il3"),
     g(code(r"""
 from sklearn.preprocessing import StandardScaler
@@ -534,7 +500,7 @@ fig, ax = plt.subplots(figsize=(9, 4))
 ax.barh(noms_il, valors_il, color=np.where(valors_il < dummy_il, "tab:red", "tab:blue"))
 ax.axvline(dummy_il, color="black", linestyle="--", label="DummyClassifier (classe més nombrosa)")
 ax.set_xlim(0, 1)
-ax.set_xlabel("precisió a l'examen (inventada)")
+ax.set_xlabel("exactitud a l'examen (inventada)")
 ax.set_title("Dades inventades: en vermell, el que no guanya el model tonto")
 ax.legend(loc="lower right")
 ax.grid(alpha=0.3, axis="x")

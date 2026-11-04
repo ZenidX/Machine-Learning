@@ -27,7 +27,7 @@ pot ensenyar**, i aquesta és tota la gràcia de la bateria:
 | | Conjunt | El que ensenya que Iris no pot |
 |---|---|---|
 | **EX_01** | Wine · 178×13, 3 classes | Amb 13 columnes ja no es pot mirar tot en un gràfic. I com que `proline` va per centenars i altres columnes no arriben a 1, **el parany de les escales aquí es mesura**. |
-| **EX_02** | Breast cancer · 569×30, binari | **La precisió no serveix de res tota sola.** En un diagnòstic, deixar passar un tumor maligne no val igual que una falsa alarma. |
+| **EX_02** | Breast cancer · 569×30, binari | **L'exactitud no serveix de res tota sola.** En un diagnòstic, deixar passar un tumor maligne no val igual que una falsa alarma. |
 | **EX_03** | Digits · 1797×64, 10 classes | **Una imatge també és una taula.** Cada columna és un píxel i no vol dir res tota sola, i els mateixos cinc models funcionen igual. |
 | **EX_04** | Dades fabricades · 2 columnes | Amb només dues columnes **es pot dibuixar la frontera de cada model** i veure'n la forma: la recta de la logística, les escales de l'arbre, les corbes de l'SVM. |
 | **EX_05** | Wine, embrutat a posta | **A la feina les dades no vénen netes.** Valors que falten, columnes de text, duplicats. I per què l'ordre de les operacions importa. |
@@ -39,7 +39,7 @@ L'ordre és el recomanat i va de menys a més exigent. El primer és un calentam
 i el cinquè són els que més canvien la manera de pensar.
 
 - **EX_01 Wine** — just després de la teoria. Repeteix el flux sencer amb més columnes.
-- **EX_02 Cancer** — quan ja donen per bona la precisió com a mesura. Serveix per trencar-la.
+- **EX_02 Cancer** — quan ja donen per bona l'exactitud com a mesura. Serveix per trencar-la.
 - **EX_03 Digits** — quan ja es mouen amb soltesa pel flux.
 - **EX_04 Fronteres** — es pot avançar: ajuda a entendre la teoria, no només a practicar-la.
 - **EX_05 Dades brutes** — l'últim dels supervisats, perquè necessita tota la resta i és el més pròxim a la feina real.

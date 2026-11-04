@@ -77,7 +77,7 @@ const funcionsFO01 = {
     { nom: "X[X > 5]", text: "Les màscares booleanes: filtrar sense bucles. Combinades amb & i |, i cada condició entre parèntesis." },
     { nom: "a - b, a * 2", text: "Les operacions vectoritzades, element a element i sense bucle. Amb el broadcasting, una fila es resta de tota la taula d'un sol cop." },
     { nom: "np.sqrt(((a - b)**2).sum())", text: "La distància euclidiana, que és el mateix que np.linalg.norm(a - b). Una línia, i és el cor del k-NN." },
-    { nom: "(pred == y).mean()", text: "La precisió d'un model: una màscara de True/False i la seva mitjana." },
+    { nom: "(pred == y).mean()", text: "L'exactitud d'un model: una màscara de True/False i la seva mitjana." },
     { nom: ".argmax() i .argsort()", text: "La posició, no el valor. Per trobar la mostra més gran o les k més properes." },
     { nom: ".copy()", text: "Una llesca no és una còpia: si la modifiques, modifiques l'original. Si l'has de tocar, copia-la abans." },
   ],

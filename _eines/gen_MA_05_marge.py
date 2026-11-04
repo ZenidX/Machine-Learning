@@ -1338,8 +1338,8 @@ model_ker = SVC(kernel="poly", degree=2, gamma=1, coef0=0, C=10).fit(Xcir, ycir)
 
 dec_phi = model_phi.decision_function(Phi)
 dec_ker = model_ker.decision_function(Xcir)
-print(f"precisió lineal sobre phi(X): {model_phi.score(Phi, ycir):.1%}")
-print(f"precisió poly sobre X       : {model_ker.score(Xcir, ycir):.1%}")
+print(f"exactitud lineal sobre phi(X): {model_phi.score(Phi, ycir):.1%}")
+print(f"exactitud poly sobre X       : {model_ker.score(Xcir, ycir):.1%}")
 print("mateixes prediccions?", np.array_equal(model_phi.predict(Phi), model_ker.predict(Xcir)))
 print(f"diferència màxima de decision_function: {np.abs(dec_phi - dec_ker).max():.1e}")
 """))
@@ -1632,7 +1632,7 @@ plt.legend()
 plt.show()
 
 model_dur = SVC(kernel="linear", C=1e6).fit(X_solapa, y_solapa)
-print(f"amb C molt gran (1e6) la precisió d'entrenament és "
+print(f"amb C molt gran (1e6) l'exactitud d'entrenament és "
       f"{model_dur.score(X_solapa, y_solapa):.1%}: ni forçant el màxim s'arriba "
       f"al 100 %")
 """))
@@ -1653,7 +1653,7 @@ for C in [0.001, 0.01, 0.1, 1.0, 10.0, 100.0]:
         "marge 2/||w||": 2 / np.linalg.norm(ww),
         "suma de xi": xi.sum(),
         "xi > 0": int((xi > 1e-9).sum()),
-        "precisio entren.": m.score(X_solapa, y_solapa),
+        "exactitud entren.": m.score(X_solapa, y_solapa),
     })
 
 taula_C = pd.DataFrame(files).set_index("C").round(4)
@@ -1683,7 +1683,7 @@ dins.
 Entre `C=10` i `C=100` ja no canvia res: amb aquest conjunt, un preu de 10 per
 unitat de violació ja és prou dissuasiu i pujar-lo més no altera la solució.
 
-Notareu també que la precisió d'entrenament es mou poc (entre 95,0 % i
+Notareu també que l'exactitud d'entrenament es mou poc (entre 95,0 % i
 96,5 %). `C` no serveix per encertar més a l'entrenament: serveix per decidir
 **com de disposat estàs a acceptar errors a canvi d'un marge més ample**, i
 això és una decisió sobre la generalització, no sobre l'entrenament.
@@ -1755,10 +1755,12 @@ parcials igualades a zero i resolent el sistema lineal amb
 Aneu amb compte amb el gradient de la restricció: ara $\nabla g = (2, 1)$, no
 $(1,1)$ com al punt 4.
 
-**Com saps que ho has fet bé:** les dues maneres han de donar
-$(x, y) = (2{,}0,\; 1{,}0)$ amb $f = 5{,}0$ i $\lambda = 2{,}0$. La
-diferència entre el resultat del sistema lineal i el de `scipy` ha de ser
-inferior a $10^{-5}$.
+**Com saps que ho has fet bé:** la diferència entre el resultat del sistema
+lineal i el de `scipy` ha de ser inferior a $10^{-5}$. El punt que trobeu ha de
+complir la restricció, $2x + y = 5$, i al punt s'ha de complir la condició de
+tangència: $\nabla f = (2x,\ 2y)$ ha de ser exactament $\lambda$ vegades
+$\nabla g = (2, 1)$, amb la mateixa $\lambda$ a les dues components. Si
+alguna d'aquestes tres coses falla, revisa les derivades parcials del lagrangià.
 """))
 
 A(md(r"""
@@ -1823,10 +1825,13 @@ Entreneu un `SVC(kernel="linear", C=1e5)` i comproveu:
 
 Imprimiu els números, no només un `True`.
 
-**Com saps que ho has fet bé:** han de sortir **2 vectors de suport**, amb
-$|w \cdot x_i + b|$ igual a 1 fins a un error de l'ordre de $10^{-8}$; el
-mínim de la resta ha de ser aproximadament **1,0615**, i cap mostra per sota
-d'1. La diferència entre el $w$ reconstruït i `coef_` ha de ser **0,0**.
+**Com saps que ho has fet bé:** les tres comprovacions de l'enunciat són la
+prova, i han de sortir com al punt 5: $|w \cdot x_i + b|$ dels vectors de suport
+igual a 1 fins a un error petit (amb `C=1e5`, de l'ordre de $10^{-7}$ o menys),
+cap altra mostra per sota d'1, i el $w$ reconstruït igual a `coef_` (diferència 0
+o de l'ordre de l'arrodoniment). A més, `n_support_` ha de tenir almenys un vector
+de suport de **cada** espècie: sense un a cada costat no hi hauria marge. Quants
+n'hi ha i com de lluny queda la resta, ho llegeixes tu.
 """))
 
 A(md(r"""
@@ -1957,15 +1962,16 @@ dues espècies se solapen de veritat.
 
 Per a `C` a `[0.01, 0.1, 1, 10, 100]`, entreneu un `SVC(kernel="linear")` i
 munteu una taula amb el nombre de vectors de suport, $\|w\|$, el marge
-$2/\|w\|$ i la precisió d'entrenament. Feu un gràfic del nombre de vectors de
+$2/\|w\|$ i l'exactitud d'entrenament. Feu un gràfic del nombre de vectors de
 suport en funció de `C`, amb l'eix de `C` en escala logarítmica
 (`plt.xscale("log")`).
 
-**Com saps que ho has fet bé:** els vectors de suport han de baixar de **94**
-amb `C=0,01` a **12** amb `C=100`, passant per 50, 24 i 15. El $\|w\|$ ha de
-fer el camí contrari, de **0,6193** a **8,9312**. La precisió d'entrenament
-s'ha de quedar clavada al voltant del 92-95 %: el que canvia no és l'encert,
-és de quants punts depèn el model.
+**Com saps que ho has fet bé:** a cada fila, el marge ha de ser exactament 2
+dividit per la columna de $\|w\|$, i $\|w\|$ ha de coincidir amb
+`np.linalg.norm(model.coef_)`. El nombre de vectors de suport ha de ser
+`model.n_support_.sum()`, i no pot passar del nombre de flors que entreneu (100)
+ni baixar de 2, un per espècie com a mínim. Cap a on es mou cada columna quan puja
+`C`, i què li passa a l'exactitud, ho llegeixes tu a la taula i al gràfic.
 """))
 
 A(md(r"""
@@ -1998,7 +2004,7 @@ A(code(r"""
 # Construeix el subconjunt versicolor + virginica amb petal_llarg i petal_ample.
 
 # Per a cada C de [0.01, 0.1, 1, 10, 100]: entrena, i guarda en una llista de
-# diccionaris el nombre de vectors de suport, ||w||, 2/||w|| i la precisió.
+# diccionaris el nombre de vectors de suport, ||w||, 2/||w|| i l'exactitud.
 
 # Mostra la taula amb pd.DataFrame i dibuixa vectors de suport en funció de C
 # amb plt.xscale("log"). Etiqueta els dos eixos en català.
@@ -2053,7 +2059,7 @@ Què s'ha **demostrat** en aquest quadern, no què s'ha explicat:
 - Que el `C` de `SVC` és el **preu de violar una restricció** al problema de
   marge tou $\frac{1}{2}\|w\|^2 + C\sum_i\xi_i$. Comprovat: de `C=0,001` a
   `C=10`, els vectors de suport baixen de 182 a 23 i el marge s'estreny de
-  6,4848 a 1,0381, mentre la precisió d'entrenament es mou només entre
+  6,4848 a 1,0381, mentre l'exactitud d'entrenament es mou només entre
   95,0 % i 96,5 %.
 
 ### El que no s'ha demostrat, i cal saber-ho

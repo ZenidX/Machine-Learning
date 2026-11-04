@@ -1216,7 +1216,7 @@ la variància; amb 9, el 93.99 %, que no arriba al llindar.
 ### Ha servit de res?
 
 Dir «hem passat de 30 a 10» no és un resultat fins que es mesura. Entrenem una regressió
-logística amb les 30 columnes i amb les 10 components, i comparem precisió i temps.
+logística amb les 30 columnes i amb les 10 components, i comparem exactitud i temps.
 
 Una precaució metodològica: el PCA s'ajusta **només amb les dades d'entrenament** i després
 s'aplica al test. Ajustar-lo amb tot el dataset seria deixar que informació del test
@@ -1235,7 +1235,7 @@ X_tr, X_te, y_tr, y_te = train_test_split(X_can, y_can, test_size=0.3,
 
 
 def entrena_i_cronometra(Xa, ya, Xb, yb, repeticions=20):
-    \"\"\"Entrena una regressió logística `repeticions` vegades. Retorna (precisió, ms).\"\"\"
+    \"\"\"Entrena una regressió logística `repeticions` vegades. Retorna (exactitud, ms).\"\"\"
     t0 = time.perf_counter()
     for _ in range(repeticions):
         model = LogisticRegression(max_iter=5000).fit(Xa, ya)
@@ -1251,29 +1251,29 @@ pca_red = PCA(n_components=k95).fit(X_tr)
 acc_k, ms_k = entrena_i_cronometra(pca_red.transform(X_tr), y_tr,
                                    pca_red.transform(X_te), y_te)
 
-print(f"30 columnes    -> precisió {acc_30:.4f}   temps {ms_30:.2f} ms")
-print(f"{k95} components  -> precisió {acc_k:.4f}   temps {ms_k:.2f} ms")
-print(f"\\nPrecisió perduda: {100*(acc_30 - acc_k):.2f} punts")
+print(f"30 columnes    -> exactitud {acc_30:.4f}   temps {ms_30:.2f} ms")
+print(f"{k95} components  -> exactitud {acc_k:.4f}   temps {ms_k:.2f} ms")
+print(f"\\nExactitud perduda: {100*(acc_30 - acc_k):.2f} punts")
 print(f"Temps: {ms_30/ms_k:.2f} vegades més ràpid")
 """))
 
 A(md(r"""
 Els números de la nostra execució:
 
-| | Precisió al test | Temps d'entrenament |
+| | Exactitud al test | Temps d'entrenament |
 |---|---|---|
 | 30 columnes | **0.9825** | 3.2 ms |
 | 10 components | **0.9708** | 2.7 ms |
 
-Es perd **1.17 punts** de precisió i s'estalvia entre un 15 i un 20 % de temps, segons
+Es perd **1.17 punts** d'exactitud i s'estalvia entre un 15 i un 20 % de temps, segons
 l'execució. Amb un dataset d'aquesta mida el temps és irrellevant: 3.2 mil·lisegons contra
 2.7 no justifica res, i els vostres números seran diferents dels nostres perquè depenen de
-la màquina. La precisió, en canvi, és determinista i us ha de sortir exactament igual.
+la màquina. L'exactitud, en canvi, és determinista i us ha de sortir exactament igual.
 **El PCA, aquí, no s'ha de vendre com una optimització de velocitat.**
 
 El que sí que val la pena retenir:
 
-- La reducció **costa** precisió. Poca, però costa. Qui digui que el PCA és gratis
+- La reducció **costa** exactitud. Poca, però costa. Qui digui que el PCA és gratis
   s'equivoca.
 - El guany real apareix quan $d$ és gran de veritat (milers de columnes: text, imatges) o
   quan el model que ve després escala malament amb la dimensió.
@@ -1325,7 +1325,7 @@ print(f"Rang de la 1a component, anell interior: "
       f"[{z1[y_cer==1].min():.3f}, {z1[y_cer==1].max():.3f}]")
 
 acc_lineal = LogisticRegression().fit(z1, y_cer).score(z1, y_cer)
-print(f"\\nPrecisió d'una logística sobre la 1a component: {acc_lineal:.4f}")
+print(f"\\nExactitud d'una logística sobre la 1a component: {acc_lineal:.4f}")
 """))
 
 A(md(r"""
@@ -1366,7 +1366,7 @@ print(f"Rang de la 1a component, anell interior: "
       f"[{k1[y_cer==1].min():.4f}, {k1[y_cer==1].max():.4f}]")
 
 acc_kernel = LogisticRegression().fit(k1, y_cer).score(k1, y_cer)
-print(f"\\nPrecisió d'una logística sobre la 1a component del KernelPCA: {acc_kernel:.4f}")
+print(f"\\nExactitud d'una logística sobre la 1a component del KernelPCA: {acc_kernel:.4f}")
 """))
 
 A(code("""
@@ -1504,8 +1504,9 @@ grisos, tots de 0 a 255. En qualsevol altre cas, escaleu.
 A(md(r"""
 ## 11. Exercicis
 
-Quatre exercicis. No fan servir res que no surti en aquest quadern, i cada enunciat porta el
-número que us ha de sortir per saber si ho heu fet bé.
+Quatre exercicis. No fan servir res que no surti en aquest quadern, i cada enunciat porta una
+manera de comprovar si ho heu fet bé (una propietat que s'ha de complir o una comparació amb
+scikit-learn), no el número que us ha de sortir.
 """))
 
 A(md(r"""
@@ -1518,10 +1519,13 @@ les 10 xifres amb colors diferents (useu `plt.scatter(..., c=y, cmap="tab10")` i
 
 Responeu també: quina fracció de variància conserven les dues primeres components?
 
-**Com saps que ho has fet bé**: la primera component ha d'explicar al voltant del **14.9 %**
-i la segona al voltant del **13.6 %**, un **28.5 %** entre les dues. Al gràfic han de quedar
-grups reconeixibles (el 0 i el 6, ben separats) però amb molt de solapament: amb el 28 % de
-la variància no es poden fer miracles.
+**Com saps que ho has fet bé**: compara-ho amb scikit-learn, com a la secció del PCA
+complet: `PCA(n_components=2).fit(X_dig).explained_variance_ratio_` ha de donar les mateixes
+dues fraccions que la teva funció, i les coordenades, les mateixes en valor absolut (el
+signe d'un vector propi no està definit). La primera fracció no pot ser més petita que la
+segona, i les 64 fraccions juntes han de sumar 1. Si al gràfic no veus cap grup, mira si
+has restat la mitjana abans de projectar. Quina fracció conserven, i què se'n veu al
+gràfic, ho dius tu.
 
 **Nota**: els píxels ja estan tots a la mateixa unitat (0-16), així que aquí **no** cal
 `StandardScaler`.
@@ -1581,10 +1585,14 @@ $$\mathrm{RMSE} = \sqrt{\frac{1}{n \cdot d}\sum_{i,j}(X_{ij} - \hat{X}_{ij})^2}$
 Feu-ho sobre `load_digits()` per a $k = 2$, $10$ i $30$, i imprimiu els tres errors al
 costat de la variància acumulada corresponent.
 
-**Com saps que ho has fet bé**: amb $k=2$ l'RMSE ha de ser al voltant de **3.66**; amb
-$k=10$, de **2.22**; amb $k=30$, de **0.88**. La variància acumulada corresponent és 28.5 %,
-73.8 % i 95.9 %. Comproveu que l'error baixa quan la variància acumulada puja, i que amb
-$k = 64$ (totes les components) l'error és pràcticament zero ($10^{-14}$).
+**Com saps que ho has fet bé**: l'error ha de baixar quan la variància acumulada puja, i
+amb $k = 64$ (totes les components) ha de ser pràcticament zero, de l'ordre de $10^{-14}$:
+és l'arrodoniment, no informació perduda. Hi ha també un lligam exacte que podeu comprovar:
+l'RMSE al quadrat ha de ser **la suma dels valors propis que heu llençat dividida per 64**
+(el nombre de columnes), perquè cada valor propi és la variància que hi havia en aquella
+direcció. Calculeu-ho pels dos camins i han de coincidir. I amb scikit-learn,
+`pca.inverse_transform(pca.transform(X_dig))` d'un `PCA(n_components=k)` us ha de donar la
+mateixa $\hat{X}$ que la vostra fórmula.
 """))
 
 A(md(r"""
@@ -1689,13 +1697,17 @@ A la secció 8 heu vist que el dataset de càncer necessita 10 components per al
 Calculeu quantes en fan falta per al **99 %**, i quantes per al 90 %. Feu una taula amb els
 tres llindars (90, 95, 99) i el nombre de components de cadascun.
 
-Després entreneu la regressió logística amb els tres talls i afegiu la precisió al test a la
+Després entreneu la regressió logística amb els tres talls i afegiu l'exactitud al test a la
 taula (feu servir el mateix `train_test_split` de la secció 8).
 
-**Com saps que ho has fet bé**: per al 99 % en fan falta **17** components, i per al 90 %,
-**7**. Fixeu-vos en el que això vol dir: passar del 95 % al 99 % de variància costa **7
-components més**, gairebé el doble, i després compareu-ho amb el que guanyeu en precisió.
-Escriviu una frase dient quin dels tres talls triaríeu i per què.
+**Com saps que ho has fet bé**: el nombre de components no pot baixar mai quan puja el
+llindar (més variància demana més components, no menys), i la fila del 95 % ha de tornar a
+donar les 10 components i la mateixa exactitud de la secció 8; si no, heu calculat
+l'acumulada o la partició d'una altra manera. Cada $k$ el podeu contrastar amb
+scikit-learn: `PCA(n_components=0.99).fit(...)` sobre les mateixes dades escalades tria
+sol el nombre de components, i el té a `.n_components_`. Després compareu quantes
+components de més costa cada llindar amb el que guanyeu en exactitud, i escriviu una frase
+dient quin dels tres talls triaríeu i per què.
 """))
 
 A(md(r"""
@@ -1730,8 +1742,8 @@ plt.show()
 A(code("""
 # for llindar in [0.90, 0.95, 0.99]:
 #     k = int(np.argmax(acumulada >= llindar) + 1)
-#     entrena amb k components i guarda la precisió
-#     print(llindar, k, precisió)
+#     entrena amb k components i guarda l'exactitud
+#     print(llindar, k, exactitud)
 """))
 
 # ---------------------------------------------------------------- resum
@@ -1764,8 +1776,8 @@ Què s'ha demostrat en aquest quadern, amb números:
 - **El PCA no mira les etiquetes.** A Iris, dues components conserven el 97.77 % de la
   variància i les tres espècies surten separades igualment. És el primer resultat no
   supervisat del curs.
-- **Reduir costa precisió, i el temps no és l'argument.** Al càncer de mama, 10 de 30
-  components conserven el 95.16 % de la variància i la precisió baixa de 0.9825 a 0.9708.
+- **Reduir costa exactitud, i el temps no és l'argument.** Al càncer de mama, 10 de 30
+  components conserven el 95.16 % de la variància i l'exactitud baixa de 0.9825 a 0.9708.
 - **El PCA és lineal, i això és un límit dur.** Amb dos anells concèntrics la variància es
   reparteix 50/50 i un classificador sobre la primera component encerta el 50.00 %.
   `KernelPCA` amb RBF puja al 100 %: és un canvi d'eina, no d'ajust, i es paga perdent la
