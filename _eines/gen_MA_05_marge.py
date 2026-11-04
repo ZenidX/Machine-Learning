@@ -372,6 +372,43 @@ imposar.
 **La fórmula $2/\|w\|$ no és la fórmula del marge: és la fórmula del marge
 sota una normalització concreta.** Si algú us la dóna sense dir-ho, us està
 amagant un pas.
+
+Dibuixat. Als tres panells la frontera negra és **la mateixa recta**. El que canvia són
+les dues rectes discontínues, on $w \cdot x + b = +1$ i $w \cdot x + b = -1$: depenen de
+l'escala. Només amb la normalització passen just pels punts més propers, i només llavors
+la franja entre elles és el carrer buit i fa $2/\|w\|$ d'ample.
+"""))
+
+A(code(r"""
+fig, axs = plt.subplots(1, 3, figsize=(16, 5), sharey=True)
+g1, g2 = np.meshgrid(np.linspace(0.5, 5.5, 300), np.linspace(-0.1, 2.0, 300))
+casos = [(w_c, b_c, "(w, b) de la recta C"),
+         (w_gran, b_gran, "(5w, 5b): mateixa recta"),
+         (w_norm, b_norm, "normalitzada: el punt més proper dona 1")]
+for ax, (ww, bb, titol) in zip(axs, casos):
+    valor = g1 * ww[0] + g2 * ww[1] + bb
+    ax.contourf(g1, g2, valor, levels=[-1, 1], colors=["gold"], alpha=0.35)
+    ax.contour(g1, g2, valor, levels=[-1, 0, 1], colors="k", linestyles=["--", "-", "--"])
+    ax.scatter(X[y == 0, 0], X[y == 0, 1], color="tab:blue", edgecolor="k", s=20)
+    ax.scatter(X[y == 1, 0], X[y == 1, 1], color="tab:orange", edgecolor="k", s=20)
+    a_prop = np.argsort(np.abs(X @ ww + bb))[:2]       # els dos punts més propers
+    ax.scatter(X[a_prop, 0], X[a_prop, 1], s=180, facecolors="none",
+               edgecolors="tab:red", linewidths=2)
+    ax.set_title(f"{titol}\n$2/\\|w\\|$ = {2 / np.linalg.norm(ww):.3f}")
+    ax.set_xlabel("llargada del pètal")
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("amplada del pètal")
+fig.suptitle("La frontera no es mou; les rectes $w \\cdot x + b = \\pm 1$ sí "
+             "(cercles vermells: els punts més propers)")
+plt.tight_layout()
+plt.show()
+"""))
+
+A(md(r"""
+A l'esquerra la franja és més ampla que el buit (els punts més propers hi queden a
+dins) i al mig és molt més estreta. Cap de les dues és el marge. A la dreta les rectes
+discontínues toquen els cercles vermells: ara sí, $2/\|w\| = 1{,}273$ és l'amplada del
+carrer.
 """))
 
 # ------------------------------------------------- 3. plantejament formal
@@ -639,6 +676,75 @@ cas coincideixen fins en la longitud.
 Cap cercle més petit que el blau arriba a tocar la recta. Per això
 $f = 0{,}5$ és el mínim assolible **dins de la restricció**, tot i que el
 mínim de $f$ sense restriccions és 0.
+
+### 4.5 El passeig, punt per punt
+
+Comprovem la frase «només a l'òptim els gradients són paral·lels». Agafem tres punts de
+la recta, calculem $\nabla f = (2x, 2y)$ i $\nabla g = (1, 1)$ a cadascun i mirem si són
+paral·lels. Dos vectors del pla són paral·lels quan el seu «producte creuat»
+$a_1 b_2 - a_2 b_1$ és zero (és l'àrea del paral·lelogram que formen: zero si estan
+alineats).
+"""))
+
+A(code(r"""
+punts_recta = {"x = -0.3": -0.3, "x = 0.2": 0.2, "x = 0.5 (òptim)": 0.5, "x = 1.1": 1.1}
+for nom, xr in punts_recta.items():
+    pr = np.array([xr, 1 - xr])
+    gf = 2 * pr                                     # gradient de f
+    gg = np.array([1.0, 1.0])                       # gradient de g
+    creuat = gf[0] * gg[1] - gf[1] * gg[0]
+    print(f"{nom:16s}  f = {f_obj(pr):.3f}   grad f = {gf}   creuat = {creuat:+.2f}")
+"""))
+
+A(md(r"""
+El producte creuat només és zero a $x = 0{,}5$, i és també on $f$ és més petita. Dibuixat:
+a l'esquerra, el paisatge de $f$ en 3D i, en vermell, el camí que fa la recta $x + y = 1$
+quan la pugem fins a la superfície: una paràbola amb un sol punt més baix. A la dreta,
+els gradients als quatre punts: només a l'òptim la fletxa verda ($\nabla f$) i la lila
+($\nabla g$) van en la mateixa direcció.
+"""))
+
+A(code(r"""
+fig = plt.figure(figsize=(15, 6))
+
+ax = fig.add_subplot(1, 2, 1, projection="3d")
+s1, s2 = np.meshgrid(np.linspace(-1.2, 1.8, 60), np.linspace(-1.2, 1.8, 60))
+ax.plot_surface(s1, s2, s1 ** 2 + s2 ** 2, cmap="viridis", alpha=0.45, linewidth=0)
+xr = np.linspace(-0.8, 1.8, 100)
+ax.plot(xr, 1 - xr, np.zeros_like(xr), color="tab:red", linestyle="--", label="la recta, a terra")
+ax.plot(xr, 1 - xr, xr ** 2 + (1 - xr) ** 2, color="tab:red", linewidth=3,
+        label="f al llarg de la recta")
+ax.scatter([0.5], [0.5], [0.5], color="black", s=60, depthshade=False, label="òptim")
+ax.set_xlabel("$x$")
+ax.set_ylabel("$y$")
+ax.set_zlabel("$f$")
+ax.set_title("Pujant la recta fins al paisatge: una paràbola")
+ax.view_init(elev=25, azim=-130)
+ax.legend(loc="upper left", fontsize=9)
+
+ax2 = fig.add_subplot(1, 2, 2)
+ax2.contour(xx, yy, zz, levels=[0.1, 0.25, 0.5, 1.0, 2.0, 3.5], colors="tab:gray", alpha=0.6)
+ax2.plot(x_recta, 1 - x_recta, color="tab:red", linewidth=2)
+for nom, xr0 in punts_recta.items():
+    pr = np.array([xr0, 1 - xr0])
+    gf = 2 * pr
+    ax2.scatter(*pr, color="black", s=40, zorder=5)
+    ax2.annotate("", xy=pr + 0.3 * gf / np.linalg.norm(gf) * 1.5, xytext=pr,
+                 arrowprops=dict(arrowstyle="->", color="tab:green", lw=2))
+    ax2.annotate("", xy=pr + 0.3 * np.array([1, 1]) / np.sqrt(2) * 1.5, xytext=pr,
+                 arrowprops=dict(arrowstyle="->", color="tab:purple", lw=2, linestyle=":"))
+ax2.plot([], [], color="tab:green", label=r"$\nabla f$ (direcció)")
+ax2.plot([], [], color="tab:purple", linestyle=":", label=r"$\nabla g$ (direcció)")
+ax2.set_xlim(-1.2, 2.0)
+ax2.set_ylim(-1.2, 2.0)
+ax2.set_aspect("equal")
+ax2.set_xlabel("$x$")
+ax2.set_ylabel("$y$")
+ax2.set_title("Només a l'òptim les dues fletxes coincideixen")
+ax2.legend(loc="upper right")
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
 """))
 
 # ---------------------------------- 5. folganca complementaria
@@ -771,6 +877,188 @@ Els números exactes:
 La frontera parteix el pla en tres zones: dins de la banda, res; a la vora
 exacta, dos punts; fora, tota la resta. Això és la folgança complementària
 feta números.
+
+### La folgança complementària, dibuixada
+
+Primer el cas més petit possible, per veure les dues opcions («o no compta, o és al
+límit») sense res més al voltant. El problema del punt 4, però amb una **desigualtat**:
+el punt més proper a l'origen **dins** d'un semiplà. Dos casos:
+
+- $x + y \ge 1$: l'origen no hi és, el mínim lliure queda fora. L'òptim s'ha de quedar
+  a la vora: la restricció és **activa** i el multiplicador surt positiu.
+- $x + y \ge -1$: l'origen ja hi és a dins. L'òptim és el mínim lliure, la restricció no
+  fa res: és **inactiva** i el multiplicador és zero.
+
+El multiplicador el traiem igual que al punt 4.2: a l'òptim, $\nabla f = \lambda \nabla g$,
+així que $\lambda = \nabla f \cdot \nabla g \,/\, \|\nabla g\|^2$.
+"""))
+
+A(code(r"""
+fig, axs = plt.subplots(1, 2, figsize=(13, 5.8), sharey=True)
+for ax, cte in zip(axs, [1.0, -1.0]):
+    restr = {"type": "ineq", "fun": lambda v, c=cte: v[0] + v[1] - c}     # x + y - c >= 0
+    opt = minimize(f_obj, x0=np.array([2.0, 2.0]), constraints=[restr]).x
+    gf = 2 * opt
+    lam = round(gf @ np.array([1.0, 1.0]) / 2.0, 6) + 0.0     # + 0.0: fora el -0.0
+    opt = np.round(opt, 6) + 0.0
+    activa = abs(opt.sum() - cte) < 1e-6
+    print(f"x + y >= {cte:+.0f}:  òptim = {opt}   x + y - c = {opt.sum() - cte:.4f}"
+          f"   lambda = {lam:.4f}   ->  {'ACTIVA' if activa else 'inactiva'}")
+
+    ax.contour(xx, yy, zz, levels=[0.1, 0.25, 0.5, 1.0, 2.0, 3.5], colors="tab:gray", alpha=0.6)
+    ax.contourf(xx, yy, xx + yy - cte, levels=[0, 100], colors=["tab:green"], alpha=0.12)
+    ax.plot(x_recta, cte - x_recta, color="tab:red", linewidth=2, label=f"vora: $x + y = {cte:.0f}$")
+    ax.scatter(0, 0, marker="+", color="black", s=120, label="mínim lliure (0, 0)")
+    ax.scatter(*opt, s=120, color="black", zorder=5, label=f"òptim, $\\lambda$ = {lam:.2f}")
+    ax.set_xlim(-1.5, 2.0)
+    ax.set_ylim(-1.5, 2.0)
+    ax.set_aspect("equal")
+    ax.set_xlabel("$x$")
+    ax.set_title(f"$x + y \\geq {cte:.0f}$: restricció " + ("activa" if activa else "inactiva"))
+    ax.legend(loc="upper right", fontsize=9)
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("$y$")
+fig.suptitle("Zona verda: on es permet estar. O l'òptim és a la vora, o el multiplicador és 0")
+plt.tight_layout()
+plt.show()
+"""))
+
+A(md(r"""
+A l'esquerra, l'òptim és $(0{,}5,\ 0{,}5)$, enganxat a la vora, amb $\lambda = 1$. A la
+dreta, l'òptim és l'origen, lluny de la vora, amb $\lambda = 0$: si esborréssiu la
+restricció, la resposta seria la mateixa.
+
+L'SVM té una restricció com aquesta **per cada mostra**. Ara posem els cent multiplicadors
+d'Iris en un sol gràfic: per a cada mostra, a l'eix horitzontal el seu marge funcional
+$y_i(w \cdot x_i + b)$ i al vertical la seva $\alpha_i$. La folgança complementària diu
+que cap punt pot tenir les dues coses alhora: $\alpha_i > 0$ i marge $> 1$.
+"""))
+
+A(code(r"""
+ys = 2 * y - 1                                    # de {0, 1} a {-1, +1}
+marge_funcional = ys * (X @ w + b)
+alpha = np.zeros(len(X))
+alpha[model.support_] = np.abs(model.dual_coef_[0])
+
+fig, ax = plt.subplots(figsize=(9, 4.8))
+ax.scatter(marge_funcional[alpha == 0], alpha[alpha == 0], color="tab:blue", s=30, alpha=0.6,
+           label=f"{(alpha == 0).sum()} mostres amb $\\alpha_i = 0$")
+ax.scatter(marge_funcional[alpha > 0], alpha[alpha > 0], color="tab:red", s=120, edgecolor="k",
+           zorder=3, label=f"{(alpha > 0).sum()} vectors de suport ($\\alpha_i > 0$)")
+ax.axvline(1, color="black", linestyle="--", linewidth=1)
+ax.annotate("marge funcional = 1\n(la vora del carrer)", (1.05, alpha.max() * 0.6))
+ax.set_xlabel("$y_i\\,(w \\cdot x_i + b)$, el marge funcional de cada mostra")
+ax.set_ylabel("$\\alpha_i$")
+ax.set_title("O $\\alpha_i = 0$, o la mostra és just a la vora: mai les dues coses alhora")
+ax.legend(loc="upper right")
+ax.grid(alpha=0.3)
+plt.show()
+"""))
+
+A(md(r"""
+Dues columnes i res més: la fila de baix (tots els $\alpha_i = 0$, escampats per marges
+de 1,16 en amunt) i els dos punts vermells clavats a marge 1. El quadrant de dalt a la
+dreta, $\alpha_i > 0$ amb marge $> 1$, és buit. Aquesta és la forma de la folgança
+complementària.
+
+### La mateixa idea, al pla dels pesos
+
+Un últim dibuix que ho lliga tot amb el punt 4. Fixem $b$ al valor que ha trobat l'SVM i
+mirem el problema com a funció només de $(w_1, w_2)$. Llavors:
+
+- L'objectiu $\frac{1}{2}\|w\|^2$ té corbes de nivell circulars centrades a l'origen,
+  com la $f$ del punt 4.
+- Cada mostra posa una restricció $y_i(w_1 x_{i1} + w_2 x_{i2} + b) \ge 1$, que en aquest
+  pla és **una recta** amb un costat permès.
+- La zona permesa (verda) és on es compleixen totes alhora.
+
+Amb les cent flors d'Iris hi hauria cent rectes tan juntes que no s'hi veuria res; ho
+fem amb deu punts inventats. L'òptim és el punt de la zona verda més proper a l'origen.
+Mireu quines rectes toca.
+"""))
+
+A(code(r"""
+rng = np.random.default_rng(2)
+X8 = np.vstack([rng.normal([-1.2, -0.8], 0.5, (5, 2)), rng.normal([1.0, 1.2], 0.5, (5, 2))])
+y8 = np.array([0] * 5 + [1] * 5)
+ys8 = 2 * y8 - 1
+m8 = SVC(kernel="linear", C=1e5).fit(X8, y8)
+w8, b8 = m8.coef_[0], m8.intercept_[0]
+alpha8 = np.zeros(len(X8))
+alpha8[m8.support_] = np.abs(m8.dual_coef_[0])
+
+fig, axs = plt.subplots(1, 2, figsize=(14, 6.5))
+
+# esquerra: les dades, com sempre
+ax = axs[0]
+g1, g2 = np.meshgrid(np.linspace(-3, 3, 300), np.linspace(-3, 3, 300))
+valor = m8.decision_function(np.c_[g1.ravel(), g2.ravel()]).reshape(g1.shape)
+ax.contourf(g1, g2, valor, levels=[-1, 1], colors=["gold"], alpha=0.35)
+ax.contour(g1, g2, valor, levels=[-1, 0, 1], colors="k", linestyles=["--", "-", "--"])
+ax.scatter(X8[y8 == 0, 0], X8[y8 == 0, 1], color="tab:blue", edgecolor="k", s=50)
+ax.scatter(X8[y8 == 1, 0], X8[y8 == 1, 1], color="tab:orange", edgecolor="k", s=50)
+for i, (xi, a) in enumerate(zip(X8, alpha8)):
+    ax.annotate(str(i), xi + np.array([0.08, 0.08]), color="tab:red" if a > 0 else "tab:gray")
+ax.scatter(*X8[alpha8 > 0].T, s=220, facecolors="none", edgecolors="tab:red", linewidths=2)
+ax.set_xlim(-3, 3)
+ax.set_ylim(-3, 3)
+ax.set_aspect("equal")
+ax.set_xlabel("$x_1$")
+ax.set_ylabel("$x_2$")
+ax.set_title("Les dades: deu punts inventats i el seu carrer")
+ax.grid(alpha=0.3)
+
+# dreta: el problema al pla dels pesos, amb b fix
+ax = axs[1]
+v1, v2 = np.meshgrid(np.linspace(-0.5, 3.0, 400), np.linspace(-0.5, 3.0, 400))
+permes = np.ones_like(v1, dtype=bool)
+for xi, yi in zip(X8, ys8):
+    permes &= yi * (v1 * xi[0] + v2 * xi[1] + b8) >= 1
+ax.contourf(v1, v2, permes.astype(float), levels=[0.5, 1.5], colors=["tab:green"], alpha=0.15)
+ax.contour(v1, v2, 0.5 * (v1 ** 2 + v2 ** 2), levels=8, colors="tab:gray", alpha=0.4)
+ax.contour(v1, v2, 0.5 * (v1 ** 2 + v2 ** 2), levels=[0.5 * w8 @ w8], colors="tab:blue", linewidths=2)
+w1_l = np.linspace(-0.5, 3.0, 2)
+for i, (xi, yi) in enumerate(zip(X8, ys8)):
+    w2_l = (1 / yi - b8 - w1_l * xi[0]) / xi[1]      # la recta yi (w . xi + b) = 1
+    actiu = alpha8[i] > 0
+    ax.plot(w1_l, w2_l, color="tab:red" if actiu else "tab:gray",
+            linewidth=2.5 if actiu else 1, alpha=1 if actiu else 0.6)
+# w = suma de alpha_i y_i x_i, posades una darrere l'altra
+cua = np.zeros(2)
+for coef, sv in zip(m8.dual_coef_[0], m8.support_vectors_):
+    ax.annotate("", xy=cua + coef * sv, xytext=cua,
+                arrowprops=dict(arrowstyle="->", color="tab:purple", lw=3), zorder=6)
+    cua = cua + coef * sv
+ax.annotate("", xy=w8, xytext=(0, 0), arrowprops=dict(arrowstyle="->", color="black", lw=2))
+ax.scatter(*w8, color="black", s=80, zorder=5, label=f"òptim: w = ({w8[0]:.2f}, {w8[1]:.2f})")
+ax.plot([], [], color="tab:red", linewidth=2.5, label=f"restriccions actives ({(alpha8 > 0).sum()})")
+ax.plot([], [], color="tab:gray", label=f"restriccions inactives ({(alpha8 == 0).sum()})")
+ax.plot([], [], color="tab:blue", linewidth=2, label=r"corba de nivell de $\frac{1}{2}\|w\|^2$")
+ax.plot([], [], color="tab:purple", label=r"$\alpha_i y_i x_i$, una darrere l'altra")
+ax.set_xlim(-0.5, 3.0)
+ax.set_ylim(-0.5, 3.0)
+ax.set_aspect("equal")
+ax.set_xlabel("$w_1$")
+ax.set_ylabel("$w_2$")
+ax.set_title("Al pla dels pesos ($b$ fix): una recta per mostra")
+ax.legend(loc="upper right", fontsize=9)
+ax.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+print("alpha_i de cada mostra:", np.round(alpha8, 4))
+print("suma de les fletxes liles:", (m8.dual_coef_ @ m8.support_vectors_)[0], "  w =", w8)
+"""))
+
+A(md(r"""
+L'òptim (el punt negre) és a la cantonada on es creuen les **dues rectes vermelles**, les
+restriccions dels dos vectors de suport (els punts 2 i 6 de l'esquerra). Les altres vuit
+rectes deixen l'òptim a la zona permesa sense tocar-lo: són restriccions inactives, i per
+això els seus $\alpha_i$ valen zero. És el dibuix del punt 4.4 amb més restriccions: allà,
+a l'òptim, $\nabla f$ era un múltiple de $\nabla g$; aquí
+$\nabla(\frac{1}{2}\|w\|^2) = w$ és una **combinació** dels gradients de les restriccions
+actives. Les fletxes liles en són els trossos, posats un darrere l'altre, i arriben just
+a la punta de la fletxa negra: $w = \sum \alpha_i y_i x_i$, la fórmula del punt 6.
 
 ### No és un artefacte de tenir només dos punts
 
@@ -1025,6 +1313,84 @@ de 100 termes elevat a 5.
 cap espai ocult ni cap operació misteriosa: hi ha una identitat algebraica
 que permet calcular un producte escalar d'un espai gran fent aritmètica a
 l'espai petit.
+
+### La identitat, entrenant
+
+L'última comprovació no és d'una fórmula sinó de dos models. Agafem els cercles de
+`ML_05_svm.ipynb` (un cercle de punts dins d'un altre) i entrenem:
+
+1. Un SVM **lineal** sobre les dades transformades a mà, $\phi(X)$, en 3D.
+2. Un SVM amb `kernel="poly"`, `degree=2`, `gamma=1`, `coef0=0` sobre les dades
+   originals, en 2D. Amb aquests paràmetres, el kernel de `scikit-learn` és exactament
+   $(a \cdot b)^2$.
+
+Si el truc del kernel és el que diem, els dos models han de ser **el mateix model**.
+"""))
+
+A(code(r"""
+from sklearn.datasets import make_circles
+
+Xcir, ycir = make_circles(n_samples=200, noise=0.08, factor=0.4, random_state=42)
+Phi = phi_poly2(Xcir)
+
+model_phi = SVC(kernel="linear", C=10).fit(Phi, ycir)
+model_ker = SVC(kernel="poly", degree=2, gamma=1, coef0=0, C=10).fit(Xcir, ycir)
+
+dec_phi = model_phi.decision_function(Phi)
+dec_ker = model_ker.decision_function(Xcir)
+print(f"precisió lineal sobre phi(X): {model_phi.score(Phi, ycir):.1%}")
+print(f"precisió poly sobre X       : {model_ker.score(Xcir, ycir):.1%}")
+print("mateixes prediccions?", np.array_equal(model_phi.predict(Phi), model_ker.predict(Xcir)))
+print(f"diferència màxima de decision_function: {np.abs(dec_phi - dec_ker).max():.1e}")
+"""))
+
+A(md(r"""
+Mateixes prediccions, i les dues funcions de decisió coincideixen fins a l'error
+d'arrodoniment de la coma flotant. Un model ha construït les tres coordenades; l'altre no les ha vist
+mai. Dibuixem el que ha fet el primer: a l'espai de $\phi$ els dos cercles queden
+separats per un **pla**. I tornat a 2D, aquest pla és la corba on
+$w \cdot \phi(x) + b = 0$, que torna a ser un cercle (una el·lipse, en general).
+"""))
+
+A(code(r"""
+wp, bp = model_phi.coef_[0], model_phi.intercept_[0]
+
+fig = plt.figure(figsize=(14, 6))
+ax = fig.add_subplot(1, 2, 1, projection="3d")
+for classe, color in [(0, "tab:blue"), (1, "tab:orange")]:
+    sel = ycir == classe
+    ax.scatter(Phi[sel, 0], Phi[sel, 1], Phi[sel, 2], color=color, s=12, label=f"classe {classe}")
+q1, q2 = np.meshgrid(np.linspace(0, 1.3, 20), np.linspace(-1.0, 1.0, 20))
+q3 = (-bp - wp[0] * q1 - wp[1] * q2) / wp[2]
+q3[(q3 < 0) | (q3 > 1.3)] = np.nan                  # només el tros que cau dins la caixa
+ax.plot_surface(q1, q2, q3, color="tab:green", alpha=0.3)
+ax.set_xlabel("$x_1^2$")
+ax.set_ylabel("$\\sqrt{2}\\,x_1 x_2$")
+ax.set_zlabel("$x_2^2$")
+ax.set_zlim(0, 1.3)
+ax.set_title("A l'espai de $\\phi$: un pla (verd) separa")
+ax.view_init(elev=20, azim=45)
+ax.set_box_aspect(None, zoom=0.85)
+ax.legend(loc="upper left")
+
+ax2 = fig.add_subplot(1, 2, 2)
+r1, r2 = np.meshgrid(np.linspace(-1.4, 1.4, 300), np.linspace(-1.4, 1.4, 300))
+Phi_g = phi_poly2(np.c_[r1.ravel(), r2.ravel()])
+ax2.contour(r1, r2, (Phi_g @ wp + bp).reshape(r1.shape), levels=[0], colors="tab:green", linewidths=2.5)
+ax2.contour(r1, r2, model_ker.decision_function(np.c_[r1.ravel(), r2.ravel()]).reshape(r1.shape),
+            levels=[0], colors="black", linestyles=":", linewidths=2)
+ax2.scatter(Xcir[ycir == 0, 0], Xcir[ycir == 0, 1], color="tab:blue", s=12)
+ax2.scatter(Xcir[ycir == 1, 0], Xcir[ycir == 1, 1], color="tab:orange", s=12)
+ax2.plot([], [], color="tab:green", linewidth=2.5, label="el pla de l'esquerra, en 2D")
+ax2.plot([], [], color="black", linestyle=":", linewidth=2, label='frontera de kernel="poly"')
+ax2.set_aspect("equal")
+ax2.set_xlabel("$x_1$")
+ax2.set_ylabel("$x_2$")
+ax2.set_title("Tornat a 2D: les dues fronteres són la mateixa")
+ax2.legend(loc="upper right", fontsize=9)
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
 """))
 
 # ---------------------------------- 8. RBF
@@ -1141,6 +1507,57 @@ Això lliga amb el que vau veure a `ML_05_svm.ipynb`: amb `gamma` alt la
 frontera s'arruga al voltant de cada mostra, perquè cada mostra només
 «parla» amb els seus veïns immediats. Amb `gamma` baix tothom parla amb
 tothom i la frontera surt suau.
+
+### La funció de decisió és una suma de campanes
+
+Juntem el punt 6 i el kernel. Si $w = \sum_i \alpha_i y_i \phi(x_i)$, la funció de
+decisió en un punt nou $x$ és
+
+$$w \cdot \phi(x) + b = \sum_{i \in \text{suport}} \alpha_i y_i\, K(x_i, x) + b$$
+
+Amb el RBF, cada terme és una **campana** centrada en un vector de suport, amunt o avall
+segons la classe, i la funció de decisió n'és la suma. Ho fem en una dimensió perquè es
+vegi cada campana: calculem la suma a mà i la comparem amb `decision_function`.
+"""))
+
+A(code(r"""
+rng = np.random.default_rng(3)
+x1d = np.concatenate([rng.normal(-2, 0.8, 15), rng.normal(0.5, 0.6, 15), rng.normal(3, 0.8, 15)])
+y1d = np.array([0] * 15 + [1] * 15 + [0] * 15)      # la classe 1 al mig: cap recta la separa
+X1d = x1d.reshape(-1, 1)
+eix = np.linspace(-5, 6, 600).reshape(-1, 1)
+
+fig, axs = plt.subplots(1, 2, figsize=(15, 5), sharey=True)
+for ax, g in zip(axs, [0.3, 5.0]):
+    m = SVC(kernel="rbf", gamma=g, C=1).fit(X1d, y1d)
+    campanes = m.dual_coef_[0][:, None] * kernel_rbf(m.support_vectors_, eix, g)
+    suma_a_ma = campanes.sum(axis=0) + m.intercept_[0]
+    print(f"gamma = {g}: {len(m.support_)} vectors de suport, diferència màxima amb "
+          f"decision_function = {np.abs(suma_a_ma - m.decision_function(eix)).max():.1e}")
+
+    for c in campanes:
+        ax.plot(eix[:, 0], c, color="tab:red" if c.max() > 0 else "tab:blue", alpha=0.35, linewidth=1)
+    ax.plot(eix[:, 0], suma_a_ma, color="black", linewidth=2.5, label="suma + b (la funció de decisió)")
+    ax.axhline(0, color="tab:gray", linestyle="--")
+    ax.scatter(x1d[y1d == 0], np.full((y1d == 0).sum(), -2.6), color="tab:blue", s=25, label="classe 0")
+    ax.scatter(x1d[y1d == 1], np.full((y1d == 1).sum(), -2.6), color="tab:orange", s=25, label="classe 1")
+    ax.set_ylim(-2.9, 2.9)
+    ax.set_xlabel("$x$")
+    ax.set_title(f"gamma = {g}: {len(m.support_)} campanes (una per vector de suport)")
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("valor")
+axs[0].legend(loc="upper left", fontsize=9)
+fig.suptitle("Cada campana fina és $\\alpha_i y_i K(x_i, x)$; la frontera és on la suma creua el 0")
+plt.tight_layout()
+plt.show()
+"""))
+
+A(md(r"""
+La suma feta a mà i `decision_function` coincideixen fins a l'últim decimal: el model no
+és res més que aquestes campanes sumades. Amb $\gamma$ petit les campanes són amples, se
+solapen i la suma surt suau. Amb $\gamma$ gran cada campana és una agulla: la suma
+s'arruga al voltant de cada mostra i, lluny de totes, queda plana al valor de $b$. El
+model només «sap» alguna cosa just a sobre de cada mostra.
 """))
 
 # ---------------------------------- 9. marge tou
@@ -1344,6 +1761,43 @@ diferència entre el resultat del sistema lineal i el de `scipy` ha de ser
 inferior a $10^{-5}$.
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix, amb un problema **inventat** que no és el
+vostre: $\min\ x^2 + 3y^2$ amb la restricció $x - y = 2$. Les corbes de nivell ara són
+el·lipses. Aquí el punt de tangència no s'ha trobat amb Lagrange sinó **a la força
+bruta**, recorrent la recta i quedant-nos amb el valor més petit de $f$: és una
+manera de comprovar el que us surti amb `np.linalg.solve`.
+"""))
+
+A(code(r"""
+f_il = lambda X_, Y_: X_ ** 2 + 3 * Y_ ** 2           # objectiu inventat
+xs_il = np.linspace(-2, 4, 60001)
+ys_il = xs_il - 2                                     # la recta x - y = 2
+k_il = f_il(xs_il, ys_il).argmin()
+p_il = np.array([xs_il[k_il], ys_il[k_il]])
+
+e1, e2 = np.meshgrid(np.linspace(-1, 3.5, 300), np.linspace(-2.5, 2, 300))
+fig, ax = plt.subplots(figsize=(7, 6))
+cs = ax.contour(e1, e2, f_il(e1, e2), levels=[0.5, 1.5, f_il(*p_il), 5, 8], colors="tab:gray")
+ax.clabel(cs, inline=True, fontsize=8, fmt="f=%.1f")
+ax.plot(xs_il, ys_il, color="tab:red", linewidth=2, label="restricció inventada $x - y = 2$")
+ax.scatter(*p_il, color="black", s=80, zorder=5, label=f"força bruta: ({p_il[0]:.2f}, {p_il[1]:.2f})")
+gf_il = np.array([2 * p_il[0], 6 * p_il[1]])
+ax.annotate("", xy=p_il + 0.25 * gf_il, xytext=p_il,
+            arrowprops=dict(arrowstyle="->", color="tab:green", lw=2))
+ax.annotate("", xy=p_il + 0.4 * np.array([1, -1]), xytext=p_il,
+            arrowprops=dict(arrowstyle="->", color="tab:purple", lw=2, linestyle=":"))
+ax.plot([], [], color="tab:green", label=r"$\nabla f$")
+ax.plot([], [], color="tab:purple", linestyle=":", label=r"$\nabla g$")
+ax.set_xlim(-1, 3.5)
+ax.set_ylim(-2.5, 2)
+ax.set_aspect("equal")
+ax.set_title("Problema inventat: on la recta toca una el·lipse")
+ax.legend(loc="upper left", fontsize=9)
+ax.grid(alpha=0.3)
+plt.show()
+"""))
+
 A(code(r"""
 # (a) Plantejament amb el lagrangià L = x^2 + y^2 - lambda*(2x + y - 5).
 #     Escriu les tres equacions dL/dx = 0, dL/dy = 0, dL/dlambda = 0 com un
@@ -1373,6 +1827,38 @@ Imprimiu els números, no només un `True`.
 $|w \cdot x_i + b|$ igual a 1 fins a un error de l'ordre de $10^{-8}$; el
 mínim de la resta ha de ser aproximadament **1,0615**, i cap mostra per sota
 d'1. La diferència entre el $w$ reconstruït i `coef_` ha de ser **0,0**.
+"""))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: com es llegeix la comprovació. Dades
+**inventades** (dos núvols separats) i un `SVC(kernel="linear", C=1e5)`. L'histograma
+és $|w \cdot x_i + b|$ de les mostres que **no** són vectors de suport; les línies
+vermelles, els vectors de suport. Si la folgança complementària es compleix, les
+vermelles cauen totes a 1 i l'histograma comença a la dreta d'1.
+"""))
+
+A(code(r"""
+X_il, y_il = make_blobs(n_samples=80, centers=[[0, 0], [4, 3]], cluster_std=0.7, random_state=5)
+m_il = SVC(kernel="linear", C=1e5).fit(X_il, y_il)
+val_il = np.abs(m_il.decision_function(X_il))
+sup_il = np.zeros(len(X_il), dtype=bool)
+sup_il[m_il.support_] = True
+
+fig, ax = plt.subplots(figsize=(9, 4.5))
+ax.hist(val_il[~sup_il], bins=25, color="tab:blue", alpha=0.7,
+        label=f"{(~sup_il).sum()} mostres que no són de suport")
+for v in val_il[sup_il]:
+    ax.axvline(v, color="tab:red", linewidth=2)
+ax.plot([], [], color="tab:red", linewidth=2, label=f"{sup_il.sum()} vectors de suport")
+ax.axvspan(0, 1, color="tab:gray", alpha=0.15)
+ax.annotate("aquí no hi pot\nhaver ningú", (0.1, ax.get_ylim()[1] * 0.75))
+ax.set_xlim(0, val_il.max() * 1.05)
+ax.set_xlabel("$|w \cdot x_i + b|$")
+ax.set_ylabel("quantes mostres")
+ax.set_title("Dades inventades: els vectors de suport a 1, la resta per sobre")
+ax.legend(loc="upper right")
+ax.grid(alpha=0.3)
+plt.show()
 """))
 
 A(code(r"""
@@ -1422,6 +1908,36 @@ gran, el més probable és que hàgiu posat un $\sqrt{2}$ on no toca o us
 n'hàgiu deixat un.
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix: com es veu que les dues bandes coincideixen.
+Aquí ho fem amb el kernel del punt 7, $(a \cdot b)^2$, no amb el vostre. Cada punt és una
+parella: a l'eix horitzontal $K(a, b)$ calculat directament, al vertical
+$\phi(a) \cdot \phi(b)$. Si la $\phi$ és bona, tots cauen sobre la diagonal (esquerra).
+A la dreta, la mateixa $\phi$ **sense** els $\sqrt{2}$: els punts se n'escapen. És
+l'error que diu l'enunciat, i es veu d'una ullada.
+"""))
+
+A(code(r"""
+rng_il = np.random.default_rng(99)
+a_il, b_il = rng_il.normal(size=(40, 2)), rng_il.normal(size=(40, 2))
+phi_mal_il = lambda Z: np.column_stack([Z[:, 0] ** 2, Z[:, 0] * Z[:, 1], Z[:, 1] ** 2])  # sense sqrt(2)
+
+k_il = kernel_poly2(a_il, b_il)
+fig, axs = plt.subplots(1, 2, figsize=(12, 5), sharex=True, sharey=True)
+for ax, phi_f, titol in [(axs[0], phi_poly2, "phi correcta"), (axs[1], phi_mal_il, "phi sense els $\sqrt{2}$")]:
+    ax.scatter(k_il, np.sum(phi_f(a_il) * phi_f(b_il), axis=1), color="tab:blue", edgecolor="k")
+    lim = [0, k_il.max() * 1.05]
+    ax.plot(lim, lim, color="tab:red", linestyle="--", label="diagonal: les dues bandes iguals")
+    ax.set_xlabel("$K(a, b)$ directe")
+    ax.set_title(titol)
+    ax.legend(loc="upper left")
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("$\phi(a) \cdot \phi(b)$")
+fig.suptitle("Kernel del punt 7 amb parelles inventades: sobre la diagonal o no")
+plt.tight_layout()
+plt.show()
+"""))
+
 A(code(r"""
 # Defineix phi_poly2_mes1(Z) que retorni les 6 coordenades per cada fila de Z.
 
@@ -1450,6 +1966,32 @@ amb `C=0,01` a **12** amb `C=100`, passant per 50, 24 i 15. El $\|w\|$ ha de
 fer el camí contrari, de **0,6193** a **8,9312**. La precisió d'entrenament
 s'ha de quedar clavada al voltant del 92-95 %: el que canvia no és l'encert,
 és de quants punts depèn el model.
+"""))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: com es llegeix un eix de `C` en escala
+logarítmica. Dades **inventades** (dos núvols que se solapen, diferents dels del punt
+9). Amb escala log, els valors 0,01, 0,1, 1, 10 i 100 queden a la mateixa distància
+l'un de l'altre: cada pas és multiplicar per 10. Sense l'escala log, tots els punts de
+l'esquerra s'amuntegarien a sobre del zero.
+"""))
+
+A(code(r"""
+X_il, y_il = make_blobs(n_samples=150, centers=[[0, 0], [2, 2]], cluster_std=1.0, random_state=9)
+Cs_il = [0.01, 0.1, 1, 10, 100]
+n_sv_il = [len(SVC(kernel="linear", C=c).fit(X_il, y_il).support_) for c in Cs_il]
+
+fig, axs = plt.subplots(1, 2, figsize=(13, 4.5), sharey=True)
+for ax, escala in zip(axs, ["linear", "log"]):
+    ax.plot(Cs_il, n_sv_il, "o-", color="tab:blue")
+    ax.set_xscale(escala)
+    ax.set_xlabel(f"C (escala {'lineal' if escala == 'linear' else 'logarítmica'})")
+    ax.set_title(f'plt.xscale("{escala}")')
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("vectors de suport")
+fig.suptitle("Dades inventades: el mateix gràfic amb les dues escales")
+plt.tight_layout()
+plt.show()
 """))
 
 A(code(r"""
