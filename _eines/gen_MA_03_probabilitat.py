@@ -1742,7 +1742,7 @@ respon: quin dels tres triaries, i per què l'exactitud no t'ho diu?
 A(md(r"""
 Abans de començar, la idea en un dibuix: el que mira cada mesura. Deu files
 **inventades**: cada punt és la $p$ que dona un model, vermell si l'etiqueta real és 1 i
-blau si és 0. La **exactitud** només mira a quin costat de la línia del 0,5 cau cada punt.
+blau si és 0. L'**exactitud** només mira a quin costat de la línia del 0,5 cau cada punt.
 La **log-loss** mira la distància fins a la seva etiqueta (el segment gris) i la cobra
 amb $-\log$: el número de sota de cada punt.
 """))

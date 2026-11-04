@@ -413,7 +413,7 @@ plt.show()
 
 INSERCIONS.append(("### Exercici 3 — Compara kernels", [
     M(r"""
-Abans de començar, la idea en un dibuix: com es mesura la **exactitud de test** que
+Abans de començar, la idea en un dibuix: com es mesura l'**exactitud de test** que
 posareu a la taula. Dades inventades i un sol model: s'entrena amb els punts petits
 (entrenament) i es puntua amb els grans (test). Les creus negres són els punts de test
 on el model s'equivoca; l'exactitud és la fracció de punts de test sense creu.

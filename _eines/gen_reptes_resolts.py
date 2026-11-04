@@ -77,14 +77,14 @@ el 62 % de la impuresa de l'arrel (Gini 0,4994 → 0,1897). L'error perillós é
 bolet verinós: l'arbre de profunditat 3 en fa 3 al test (*recall* 0,9969), i en una app això no és
 acceptable. Cal la profunditat més petita que en faci zero, i dir clar que zero al test no és zero
 al bosc.""",
-    "RE_202": """La logística supera el model que no diu mai «compra» (0,884 contra 0,845 de precisió), i la
+    "RE_202": """La logística supera el model que no diu mai «compra» (0,884 contra 0,845 d'exactitud), i la
 millora es veu molt més clara amb la log-loss (0,305 contra 0,431). La probabilitat calculada a mà,
 $z = Xw + b$ i la sigmoide, coincideix amb `predict_proba`. Una sola variable fa gairebé tota la
 feina: `PageValues` (pes 1,54, *odds* × 4,7 per desviació típica), i `ExitRates` és la que més empeny
 en contra (*odds* × 0,45). Sense `PageValues` el model cau per sota de la línia de sortida, i com
 que es calcula amb les pàgines vistes abans d'una transacció, no es coneix a mitja sessió: abans de
 posar el model en un tauler, cal decidir si es pot fer servir en el moment d'actuar.""",
-    "RE_203": """Només un 11,7 % dels clients contracta, i per això la precisió no serveix: el model que no truca
+    "RE_203": """Només un 11,7 % dels clients contracta, i per això l'exactitud (*accuracy*) no serveix: el model que no truca
 mai ja en fa 0,883. Amb el llindar de 0,5, la logística i el bosc empaten (F1 0,28, *recall* 0,18) i
 gairebé no truquen ningú. La diferència surt a la corba *precision-recall* (AP 0,413 el bosc i
 0,380 la logística; l'atzar, 0,124), que és la que parla el llenguatge de la directora. Amb 5 € per
