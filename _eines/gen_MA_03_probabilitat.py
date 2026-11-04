@@ -186,6 +186,51 @@ plt.grid(axis="y", alpha=0.3)
 plt.show()
 """))
 
+A(md(r"""
+El mateix, dibuixat com a àrees. El quadrat sencer són els 569 tumors i cada
+rectangle és un grup: l'amplada de cada columna és la fracció de tumors amb radi
+gran o petit, i dins de cada columna la part vermella són els malignes. **L'àrea de
+cada rectangle és la seva probabilitat.**
+
+Condicionar a $B$ és quedar-se amb la columna de $B$ i oblidar la resta: a la dreta,
+aquella columna estirada fins a ocupar tot el quadrat. La part vermella no ha
+canviat de mida en tumors (161); el que ha canviat és **amb què la compareu**.
+"""))
+
+A(code("""
+from matplotlib.patches import Rectangle
+
+def rectangle(ax, x, y, amplada, alcada, color, text, ressalta=False):
+    \"\"\"Un rectangle del quadrat de probabilitats, amb el seu text al mig.\"\"\"
+    ax.add_patch(Rectangle((x, y), amplada, alcada, facecolor=color, alpha=0.55,
+                           edgecolor="black", linewidth=3 if ressalta else 1))
+    ax.text(x + amplada / 2, y + alcada / 2, text, ha="center", va="center", fontsize=10)
+
+def quadrat(ax, columnes, titol):
+    \"\"\"columnes: llista de (nom, n_total, n_malignes). Amplada = fraccio de files.\"\"\"
+    total = sum(n for _, n, _ in columnes)
+    x = 0
+    for nom, n, n_mal in columnes:
+        w = n / total
+        rectangle(ax, x, 0, w, n_mal / n, "tab:red", "malignes\\n%d" % n_mal)
+        rectangle(ax, x, n_mal / n, w, 1 - n_mal / n, "tab:blue", "benignes\\n%d" % (n - n_mal))
+        ax.text(x + w / 2, -0.06, "%s\\n(%d tumors)" % (nom, n), ha="center", va="top")
+        x += w
+    ax.set_xlim(0, 1)
+    ax.set_ylim(-0.2, 1)
+    ax.axis("off")
+    ax.set_title(titol)
+
+n_noB = (~B_gran).sum()
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.5), width_ratios=[1, 1])
+quadrat(ax1, [("radi > 15", n_B, n_A_i_B), ("radi <= 15", n_noB, (A_maligne & ~B_gran).sum())],
+        "Tots els tumors: P(A) = àrea vermella / quadrat")
+quadrat(ax2, [("radi > 15", n_B, n_A_i_B)],
+        ("Condicionat a B: P(A|B) = %d / %d = %.4f" % (n_A_i_B, n_B, n_A_i_B / n_B)).replace(".", ","))
+plt.tight_layout()
+plt.show()
+"""))
+
 # ---------------------------------------------------- 2. Bayes
 A(md(r"""
 ## 2. El teorema de Bayes
@@ -222,6 +267,49 @@ print()
 print("P(A|B) per Bayes      = %.4f * %.4f / %.4f = %.6f" % (P_B_donat_A, P_A, P_B, per_bayes))
 print("P(A|B) comptant files = %.6f" % P_A_donat_B)
 print("difereixen en %.2e" % abs(per_bayes - P_A_donat_B))
+"""))
+
+A(md(r"""
+En dibuix, Bayes és **la mateixa àrea mirada des de dos costats**. A l'esquerra, el
+quadrat partit primer pel radi; a la dreta, partit primer pel diagnòstic. El
+rectangle ressaltat és el mateix als dos (els 161 tumors malignes i de radi gran),
+i per tant té la mateixa àrea, $P(A \cap B)$. El que canvia és el rectangle amb què
+el compareu: la columna de $B$ a l'esquerra, la de $A$ a la dreta. Bayes és el pont
+entre les dues divisions.
+"""))
+
+A(code("""
+def quadrat_ressaltat(ax, columnes, noms_files, colors, ressalta, titol):
+    \"\"\"columnes: (nom, n_total, n_baix). ressalta: index de la columna on hi ha A i B.\"\"\"
+    total = sum(n for _, n, _ in columnes)
+    x = 0
+    for j, (nom, n, n_baix) in enumerate(columnes):
+        w = n / total
+        rectangle(ax, x, 0, w, n_baix / n, colors[0], "%s\\n%d" % (noms_files[0], n_baix),
+                  ressalta=(j == ressalta))
+        rectangle(ax, x, n_baix / n, w, 1 - n_baix / n, colors[1],
+                  "%s\\n%d" % (noms_files[1], n - n_baix))
+        ax.text(x + w / 2, -0.06, "%s\\n(%d)" % (nom, n), ha="center", va="top")
+        x += w
+    ax.set_xlim(0, 1)
+    ax.set_ylim(-0.2, 1)
+    ax.axis("off")
+    ax.set_title(titol)
+
+n_A = A_maligne.sum()
+n_B_noA = (B_gran & ~A_maligne).sum()
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.5))
+quadrat_ressaltat(ax1, [("radi > 15", n_B, n_A_i_B), ("radi <= 15", n_noB, n_A - n_A_i_B)],
+                  ["malignes", "benignes"], ["tab:red", "tab:blue"], 0,
+                  "Partit pel radi: P(A|B) = %d / %d" % (n_A_i_B, n_B))
+quadrat_ressaltat(ax2, [("malignes", n_A, n_A_i_B), ("benignes", n_c - n_A, n_B_noA)],
+                  ["radi > 15", "radi <= 15"], ["tab:orange", "tab:gray"], 0,
+                  "Partit pel diagnòstic: P(B|A) = %d / %d" % (n_A_i_B, n_A))
+fig.suptitle(("El rectangle ressaltat és el mateix: %d tumors, P(A i B) = %.4f"
+              % (n_A_i_B, P_A_i_B)).replace(".", ","))
+plt.tight_layout()
+plt.show()
 """))
 
 A(md(r"""
@@ -323,6 +411,52 @@ plt.text(1, positius_sans + 250, "%.0f" % positius_sans, ha="center")
 plt.ylabel("Nombre de persones (d'un milio)")
 plt.title("Qui son els positius d'una prova del 99 %")
 plt.grid(axis="y", alpha=0.3)
+plt.show()
+"""))
+
+A(md(r"""
+El mateix recompte, dibuixat com un **arbre**. Cada branca multiplica per la seva
+probabilitat; cada fulla és un grup de persones. Bayes, en aquest dibuix, és una
+instrucció molt concreta: **agafa les fulles que acaben en «+» i mira quina part
+d'elles ve de la branca «malalt»**. El denominador $P(+)$ són les dues fulles
+ressaltades sumades.
+"""))
+
+A(code("""
+def punts(x):
+    return f"{x:,.0f}".replace(",", ".")     # 999.000 amb punt de milers
+
+fig, ax = plt.subplots(figsize=(12, 5.5))
+nodes = {
+    "arrel": (0.0, 0.5, "1.000.000\\npersones", "white"),
+    "malalt": (1.0, 0.8, "malalts\\n" + punts(malalts), "white"),
+    "sa": (1.0, 0.2, "sans\\n" + punts(sans), "white"),
+    "m+": (2.0, 0.93, "+  " + punts(positius_malalts), "tab:red"),
+    "m-": (2.0, 0.67, "-  " + punts(malalts - positius_malalts), "white"),
+    "s+": (2.0, 0.33, "+  " + punts(positius_sans), "tab:orange"),
+    "s-": (2.0, 0.07, "-  " + punts(sans - positius_sans), "white"),
+}
+branques = [("arrel", "malalt", "P(malalt) = 0,001"), ("arrel", "sa", "P(sa) = 0,999"),
+            ("malalt", "m+", "0,99"), ("malalt", "m-", "0,01"),
+            ("sa", "s+", "0,01"), ("sa", "s-", "0,99")]
+for a, b, prob in branques:
+    xa, ya = nodes[a][:2]
+    xb, yb = nodes[b][:2]
+    ax.annotate("", xy=(xb - 0.17, yb), xytext=(xa + 0.17, ya),
+                arrowprops=dict(arrowstyle="->", color="gray"))
+    ax.text((xa + xb) / 2, (ya + yb) / 2 + 0.03, prob, ha="center", fontsize=10)
+for x, y, text, color in nodes.values():
+    ax.text(x, y, text, ha="center", va="center", fontsize=11,
+            bbox=dict(boxstyle="round", facecolor=color, alpha=0.5 if color != "white" else 1,
+                      edgecolor="black"))
+ax.text(2.75, 0.5, "P(malalt | +) =\\n\\n%s / (%s + %s)\\n\\n= %s %%" % (
+            punts(positius_malalts), punts(positius_malalts), punts(positius_sans),
+            ("%.2f" % (100 * p_malalt_si_positiu)).replace(".", ",")),
+        ha="center", va="center", fontsize=12)
+ax.set_xlim(-0.3, 3.3)
+ax.set_ylim(0, 1)
+ax.axis("off")
+ax.set_title("L'arbre de probabilitats: Bayes es quedar-se amb les fulles «+»")
 plt.show()
 """))
 
@@ -439,6 +573,55 @@ plt.show()
 """))
 
 A(md(r"""
+D'on surt aquesta corba, i per què no és una probabilitat sobre $p$. A dalt, quatre
+monedes possibles. Per a cadascuna, les barres són la probabilitat de cada resultat
+de 0 a 10 cares, i **sumen 1**: això sí que és una distribució de probabilitat. Les
+dades no trien la moneda; trien **quina barra mirem**, la de 7 cares (en vermell).
+
+A sota, l'alçada d'aquella barra vermella per a cada $p$ possible. És la mateixa
+corba d'abans multiplicada pel 120 que hem tret. La seva àrea **no val 1**, i no té
+per què: no reparteix res entre els valors de $p$, només diu com de bé encaixa
+cada moneda amb el que ha passat.
+"""))
+
+A(code("""
+from scipy.stats import binom
+
+monedes = [0.3, 0.5, 0.7, 0.9]
+resultats = np.arange(0, 11)
+
+fig = plt.figure(figsize=(13, 7.5))
+gs = fig.add_gridspec(2, 4, height_ratios=[1, 1.2], hspace=0.45)
+for j, p_m in enumerate(monedes):
+    ax = fig.add_subplot(gs[0, j])
+    barres_p = binom.pmf(resultats, 10, p_m)
+    colors_b = ["tab:red" if r == cares else "tab:gray" for r in resultats]
+    ax.bar(resultats, barres_p, color=colors_b)
+    ax.set_title("moneda amb $p = %s$" % str(p_m).replace(".", "{,}"))
+    ax.set_xlabel("cares en 10 tirades")
+    ax.set_xticks([0, 5, 10])
+    ax.set_ylim(0, 0.42)
+    ax.grid(axis="y", alpha=0.3)
+    ax.text(0, 0.37, "suma = %.0f" % barres_p.sum(), fontsize=9)
+fig.axes[0].set_ylabel("probabilitat")
+
+ax = fig.add_subplot(gs[1, :])
+L_binom = binom.pmf(cares, 10, graella_p)          # = 120 * p^7 (1-p)^3
+ax.plot(graella_p, L_binom, color="tab:blue", linewidth=2,
+        label="alçada de la barra de 7 cares, per a cada $p$")
+ax.scatter(monedes, binom.pmf(cares, 10, monedes), color="tab:red", zorder=5, s=50,
+           label="les quatre monedes de dalt")
+area = L_binom.sum() * (graella_p[1] - graella_p[0])
+ax.set_xlabel("$p$ (probabilitat de cara de la moneda)")
+ax.set_ylabel(r"$120\\,p^7(1-p)^3$")
+ax.set_title(("La versemblança: una funció de $p$ amb les dades fixades (àrea sota la corba = %.3f, no 1)"
+              % area).replace("0.", "0,"))
+ax.legend()
+ax.grid(alpha=0.3)
+plt.show()
+"""))
+
+A(md(r"""
 ### 3.1 La demostració, sense graella
 
 La graella dona el màxim amb tants decimals com punts hi posem. Es pot trobar
@@ -484,6 +667,32 @@ print()
 print("derivada de la log-versemblanca a p = %.1f: %.2e" % (p_formula, derivada))
 """))
 
+A(md(r"""
+Una cosa que la fórmula $\hat{p} = c/(c+k)$ no diu i el dibuix sí. Amb 7 de 10, 70 de
+100 i 700 de 1.000 el màxim és el mateix, 0,7. Però la corba **s'estreny**: amb poques
+tirades, una moneda del 0,5 encara és força compatible amb el que heu vist; amb mil,
+ja no. Per poder-les posar juntes, cada corba està dividida pel seu màxim (així totes
+arriben a 1), i es calculen amb logaritmes, pel motiu que veureu a la secció 4.
+"""))
+
+A(code("""
+plt.figure(figsize=(8, 4.5))
+p_interior = graella_p[1:-1]                      # sense 0 i 1, on log val -inf
+for n_tirades, color in [(10, "tab:blue"), (100, "tab:orange"), (1000, "tab:green")]:
+    c_n, k_n = int(0.7 * n_tirades), n_tirades - int(0.7 * n_tirades)
+    log_L_n = c_n * np.log(p_interior) + k_n * np.log(1 - p_interior)
+    plt.plot(p_interior, np.exp(log_L_n - log_L_n.max()), color=color, linewidth=2,
+             label="%d cares de %d" % (c_n, n_tirades))
+plt.axvline(0.5, color="gray", linestyle=":", linewidth=1)
+plt.text(0.49, 0.15, "moneda justa", color="gray", ha="right")
+plt.xlabel("$p$")
+plt.ylabel("versemblança / el seu màxim")
+plt.title("Més dades: el màxim no es mou, la corba s'estreny")
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
+"""))
+
 # ---------------------------------------------------- 4. logaritme
 A(md(r"""
 ## 4. Per què el logaritme
@@ -527,6 +736,35 @@ for k in [500, 1000, 1023, 1074, 1075, 1200]:
 print()
 print("el primer k amb producte exactament 0.0 es k = 1075")
 print("i 0,5^1074 = %s, l'ultim numero positiu que hi cap" % np.prod(np.full(1074, 0.5)))
+"""))
+
+A(code("""
+# el producte i la suma de logaritmes, factor a factor
+k_factors = np.arange(1, 1201)
+producte_k = np.cumprod(np.full(1200, 0.5))      # 0,5, 0,25, ... fins que es fa 0.0
+suma_logs_k = np.cumsum(np.log(np.full(1200, 0.5)))
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.5))
+viu = producte_k > 0
+ax1.semilogy(k_factors[viu], producte_k[viu], color="tab:red", linewidth=2)
+ax1.axvline(1075, color="black", linestyle="--", linewidth=1)
+ax1.text(1060, 1e-150, "k = 1075:\\nel producte\\nes fa 0.0", ha="right")
+ax1.set_xlim(0, 1200)
+ax1.set_yticks([1e0, 1e-100, 1e-200, 1e-300])
+ax1.set_xlabel("nombre de factors de 0,5")
+ax1.set_ylabel("producte (escala logarítmica)")
+ax1.set_title("El producte s'enfonsa i desapareix")
+ax1.grid(alpha=0.3)
+
+ax2.plot(k_factors, suma_logs_k, color="tab:green", linewidth=2)
+ax2.axvline(1075, color="black", linestyle="--", linewidth=1)
+ax2.set_xlim(0, 1200)
+ax2.set_xlabel("nombre de factors de 0,5")
+ax2.set_ylabel("suma de logaritmes")
+ax2.set_title("La suma de logaritmes baixa recta, sense trencar-se")
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
 """))
 
 A(md(r"""
@@ -673,8 +911,56 @@ problema**. Per això la regressió logística minimitza aquesta i no
 $\frac{1}{n}\sum (y_i - p_i)^2$: l'altra també baixa quan el model encerta, però
 no respon cap pregunta. Aquesta respon «quins pesos fan les meves dades el més
 probables possible».
+"""))
 
-Comprovem-ho contra scikit-learn.
+A(md(r"""
+Els quatre passos en un dibuix, amb vuit files inventades. A l'esquerra, per a cada
+fila, la probabilitat que el model ha donat a **l'etiqueta que era de veritat** (el
+`if` amb exponents). La versemblança és el producte d'aquestes vuit alçades. A la
+dreta, el $-\log$ de cada alçada: com més baixa era la barra de l'esquerra, més alta
+és la de la dreta. **La log-loss és l'alçada mitjana de les barres de la dreta**, la
+línia discontínua.
+"""))
+
+A(code("""
+y_8 = np.array([1, 0, 1, 1, 0, 1, 0, 0])                    # etiquetes inventades
+p_8 = np.array([0.9, 0.2, 0.6, 0.95, 0.4, 0.3, 0.05, 0.7])  # el que diu el model: P(classe 1)
+
+prob_certa = prob_etiqueta(y_8, p_8)          # pas 1: la probabilitat de l'etiqueta real
+castig_8 = -np.log(prob_certa)                # passos 2 i 3: log i canvi de signe
+log_loss_8 = castig_8.mean()                  # pas 4: dividir per n
+
+files_8 = np.arange(1, 9)
+colors_8 = ["tab:red" if y == 1 else "tab:blue" for y in y_8]
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.5))
+ax1.bar(files_8, prob_certa, color=colors_8)
+for f, pc, y, p in zip(files_8, prob_certa, y_8, p_8):
+    ax1.text(f, pc + 0.02, ("y=%d\\np=%.2f" % (y, p)).replace(".", ","), ha="center", fontsize=8)
+ax1.set_ylim(0, 1.2)
+ax1.set_xlabel("fila")
+ax1.set_ylabel("prob. de l'etiqueta certa")
+ax1.set_title(("Versemblança = producte de les barres = %.4f" % prob_certa.prod()).replace(".", ","))
+ax1.grid(axis="y", alpha=0.3)
+
+ax2.bar(files_8, castig_8, color=colors_8)
+ax2.axhline(log_loss_8, color="black", linestyle="--", linewidth=1.5,
+            label=("mitjana = log-loss = %.3f" % log_loss_8).replace(".", ","))
+ax2.set_xlabel("fila")
+ax2.set_ylabel("$-\\\\log$(prob. de l'etiqueta certa)")
+ax2.set_title("Càstig de cada fila: la log-loss n'és la mitjana")
+ax2.legend()
+ax2.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+print("comprovacio: -log(producte)/n = %.6f  i  mitjana dels castigs = %.6f"
+      % (-np.log(prob_certa.prod()) / len(y_8), log_loss_8))
+"""))
+
+A(md(r"""
+Les dues xifres de la darrera línia són iguals: el logaritme ha convertit el producte
+de l'esquerra en la suma de la dreta. Ara, comprovem-ho contra scikit-learn.
 """))
 
 A(code("""
@@ -979,6 +1265,87 @@ plt.show()
 """))
 
 A(md(r"""
+D'aquestes campanes surt la **frontera**. El model compara $P(C)\,f_C(x)$ entre
+classes i tria la més alta; on dues corbes es creuen, la decisió canvia de costat.
+A l'esquerra, versicolor contra virginica amb la llargada del pètal, amb els *priors*
+iguals que té Iris. A la dreta, el mateix fent veure que virginica fos quatre vegades
+més freqüent: la seva corba creix, i la frontera **es desplaça cap a l'altra classe**.
+Això és el *prior* pesant, igual que a la prova mèdica.
+"""))
+
+A(code("""
+x_1d = np.linspace(2.5, 7.5, 1000)
+
+def frontera_1d(ax, priors_vv, titol):
+    corbes = []
+    for k, nom_color in [(1, "tab:orange"), (2, "tab:green")]:
+        corba = priors_vv[k - 1] * densitat_normal(x_1d, mitjanes[k, col], variancies[k, col])
+        corbes.append(corba)
+        ax.plot(x_1d, corba, color=nom_color, linewidth=2,
+                label=("P(%s) · f(x), amb P = %.2f" % (iris.target_names[k], priors_vv[k - 1]))
+                .replace(".", ","))
+    guanya_v = corbes[0] > corbes[1]
+    ax.fill_between(x_1d, 0, np.maximum(*corbes), where=guanya_v, color="tab:orange", alpha=0.15)
+    ax.fill_between(x_1d, 0, np.maximum(*corbes), where=~guanya_v, color="tab:green", alpha=0.15)
+    # frontera: on canvia el guanyador, entre les dues mitjanes
+    entre = (x_1d > mitjanes[1, col]) & (x_1d < mitjanes[2, col])
+    x_f = x_1d[entre][np.argmax(np.diff(guanya_v[entre].astype(int)) != 0)]
+    ax.axvline(x_f, color="black", linestyle="--", linewidth=1.5)
+    ax.text(x_f + 0.05, ax.get_ylim()[1] * 0.92, ("frontera\\n%.2f cm" % x_f).replace(".", ","))
+    ax.set_xlabel("llargada del petal (cm)")
+    ax.set_title(titol)
+    ax.legend(loc="upper left", fontsize=9)
+    ax.grid(alpha=0.3)
+    return x_f
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.5), sharey=True)
+f_iguals = frontera_1d(ax1, [0.5, 0.5], "Priors iguals")
+f_desig = frontera_1d(ax2, [0.2, 0.8], "Si virginica fos 4 vegades més freqüent")
+ax1.set_ylabel("P(C) · densitat")
+plt.tight_layout()
+plt.show()
+print("frontera amb priors iguals: %.3f cm; amb 0,2 / 0,8: %.3f cm" % (f_iguals, f_desig))
+"""))
+
+A(md(r"""
+Amb dues columnes, cada classe és una «muntanya» en el pla: el producte de les dues
+campanes, perquè el model les suposa independents. Les el·lipses són les corbes de
+nivell de cada muntanya, i els colors de fons, la classe que guanya a cada punt.
+Fixeu-vos que **les fronteres no són rectes**: quan dues classes tenen variàncies
+diferents, on les muntanyes s'igualen és una corba. Les el·lipses tenen els eixos
+alineats amb els eixos del gràfic; per què, ho veureu a la secció 6.1.
+"""))
+
+A(code("""
+cols_2d = [2, 3]                                  # llargada i amplada del petal
+X_2d = X_i[:, cols_2d]
+mitj_2d = np.array([X_2d[y_i == c].mean(axis=0) for c in classes])
+var_2d = np.array([X_2d[y_i == c].var(axis=0) for c in classes])
+
+g1, g2 = np.meshgrid(np.linspace(0.5, 7.5, 300), np.linspace(-0.3, 3.0, 300))
+graella_2d = np.column_stack([g1.ravel(), g2.ravel()])
+punt_2d = puntuacions(graella_2d, mitj_2d, var_2d, priors)     # la mateixa funcio de dalt
+guanyador = np.argmax(punt_2d, axis=1).reshape(g1.shape)
+
+fig, ax = plt.subplots(figsize=(9, 6))
+ax.contourf(g1, g2, guanyador, levels=[-0.5, 0.5, 1.5, 2.5], colors=colors_i, alpha=0.12)
+ax.contour(g1, g2, guanyador, levels=[0.5, 1.5], colors="black", linewidths=1.5)
+for k, c in enumerate(classes):
+    densitat_k = np.exp(log_densitat_normal(graella_2d, mitj_2d[k], var_2d[k]).sum(axis=1))
+    nivells = densitat_k.max() * np.array([0.05, 0.25, 0.5, 0.8])   # fraccions del cim
+    ax.contour(g1, g2, densitat_k.reshape(g1.shape), levels=nivells, colors=colors_i[k],
+               linewidths=1)
+    ax.scatter(X_2d[y_i == c, 0], X_2d[y_i == c, 1], s=15, color=colors_i[k],
+               edgecolor="k", linewidth=0.3, label=iris.target_names[c])
+ax.set_xlabel("llargada del petal (cm)")
+ax.set_ylabel("amplada del petal (cm)")
+ax.set_title("Les gaussianes de cada classe i la frontera que en surt (línia negra)")
+ax.legend(loc="upper left")
+ax.grid(alpha=0.3)
+plt.show()
+"""))
+
+A(md(r"""
 ### 6.1 Comprovem que la suposició és falsa
 
 Hem dit que les columnes no són independents. No ho deixem com a afirmació:
@@ -1037,6 +1404,44 @@ Conseqüència pràctica que val la pena saber: les probabilitats de
 d'1. **Serveixen per ordenar les classes, no per llegir-les com a probabilitats
 de veritat.** Si el que us cal és una probabilitat honesta, la regressió
 logística la dona millor, perquè és l'únic que optimitza.
+"""))
+
+A(md(r"""
+El +0,787 de versicolor, en dibuix. Els punts són les 50 versicolor. L'el·lipse
+taronja és el que suposa Naive Bayes: dues campanes independents, i per tant una
+el·lipse **amb els eixos rectes**. La negra és la que surt de la covariància real de
+les dades: **inclinada**, perquè quan el pètal és més llarg també sol ser més ample.
+La diferència entre les dues és, literalment, el «naive».
+"""))
+
+A(code("""
+from matplotlib.patches import Ellipse
+
+def elipse(ax, centre, covariancia, color, etiqueta, estil="-"):
+    \"\"\"El.lipse de 2 desviacions a partir d'una matriu de covariancia 2x2.\"\"\"
+    valors, vectors = np.linalg.eigh(covariancia)
+    angle = np.degrees(np.arctan2(vectors[1, 1], vectors[0, 1]))
+    amp, alc = 2 * 2 * np.sqrt(valors[::-1])
+    ax.add_patch(Ellipse(centre, amp, alc, angle=angle, fill=False, color=color,
+                         linewidth=2.5, linestyle=estil, label=etiqueta))
+
+X_vers = X_i[y_i == 1][:, [2, 3]]
+cov_real = np.cov(X_vers.T, bias=True)
+cov_naive = np.diag(np.diag(cov_real))           # la mateixa covariancia sense la diagonal creuada
+
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.scatter(X_vers[:, 0], X_vers[:, 1], color="tab:orange", edgecolor="k", s=35, zorder=3)
+elipse(ax, X_vers.mean(axis=0), cov_naive, "tab:orange", "el que suposa Naive Bayes (independents)", "--")
+elipse(ax, X_vers.mean(axis=0), cov_real, "black", ("el que diuen les dades (correlació %+.3f)"
+       % np.corrcoef(X_vers.T)[0, 1]).replace(".", ","))
+ax.set_xlim(2.6, 5.6)
+ax.set_ylim(0.7, 2.0)
+ax.set_xlabel("llargada del petal (cm)")
+ax.set_ylabel("amplada del petal (cm)")
+ax.set_title("Versicolor: la suposició d'independència contra la realitat")
+ax.legend(loc="upper left")
+ax.grid(alpha=0.3)
+plt.show()
 """))
 
 # ---------------------------------------------------- 7. var_smoothing
@@ -1126,6 +1531,41 @@ Després respon amb una frase: si la prova no ha canviat, per què canvia tant l
 resposta?
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix: com es compta $P(\text{malalt} \mid +)$ amb
+persones. Una prova **inventada** (sensibilitat 90 %, especificitat 95 %) sobre 1.000
+persones, de les quals 40 estan malaltes. Cada quadradet és una persona. La resposta
+és els vermells dividit per tots els que han donat positiu, vermells i taronges. La
+vostra funció ha de fer aquest recompte amb fraccions en lloc de quadradets.
+"""))
+
+A(code("""
+n_il = 1000
+malalts_il = 40                                     # prevalença inventada: 4 %
+vp_il = int(0.90 * malalts_il)                      # malalts amb positiu
+fn_il = malalts_il - vp_il                          # malalts amb negatiu
+fp_il = int(round(0.05 * (n_il - malalts_il)))      # sans amb positiu
+grups_il = ([("malalt, +", "tab:red")] * vp_il + [("malalt, -", "tab:purple")] * fn_il
+            + [("sa, +", "tab:orange")] * fp_il
+            + [("sa, -", "lightgray")] * (n_il - malalts_il - fp_il))
+
+fig, ax = plt.subplots(figsize=(12, 5.2))
+for idx, (_, color) in enumerate(grups_il):
+    ax.add_patch(plt.Rectangle((idx % 50, 19 - idx // 50), 0.85, 0.85, color=color))
+for nom, color in [("malalt, +", "tab:red"), ("malalt, -", "tab:purple"),
+                   ("sa, +", "tab:orange"), ("sa, -", "lightgray")]:
+    ax.scatter([], [], marker="s", s=80, color=color,
+               label="%s: %d" % (nom, sum(1 for g, _ in grups_il if g == nom)))
+ax.set_xlim(0, 50)
+ax.set_ylim(0, 20)
+ax.set_aspect("equal")
+ax.axis("off")
+ax.legend(loc="upper left", bbox_to_anchor=(1.01, 1))
+ax.set_title(("Prova inventada: P(malalt | +) = %d / (%d + %d) = %.1f %%"
+              % (vp_il, vp_il, fp_il, 100 * vp_il / (vp_il + fp_il))).replace(".", ","))
+plt.show()
+"""))
+
 A(code("""
 # Exercici 1
 # Escriu prob_malalt(prevalenca, sensibilitat, especificitat) i aplica-la a
@@ -1166,6 +1606,36 @@ minimitzar $\sum (x_i-\mu)^2$. Digues per què això explica que la resposta
 hagi de ser la mitjana.
 """))
 
+A(md(r"""
+Abans de començar, la idea en un dibuix: què mesura $\ell(\mu)$ per a **un** valor de
+$\mu$. Vuit valors inventats (els punts, a terra) i tres $\mu$ candidats. Per a cada
+candidat es dibuixa la campana amb $\sigma$ fixa, i cada punt aixeca una línia fins a la
+campana: la seva densitat. $\ell(\mu)$ és la suma dels logaritmes d'aquestes alçades. La
+vostra graella fa aquest càlcul per a 20.001 candidats en lloc de tres.
+"""))
+
+A(code("""
+rng = np.random.default_rng(5)
+mostra_il = rng.normal(50, 4, 8)                 # vuit valors inventats
+sigma_il = 4
+eix_il = np.linspace(35, 65, 400)
+
+fig, axs = plt.subplots(1, 3, figsize=(14, 4), sharey=True)
+for ax, mu_il in zip(axs, [44, 50, 56]):
+    alcades_il = densitat_normal(mostra_il, mu_il, sigma_il ** 2)
+    ax.plot(eix_il, densitat_normal(eix_il, mu_il, sigma_il ** 2), color="tab:blue", linewidth=2)
+    ax.vlines(mostra_il, 0, alcades_il, color="tab:red", linewidth=2)
+    ax.scatter(mostra_il, np.zeros_like(mostra_il), color="tab:red", edgecolor="k", zorder=3)
+    ax.set_title((r"$\\mu = %d$:  $\\ell(\\mu)$ = suma de log(alçada) = %.1f"
+                 % (mu_il, np.log(alcades_il).sum())).replace(".", ","))
+    ax.set_xlabel("valor")
+    ax.grid(alpha=0.3)
+axs[0].set_ylabel("densitat")
+fig.suptitle("Dades inventades: com es puntua un candidat")
+plt.tight_layout()
+plt.show()
+"""))
+
 A(code("""
 # Exercici 2
 # 1. genera la mostra amb np.random.seed(7) i np.random.normal(170, 10, 200)
@@ -1196,6 +1666,34 @@ columnes ni de classes.
 Calcula les mitjanes, les variàncies i els *priors* per classe, prediu, i compara
 amb `GaussianNB`. Mira també si els *priors* són iguals entre ells, com passava a
 Iris.
+"""))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: el que torna `puntuacions()` i com se'n treu la
+predicció. Una fila per mostra i una columna per classe, amb números **inventats**. Cada
+fila es llegeix sola: guanya la casella més alta (la menys negativa), marcada amb un
+requadre. Això és el que fa `np.argmax(..., axis=1)`. Que els números siguin negatius
+no importa: només compta l'ordre dins de la fila.
+"""))
+
+A(code("""
+rng = np.random.default_rng(2)
+punt_il = -rng.uniform(5, 40, size=(6, 3)).round(1)     # puntuacions inventades
+guanya_il = np.argmax(punt_il, axis=1)
+
+fig, ax = plt.subplots(figsize=(7, 5))
+ax.imshow(punt_il, cmap="Blues", aspect="auto")
+for f in range(punt_il.shape[0]):
+    for c in range(punt_il.shape[1]):
+        ax.text(c, f, "%.1f" % punt_il[f, c], ha="center", va="center", fontsize=11)
+    ax.add_patch(plt.Rectangle((guanya_il[f] - 0.5, f - 0.5), 1, 1, fill=False,
+                               edgecolor="tab:red", linewidth=3))
+    ax.text(3.0, f, "→ classe %d" % guanya_il[f], va="center", fontsize=11)
+ax.set_xticks(range(3), ["classe 0", "classe 1", "classe 2"])
+ax.set_yticks(range(6), ["mostra %d" % f for f in range(6)])
+ax.set_xlim(-0.5, 3.8)
+ax.set_title("Dades inventades: argmax de cada fila = predicció")
+plt.show()
 """))
 
 A(code("""
@@ -1232,6 +1730,40 @@ falsos, que no venen de cap model:
 Per a tots dos, i per a les `p_te` del model de veritat, calcula la precisió
 (fracció d'etiquetes encertades, amb el tall a 0,5) i la log-loss. Després
 respon: quin dels tres triaries, i per què la precisió no t'ho diu?
+"""))
+
+A(md(r"""
+Abans de començar, la idea en un dibuix: el que mira cada mesura. Deu files
+**inventades**: cada punt és la $p$ que dona un model, vermell si l'etiqueta real és 1 i
+blau si és 0. La **precisió** només mira a quin costat de la línia del 0,5 cau cada punt.
+La **log-loss** mira la distància fins a la seva etiqueta (el segment gris) i la cobra
+amb $-\log$: el número de sota de cada punt.
+"""))
+
+A(code("""
+y_il = np.array([1, 1, 0, 1, 0, 0, 1, 0, 1, 0])
+p_il = np.array([0.97, 0.62, 0.08, 0.45, 0.52, 0.3, 0.85, 0.02, 0.55, 0.15])   # inventades
+castig_il = -np.log(np.where(y_il == 1, p_il, 1 - p_il))
+encert_il = (p_il > 0.5).astype(int) == y_il
+
+fig, ax = plt.subplots(figsize=(11, 4.8))
+files_il = np.arange(len(y_il))
+ax.vlines(files_il, p_il, y_il, color="gray", linewidth=2, alpha=0.6)
+ax.scatter(files_il, p_il, s=90, edgecolor="k", zorder=3,
+           color=["tab:red" if y == 1 else "tab:blue" for y in y_il])
+for f in files_il:
+    ax.text(f + 0.12, p_il[f], ("%.2f\\n%s" % (castig_il[f], "✓" if encert_il[f] else "✗")).replace(".", ","),
+            va="center", fontsize=9)
+ax.axhline(0.5, color="black", linestyle="--", linewidth=1)
+ax.text(-0.4, 0.52, "tall 0,5", ha="left")
+ax.set_xticks(files_il)
+ax.set_xlabel("fila")
+ax.set_ylabel("$p$ que dona el model (classe 1)")
+ax.set_ylim(-0.08, 1.08)
+ax.set_title(("Dades inventades: precisió = %d/%d encerts; log-loss = mitjana dels castigs = %.3f"
+              % (encert_il.sum(), len(y_il), castig_il.mean())).replace(".", ","))
+ax.grid(alpha=0.3)
+plt.show()
 """))
 
 A(code("""
