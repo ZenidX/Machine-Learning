@@ -52,23 +52,44 @@ y = df["objectiu"]                                # el que vols predir`,
     titol: "3. Partir en entrenament i examen",
     codi: `X_entrena, X_examen, y_entrena, y_examen = train_test_split(
     X, y, test_size=0.3, random_state=42, stratify=y)`,
-    nota: "L'examen es guarda a part: el model no el pot veure mentre aprèn.",
+    nota: "L'examen es guarda a part: el model no el pot veure mentre aprèn. stratify=y només en classificació; en regressió, treu-lo.",
   },
   {
-    titol: "4. Entrenar el model",
-    codi: `model = DecisionTreeClassifier(max_depth=3)       # o KNeighborsClassifier, LogisticRegression...
-model.fit(X_entrena, y_entrena)                   # sempre amb l'entrenament`,
+    titol: "4. Classificació o regressió?",
+    codi: `# classificació: y és una categoria (sí/no, tipus, classe)
+DecisionTreeClassifier, KNeighborsClassifier, LogisticRegression, RandomForestClassifier
+
+# regressió: y és un número (preu, temperatura, quantitat)
+DecisionTreeRegressor, KNeighborsRegressor, LinearRegression, RandomForestRegressor`,
+    nota: "És el primer que has de decidir, i ho decideix la pregunta: si demana una classe o un número.",
   },
   {
-    titol: "5. Comprovar-lo amb l'examen",
-    codi: `model.score(X_entrena, y_entrena)                 # el que ha memoritzat
-model.score(X_examen, y_examen)                   # el que val de debò
+    titol: "5. Entrenar uns quants models i quedar-te el millor",
+    codi: `models = {
+    "arbre": DecisionTreeClassifier(max_depth=3, random_state=42),
+    "knn": KNeighborsClassifier(n_neighbors=5),
+    "bosc": RandomForestClassifier(random_state=42),
+}
+for nom, m in models.items():
+    m.fit(X_entrena, y_entrena)                   # sempre amb l'entrenament
+    print(nom, m.score(X_entrena, y_entrena), m.score(X_examen, y_examen))`,
+    nota: "El millor és el que treu més a l'examen, no a l'entrenament. Si l'entrenament treu molt més que l'examen, el model ha memoritzat.",
+  },
+  {
+    titol: "6. Comprovar-lo amb l'examen",
+    codi: `# classificació
+DummyClassifier(strategy="most_frequent").fit(X_entrena, y_entrena).score(X_examen, y_examen)
+confusion_matrix(y_examen, model.predict(X_examen))   # quins errors fa
 
-dummy = DummyClassifier(strategy="most_frequent").fit(X_entrena, y_entrena)
-dummy.score(X_examen, y_examen)                   # el model que no mira les dades
-
-confusion_matrix(y_examen, model.predict(X_examen))  # quins errors fa`,
-    nota: "El número que compta és el de l'examen. Si és molt més baix que el d'entrenament, el model ha memoritzat; si no guanya el Dummy, no ha après res.",
+# regressió
+model.score(X_examen, y_examen)                   # R²: 1 és perfecte, 0 és com dir sempre la mitjana
+mean_absolute_error(y_examen, model.predict(X_examen))  # l'error mitjà, en les unitats de y`,
+    nota: "Compara sempre amb el model que no mira les dades (el Dummy, o la mitjana). Si no el guanyes, el model no ha après res.",
+  },
+  {
+    titol: "7. Respondre la pregunta",
+    codi: `model.predict(cas_nou)                            # què diu el model d'un cas que no ha vist`,
+    nota: "Acaba amb una frase que respongui la pregunta de l'enunciat amb els números: quin model, quant encerta o quant s'equivoca a l'examen, i què vol dir.",
   },
 ];
 
@@ -82,8 +103,8 @@ function RepasPp2() {
   return (
     <div className="space-y-4 text-sm text-gray-700">
       <p>
-        La Pp2 demana tres coses sobre un conjunt que no has vist: manejar les dades, entrenar un
-        model i comprovar-lo amb un conjunt d'examen. Amb aquest repertori en tens prou. El que
+        La Pp2 demana tres coses sobre un conjunt que no has vist: manejar les dades, entrenar
+        models de classificació o de regressió, i comprovar-los amb un conjunt d'examen per respondre una pregunta. Amb aquest repertori en tens prou. El que
         s'avalua és que el sàpigues encadenar i explicar cada resultat amb una frase.
       </p>
       {repasPp2.map((x) => (
@@ -94,7 +115,7 @@ function RepasPp2() {
         </div>
       ))}
       <div>
-        <p className="font-medium text-gray-900 mb-1">6. Paranys</p>
+        <p className="font-medium text-gray-900 mb-1">8. Paranys</p>
         <p className="mb-2">
           No peten ni avisen. Si en veus un i l'expliques, suma.
         </p>
@@ -107,7 +128,7 @@ function RepasPp2() {
         </ul>
       </div>
       <div className="bg-sky-50 border-l-4 border-sky-400 rounded-r-lg p-3 text-sky-900">
-        <p className="font-medium mb-1">7. Com es lliura</p>
+        <p className="font-medium mb-1">9. Com es lliura</p>
         <ul className="list-disc pl-5 space-y-1">
           <li>Cada resposta amb el seu codi i <strong>una frase que l'expliqui amb el número</strong>.</li>
           <li>Digues quin model has triat i què vol dir el número de l'examen.</li>
@@ -360,15 +381,16 @@ export default function BlocSupervisat() {
       </Seccio>
 
       {/* ---------- 4 · Prova ---------- */}
-      <Pas id="prova" num={4} titol="Prova" color={C} subtitol="La Pp2 (dimarts 1 de desembre): manejar les dades, entrenar un model i comprovar-lo amb un examen." />
+      <Pas id="prova" num={4} titol="Prova" color={C} subtitol="La Pp2 (dimarts 1 de desembre): manejar les dades, entrenar models de classificació o de regressió i comprovar-los amb un examen." />
       <Seccio icona={ClipboardCheck} color={C}>
         <ProvaBloc bloc={2} color={C} />
         <div className="mt-4">
           <ActivitatsBloc bloc={2} />
         </div>
         <p className="text-sm text-gray-700 mt-4">
-          <strong>El que es demana és el bàsic:</strong> manejar les dades, entrenar un model i
-          comprovar-lo amb un conjunt d'examen. Les matemàtiques del bloc no s'avaluen a la Pp2.
+          <strong>El que es demana és el bàsic:</strong> manejar les dades, entrenar models de
+          classificació o de regressió i comprovar-los amb un conjunt d'examen per respondre una
+          pregunta. Les matemàtiques del bloc no s'avaluen a la Pp2.
         </p>
       </Seccio>
 
