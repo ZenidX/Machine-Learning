@@ -35,88 +35,56 @@ const C = "sky";
 
 const repasPp2 = [
   {
-    titol: "1. Partir i preparar",
-    codi: `X = df[cols]; y = df["objectiu"]                # numèriques i sense nuls
-y.value_counts(normalize=True)                    # classes desiguals? ho decideix tot
-X_entrena, X_examen, y_entrena, y_examen = train_test_split(
-    X, y, test_size=0.3, random_state=42, stratify=y)
-esc = StandardScaler().fit(X_entrena)             # fit NOMÉS amb l'entrenament
-Xe, Xx = esc.transform(X_entrena), esc.transform(X_examen)`,
-    nota: "k-NN, logística i SVM necessiten escalar; els arbres i el bosc no. Amb make_pipeline(StandardScaler(), model) no t'equivoques.",
+    titol: "1. Carregar i mirar les dades",
+    codi: `df = pd.read_csv(URL)
+df.shape; df.info(); df.head()
+df.isna().sum()                                   # on falten valors
+df["objectiu"].value_counts()                     # quants n'hi ha de cada classe`,
+    nota: "Com a la Pp1: abans de cap model, digues què hi ha a les dades amb els números.",
   },
   {
-    titol: "2. Entrenar dos models i el Dummy",
-    codi: `models = {
-    "dummy": DummyClassifier(strategy="most_frequent"),
-    "logistica": LogisticRegression(max_iter=1000),
-    "bosc": RandomForestClassifier(n_estimators=100, random_state=42),
-}
-for nom, m in models.items():
-    m.fit(Xe, y_entrena)
-    print(nom, m.score(Xe, y_entrena), m.score(Xx, y_examen))   # entrenament i examen`,
-    nota: "Si no guanyes el Dummy, no has fet res. Si l'entrenament treu un 100 % i l'examen molt menys, el model ha memoritzat.",
+    titol: "2. Preparar X i y",
+    codi: `df = df.dropna()                                  # o omple els nuls, i digues què has fet
+X = df[["col1", "col2", "col3"]]                  # columnes numèriques
+y = df["objectiu"]                                # el que vols predir`,
   },
   {
-    titol: "3. La mètrica adequada",
-    codi: `data.target_names / m.classes_                    # quin número és la classe que t'importa?
-confusion_matrix(y_examen, pred)                  # files: el que era; columnes: el que ha dit
-recall_score(y_examen, pred, pos_label=...)       # dels que eren, quants n'ha trobat
-precision_score(y_examen, pred, pos_label=...)    # dels que ha dit, quants n'eren
-classification_report(y_examen, pred)
-f1_score(...) / cross_val_score(m, X, y, cv=5)    # si cal un sol número, o més d'una partició`,
-    nota: "Amb classes desiguals l'exactitud enganya. Abans de triar la mètrica, digues quin dels dos errors no et pots permetre i per què.",
+    titol: "3. Partir en entrenament i examen",
+    codi: `X_entrena, X_examen, y_entrena, y_examen = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y)`,
+    nota: "L'examen es guarda a part: el model no el pot veure mentre aprèn.",
   },
   {
-    titol: "4. El llindar",
-    codi: `p = m.predict_proba(Xx)[:, 1]                     # columna 1 = m.classes_[1]
-pred = (p >= llindar).astype(int)                 # un llindar triat per tu, no el 0,5`,
-    nota: "Baixar el llindar troba més casos positius a canvi de més falses alarmes. Explica-ho amb la matriu de confusió abans i després.",
+    titol: "4. Entrenar el model",
+    codi: `model = DecisionTreeClassifier(max_depth=3)       # o KNeighborsClassifier, LogisticRegression...
+model.fit(X_entrena, y_entrena)                   # sempre amb l'entrenament`,
   },
   {
-    titol: "5. Implementar una pèrdua i comprovar-la",
-    codi: `def log_loss_meva(y, p, eps=1e-15):
-    p = np.clip(p, eps, 1 - eps)                  # sense el clip, log(0) = -inf
-    return -np.mean(y * np.log(p) + (1 - y) * np.log(1 - p))
+    titol: "5. Comprovar-lo amb l'examen",
+    codi: `model.score(X_entrena, y_entrena)                 # el que ha memoritzat
+model.score(X_examen, y_examen)                   # el que val de debò
 
-log_loss_meva(y_examen, p), log_loss(y_examen, p) # han de coincidir
+dummy = DummyClassifier(strategy="most_frequent").fit(X_entrena, y_entrena)
+dummy.score(X_examen, y_examen)                   # el model que no mira les dades
 
-def mse_meu(y, y_pred):                           # si és regressió
-    return np.mean((y - y_pred) ** 2)             # contra mean_squared_error(y, y_pred)`,
-    nota: "La y ha de ser 0 i 1, i la p, la probabilitat de la classe 1. Si no coincideixen, el problema és a la teva funció.",
-  },
-  {
-    titol: "6. Verificar un gradient",
-    codi: `(f(x + h) - f(x - h)) / (2 * h)                   # derivada numèrica, h = 1e-6
-grad_w = X.T @ (p - y) / len(y)                   # log-loss, amb p = sigmoide(X @ w + b)
-grad_b = np.mean(p - y)
-np.max(np.abs(grad_w - grad_numeric))             # ha de ser molt petit (< 1e-7)`,
-    nota: "Si el numèric i l'analític no coincideixen, no entrenis: primer arregla la derivada.",
-  },
-  {
-    titol: "7. Per què prediu el que prediu",
-    codi: `pd.Series(m.coef_[0], index=X.columns).sort_values()          # logística: un pes per columna
-pd.Series(bosc.feature_importances_, index=X.columns).nlargest(5)  # bosc: sumen 1
-pd.Series(...).plot(kind="barh")`,
-    nota: "Els pesos de la logística només es poden comparar entre si si has escalat. El signe diu cap a quina classe empeny; la importància del bosc no té signe.",
+confusion_matrix(y_examen, model.predict(X_examen))  # quins errors fa`,
+    nota: "El número que compta és el de l'examen. Si és molt més baix que el d'entrenament, el model ha memoritzat; si no guanya el Dummy, no ha après res.",
   },
 ];
 
 const paranysPp2 = [
-  ["Escalar amb tot el conjunt", "fit de l'escalador amb l'examen inclòs: no peta, però el número és millor del que toca."],
   ["Mesurar sobre l'entrenament", "et diu com de bé ha memoritzat, no com de bé predirà."],
-  ["Classe positiva girada", "mira target_names o classes_ abans de posar cap pos_label o triar cap columna de predict_proba."],
-  ["Matriu de confusió al revés", "primer el real i després el predit."],
   ["Sense random_state", "cada execució dona un número diferent i no pots comparar res."],
+  ["Matriu de confusió al revés", "primer el real i després el predit."],
 ];
 
 function RepasPp2() {
   return (
     <div className="space-y-4 text-sm text-gray-700">
       <p>
-        La Pp2 demana tres coses sobre un conjunt que no has vist: comparar dos models amb la mètrica
-        adequada, implementar una funció de pèrdua i comprovar-la contra scikit-learn, i explicar per
-        què un model prediu el que prediu. Amb aquest repertori en tens prou. El que s'avalua és que
-        el sàpigues encadenar i explicar cada resultat amb una frase.
+        La Pp2 demana tres coses sobre un conjunt que no has vist: manejar les dades, entrenar un
+        model i comprovar-lo amb un conjunt d'examen. Amb aquest repertori en tens prou. El que
+        s'avalua és que el sàpigues encadenar i explicar cada resultat amb una frase.
       </p>
       {repasPp2.map((x) => (
         <div key={x.titol}>
@@ -126,7 +94,7 @@ function RepasPp2() {
         </div>
       ))}
       <div>
-        <p className="font-medium text-gray-900 mb-1">8. Paranys</p>
+        <p className="font-medium text-gray-900 mb-1">6. Paranys</p>
         <p className="mb-2">
           No peten ni avisen. Si en veus un i l'expliques, suma.
         </p>
@@ -139,10 +107,10 @@ function RepasPp2() {
         </ul>
       </div>
       <div className="bg-sky-50 border-l-4 border-sky-400 rounded-r-lg p-3 text-sky-900">
-        <p className="font-medium mb-1">9. Com es lliura</p>
+        <p className="font-medium mb-1">7. Com es lliura</p>
         <ul className="list-disc pl-5 space-y-1">
           <li>Cada resposta amb el seu codi i <strong>una frase que l'expliqui amb el número</strong>.</li>
-          <li>Quan triïs una mètrica o un model, digues per què.</li>
+          <li>Digues quin model has triat i què vol dir el número de l'examen.</li>
           <li>Compta que el resultat surti del codi i que la frase el llegeixi bé.</li>
         </ul>
       </div>
@@ -392,17 +360,15 @@ export default function BlocSupervisat() {
       </Seccio>
 
       {/* ---------- 4 · Prova ---------- */}
-      <Pas id="prova" num={4} titol="Prova" color={C} subtitol="La Pp2 és la porta cap a les xarxes: qui no hi arribi, al gener no entendrà què fa loss.backward()." />
+      <Pas id="prova" num={4} titol="Prova" color={C} subtitol="La Pp2 (dimarts 1 de desembre): manejar les dades, entrenar un model i comprovar-lo amb un examen." />
       <Seccio icona={ClipboardCheck} color={C}>
         <ProvaBloc bloc={2} color={C} />
         <div className="mt-4">
           <ActivitatsBloc bloc={2} />
         </div>
         <p className="text-sm text-gray-700 mt-4">
-          <strong>Les matemàtiques no s'avaluen com a deducció.</strong> No es demana derivar el
-          gradient de la log-loss. Sí que es demana implementar una funció de pèrdua i comprovar-la,
-          verificar un gradient per diferències finites, o explicar per què un model dona el que dona
-          mirant-ne els pesos.
+          <strong>El que es demana és el bàsic:</strong> manejar les dades, entrenar un model i
+          comprovar-lo amb un conjunt d'examen. Les matemàtiques del bloc no s'avaluen a la Pp2.
         </p>
       </Seccio>
 
